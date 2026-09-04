@@ -39,3 +39,9 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# superseded design explorations (regenerable; kept locally, not worth repo weight)
+/design-assets/superseded/
+
+# client source documents — kept local, not for a public repo
+*.pdf

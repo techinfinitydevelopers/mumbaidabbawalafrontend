@@ -1,26 +1,469 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  /* Primary brand */
+  --color-brand-red: #af1411;
+  --color-brand-orange: #f36220;
+  --color-brand-cream: #fcf3cd;
+
+  /* Secondary brand (icons, tooltips, minimal accents) */
+  --color-brand-green-dark: #2c490f;
+  --color-brand-green: #a2bb3b;
+  --color-brand-yellow: #ffda2d;
+
+  --color-ink: #2a1810;
+  --color-paper: #fffdf6;
+
+  --font-display: var(--font-roboto-slab), Georgia, serif;
+  --font-body: var(--font-dm-sans), system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-script: var(--font-caveat), "Segoe Script", cursive;
+  --font-poster: var(--font-anton), "Arial Narrow", Impact, sans-serif;
 }
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  --color-brand-red: var(--color-brand-red);
+  --color-brand-orange: var(--color-brand-orange);
+  --color-brand-cream: var(--color-brand-cream);
+  --color-brand-green-dark: var(--color-brand-green-dark);
+  --color-brand-green: var(--color-brand-green);
+  --color-brand-yellow: var(--color-brand-yellow);
+  --color-ink: var(--color-ink);
+  --color-paper: var(--color-paper);
+  --font-display: var(--font-display);
+  --font-body: var(--font-body);
+  --font-script: var(--font-script);
+  --font-poster: var(--font-poster);
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--color-paper);
+  color: var(--color-ink);
+  font-family: var(--font-body);
+}
+
+h1, h2, h3, h4 {
+  font-family: var(--font-display);
+}
+
+::selection {
+  background: var(--color-brand-orange);
+  color: var(--color-brand-cream);
+}
+
+/* ── Poster typography, after the Mumbai Dabbawala poster set ──
+   Heavy condensed caps with a hard offset colour copy behind them. */
+.poster,
+.poster-flat {
+  font-family: var(--font-poster);
+  text-transform: uppercase;
+  line-height: 0.96;
+  letter-spacing: 0.01em;
+}
+
+.poster {
+  text-shadow: var(--po, 4px) var(--po, 4px) 0 var(--po-color, var(--color-brand-yellow));
+}
+
+/* Stacked poster lines: every line keeps its offset copy, but each line paints ABOVE the
+   one below it, so a line's shadow slides behind the next line's letters instead of
+   muddying them. Without the z-order, normal flow paints later lines on top and their
+   shadows cut across the line above. */
+.poster-stack > * {
+  position: relative;
+  display: block;
+}
+
+.poster-stack > *:nth-child(1) { z-index: 4; }
+.poster-stack > *:nth-child(2) { z-index: 3; }
+.poster-stack > *:nth-child(3) { z-index: 2; }
+
+/* Graph-paper grid, as on the poster backgrounds */
+.graph-paper {
+  background-image:
+    linear-gradient(to right, rgba(175, 20, 17, 0.07) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(175, 20, 17, 0.07) 1px, transparent 1px);
+  background-size: 28px 28px;
+}
+
+.graph-paper-light {
+  background-image:
+    linear-gradient(to right, rgba(252, 243, 205, 0.12) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(252, 243, 205, 0.12) 1px, transparent 1px);
+  background-size: 28px 28px;
+}
+
+/* "Download / print menu" prints the rotation itself, not the whole marketing page */
+@media print {
+  .no-print,
+  header,
+  footer {
+    display: none !important;
+  }
+
+  .reveal {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+
+  /* the hero and the cuisine essays aren't part of a printed menu */
+  main > div > section:first-of-type,
+  main > div > section#cuisines {
+    display: none !important;
+  }
+
+  main > div > section {
+    min-height: 0 !important;
+    padding: 0 !important;
+    background: #fff !important;
+  }
+
+  article {
+    break-inside: avoid;
+    box-shadow: none !important;
+  }
+}
+
+/* Slider tracks scroll by swipe and by arrow button, so the native bar is redundant */
+.no-scrollbar {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+/* Dashed route ticker: MUMBAI ---------- PERTH */
+.ticker-rule {
+  flex: 1;
+  border-top: 2px dashed currentColor;
+  opacity: 0.5;
+}
+
+/* Hero entrance: the food group arrives from the left, the copy from the right.
+   Animating the standalone `translate` property keeps any per-piece `rotate` intact. */
+@keyframes slide-in-left {
+  from {
+    opacity: 0;
+    translate: -70px 0;
+  }
+  to {
+    opacity: 1;
+    translate: 0 0;
+  }
+}
+
+@keyframes slide-in-right {
+  from {
+    opacity: 0;
+    translate: 70px 0;
+  }
+  to {
+    opacity: 1;
+    translate: 0 0;
+  }
+}
+
+.slide-in-left {
+  opacity: 0;
+  animation: slide-in-left 0.9s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.slide-in-right {
+  opacity: 0;
+  animation: slide-in-right 0.9s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+/* ── Hero food group ──
+   Pieces animate `opacity` and the standalone `scale` property only, so each piece's
+   own `rotate`/`translate` (its tilt and centring) survives the animation untouched. */
+@keyframes group-pop {
+  0% {
+    opacity: 0;
+    scale: 0.55;
+  }
+  60% {
+    opacity: 1;
+    scale: 1.06;
+  }
+  100% {
+    opacity: 1;
+    scale: 1;
+  }
+}
+
+.group-pop {
+  opacity: 0;
+  animation: group-pop 0.7s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+}
+
+/* One side bowl slot, cycling through the five regions */
+@keyframes dish-cycle {
+  0%,
+  2% {
+    opacity: 0;
+    scale: 0.7;
+  }
+  6%,
+  18% {
+    opacity: 1;
+    scale: 1;
+  }
+  22%,
+  100% {
+    opacity: 0;
+    scale: 0.92;
+  }
+}
+
+.dish-cycle {
+  opacity: 0;
+  animation: dish-cycle 15s ease-in-out infinite;
+}
+
+@keyframes label-cycle {
+  0%,
+  3% {
+    opacity: 0.28;
+  }
+  7%,
+  18% {
+    opacity: 1;
+  }
+  22%,
+  100% {
+    opacity: 0.28;
+  }
+}
+
+.label-cycle {
+  opacity: 0.28;
+  animation: label-cycle 15s ease-in-out infinite;
+}
+
+/* Dishes land on the thali one region at a time, hold, then the plate clears and the
+   round starts again. Each dish shares this timeline and is offset by animation-delay,
+   so the plate fills in sequence. Items are centre-anchored, so every keyframe has to
+   carry the -50%/-50% translate. */
+@keyframes dish-emerge {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.45) rotate(-8deg);
+  }
+  4% {
+    opacity: 1;
+    transform: translate(-50%, -58%) scale(1.08) rotate(2deg);
+  }
+  8% {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1) rotate(0deg);
+  }
+  62% {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1) rotate(0deg);
+  }
+  68% {
+    opacity: 0;
+    transform: translate(-50%, -46%) scale(0.85) rotate(4deg);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.45) rotate(-8deg);
+  }
+}
+
+.dish-emerge {
+  animation: dish-emerge 14s cubic-bezier(0.34, 1.32, 0.64, 1) infinite;
+}
+
+/* The region name brightens as its dish lands, and dims as the plate clears */
+@keyframes dish-label {
+  0%,
+  2% {
+    opacity: 0.3;
+  }
+  8%,
+  62% {
+    opacity: 1;
+  }
+  68%,
+  100% {
+    opacity: 0.3;
+  }
+}
+
+.dish-label {
+  opacity: 0.3;
+  animation: dish-label 14s ease-in-out infinite;
+}
+
+/* The plane sticker flies along the dashed route, nose pointing the way it travels.
+   The source artwork points nose-DOWN, so it needs -90deg to face right — +90deg had
+   it flying tail-first. The turn lives here rather than in a `rotate-*` utility:
+   Tailwind's rotate utility sets the standalone `rotate` property, which composes with
+   this transform instead of replacing it. */
+@keyframes plane-fly {
+  0% { left: 0; transform: translate(-50%, -50%) rotate(-90deg); }
+  45% { transform: translate(-50%, -62%) rotate(-90deg); }
+  100% { left: 100%; transform: translate(-50%, -50%) rotate(-90deg); }
+}
+
+.plane-fly {
+  left: 0;
+  transform: translate(-50%, -50%) rotate(-90deg);
+  animation: plane-fly 9s cubic-bezier(0.45, 0, 0.55, 1) infinite;
+}
+
+/* Stickers pop onto the page with a little overshoot, then breathe */
+@keyframes sticker-pop {
+  0% {
+    opacity: 0;
+    transform: scale(0.3) rotate(var(--pop-rotate, -6deg));
+  }
+  55% {
+    opacity: 1;
+    transform: scale(1.12) rotate(var(--pop-rotate, -6deg));
+  }
+  75% {
+    transform: scale(0.96) rotate(var(--pop-rotate, -6deg));
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) rotate(var(--pop-rotate, -6deg));
+  }
+}
+
+.pop-sticker {
+  opacity: 0;
+  animation: sticker-pop 0.85s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+}
+
+/* the float is on an inner wrapper so it can't fight the pop transform */
+@keyframes sticker-float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-12px); }
+}
+
+.sticker-float {
+  animation: sticker-float 7s ease-in-out infinite;
+}
+
+/* Subtle paper grain, as on the reference hero band */
+.grain::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.5;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)' opacity='0.22'/%3E%3C/svg%3E");
+}
+
+/* Auto-scrolling card rail */
+@keyframes rail-scroll {
+  from { transform: translate3d(0, 0, 0); }
+  to { transform: translate3d(-50%, 0, 0); }
+}
+
+.rail-track {
+  animation: rail-scroll 22s linear infinite;
+  width: max-content;
+}
+
+.rail:hover .rail-track,
+.rail:focus-within .rail-track {
+  animation-play-state: paused;
+}
+
+/* Entrance motion */
+@keyframes rise-in {
+  from { opacity: 0; transform: translate3d(0, 28px, 0); }
+  to { opacity: 1; transform: translate3d(0, 0, 0); }
+}
+
+@keyframes float-drift {
+  0%, 100% { transform: translate3d(0, 0, 0) rotate(0deg); }
+  50% { transform: translate3d(0, -14px, 0) rotate(-1.2deg); }
+}
+
+.rise {
+  animation: rise-in 0.85s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+.drift {
+  animation: float-drift 9s ease-in-out infinite;
+}
+
+.reveal {
+  opacity: 0;
+  transform: translate3d(0, 32px, 0);
+  transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1),
+    transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.reveal[data-shown="true"] {
+  opacity: 1;
+  transform: translate3d(0, 0, 0);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .rail-track,
+  .drift,
+  .rise,
+  .plane-fly,
+  .dish-emerge,
+  .dish-label,
+  .pop-sticker,
+  .sticker-float,
+  .group-pop,
+  .dish-cycle,
+  .label-cycle,
+  .slide-in-left,
+  .slide-in-right {
+    animation: none !important;
+  }
+
+  .slide-in-left,
+  .slide-in-right {
+    opacity: 1;
+    translate: 0 0;
+  }
+
+  .group-pop,
+  .label-cycle {
+    opacity: 1;
+  }
+
+  /* only the first region's bowl is shown, rather than all five stacked */
+  .dish-cycle {
+    opacity: 0;
+  }
+
+  .dish-cycle:first-of-type {
+    opacity: 1;
+  }
+
+  .pop-sticker {
+    opacity: 1;
+    transform: rotate(var(--pop-rotate, -6deg));
+  }
+
+  .plane-fly {
+    left: 50%;
+  }
+
+  /* the whole thali is served at once, and every region name reads as active */
+  .dish-emerge {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+  }
+
+  .dish-label {
+    opacity: 1;
+  }
+
+  .reveal {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
 }

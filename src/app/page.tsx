@@ -1,69 +1,132 @@
 import Image from "next/image";
+import Link from "next/link";
+import Starburst from "@/components/poster/Starburst";
+import RouteTicker from "@/components/poster/RouteTicker";
+import DishCluster from "@/components/regional/DishCluster";
+import { HERO_CLUSTER } from "@/data/regions";
 
 export default function Home() {
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert h-5 w-[100px]"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the{" "}
-            <code className="rounded bg-black/[.06] px-1.5 py-0.5 font-mono text-[0.9em] dark:bg-white/[.08]">
-              page.tsx
-            </code>{" "}
-            file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
+    <div className="overflow-x-hidden">
+      <section className="grain graph-paper relative bg-brand-cream pb-24 pt-28 sm:pb-36 sm:pt-32">
+
+        <div className="relative z-10 mx-auto grid max-w-7xl items-center gap-4 px-5 sm:px-8 lg:grid-cols-[1.05fr_1fr]">
+          <div className="relative">
+            <div className="rise mx-auto w-[94%] max-w-[580px] lg:w-full">
+                <DishCluster
+                  cluster={HERO_CLUSTER}
+                  alt="A steel tiffin dabba with bowls of dal and raita and a stack of rotis"
+                  sizes="(min-width: 1024px) 48vw, 94vw"
+                  eager
+                />
+            </div>
+
+            <Starburst className="absolute -bottom-2 right-[2%] z-30 h-[112px] w-[112px] rotate-[-8deg] sm:h-[136px] sm:w-[136px] lg:-bottom-6 lg:right-[6%]">
+              <div className="px-5">
+                <span className="block text-[9px] font-bold tracking-[0.2em] text-brand-cream/85">
+                  Perth
+                </span>
+                <span className="block font-poster text-xl uppercase leading-[0.9] text-brand-cream sm:text-2xl">
+                  Launching
+                  <br />
+                  Soon
+                </span>
+                <span className="block font-script text-sm leading-none text-brand-cream/90 sm:text-base">
+                  14 Sept 2026
+                </span>
+              </div>
+            </Starburst>
+          </div>
+
+          <div>
+            <span className="inline-block rounded-full bg-brand-green-dark px-4 py-1.5 text-[10px] font-bold uppercase tracking-[0.22em] text-brand-cream">
+              Mumbai since 1890
+            </span>
+
+            <h1 className="poster-stack rise mt-4 [--po:5px] sm:[--po:7px]">
+              <span
+                className="poster whitespace-nowrap text-[40px] text-brand-red sm:text-[64px] lg:text-[72px] xl:text-[84px]"
+                style={{ ["--po-color" as string]: "var(--color-brand-yellow)" }}
+              >
+                The Dabba That
+              </span>
+              <span
+                className="poster whitespace-nowrap text-[40px] text-brand-green-dark sm:text-[64px] lg:text-[72px] xl:text-[84px]"
+                style={{ ["--po-color" as string]: "var(--color-brand-yellow)" }}
+              >
+                Never Stops
+              </span>
+            </h1>
+
+            <p
+              className="rise mt-4 font-poster text-xl uppercase tracking-[0.04em] text-brand-orange sm:text-2xl"
+              style={{ animationDelay: "0.1s" }}
             >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
+              Fresh food · Fair price · Free delivery
+            </p>
+
+            <p
+              className="rise mt-5 max-w-md text-sm leading-relaxed text-ink/75 sm:text-base"
+              style={{ animationDelay: "0.2s" }}
             >
-              Learning
-            </a>{" "}
-            center.
-          </p>
+              For 135+ years, one dabba has never missed a delivery, never broken a promise,
+              and never stopped carrying the taste of home. Now, that same dabba is moving to
+              Perth.
+            </p>
+
+            <div className="rise mt-7 flex flex-wrap gap-3" style={{ animationDelay: "0.3s" }}>
+              <Link
+                href="/plans"
+                className="rounded-full bg-brand-orange px-7 py-3.5 text-[11px] font-bold uppercase tracking-[0.18em] text-brand-cream shadow-[0_14px_26px_-12px_rgba(243,98,32,0.9)] transition-transform duration-300 hover:-translate-y-0.5"
+              >
+                Order Your Dabba
+              </Link>
+              <Link
+                href="/menu"
+                className="rounded-full bg-paper px-7 py-3.5 text-[11px] font-bold uppercase tracking-[0.18em] text-brand-red shadow-[0_14px_26px_-16px_rgba(42,24,16,0.6)] transition-transform duration-300 hover:-translate-y-0.5"
+              >
+                See What&rsquo;s Cooking
+              </Link>
+            </div>
+
+            <RouteTicker className="mt-8 max-w-md text-brand-red" />
+          </div>
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
+
+        <svg
+          viewBox="0 0 1440 150"
+          preserveAspectRatio="none"
+          aria-hidden="true"
+          className="absolute bottom-0 left-0 z-10 h-[110px] w-full sm:h-[150px]"
+        >
+          <path
+            d="M0,92 C170,150 300,44 520,62 C742,80 900,148 1120,116 C1268,94 1360,52 1440,36 L1440,150 L0,150 Z"
+            fill="var(--color-paper)"
+          />
+        </svg>
+      </section>
+
+      <section className="mx-auto max-w-4xl px-5 pb-24 pt-6 text-center sm:px-8">
+        <p className="font-script text-3xl text-brand-orange">More of the site is on the way</p>
+        <h2 className="mx-auto mt-3 [--po:4px]">
+          <span
+            className="poster block text-[34px] text-brand-red sm:text-[48px]"
+            style={{ ["--po-color" as string]: "var(--color-brand-yellow)" }}
           >
-            <Image
-              className="dark:invert h-[14px] w-4"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={14}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
-      </main>
+            Start with the Stories
+          </span>
+        </h2>
+        <p className="mx-auto mt-4 max-w-xl text-sm text-ink/70 sm:text-base">
+          Five cuisines, five stories — Gujarati, Punjabi, Marathi, Rajasthani and South
+          Indian, each behind the 15-day rotating menu.
+        </p>
+        <Link
+          href="/regional-food-stories"
+          className="mt-7 inline-flex items-center gap-2 rounded-full bg-brand-red px-7 py-3.5 text-[11px] font-bold uppercase tracking-[0.18em] text-brand-cream transition-transform duration-300 hover:-translate-y-0.5"
+        >
+          Explore Regional Food Stories
+        </Link>
+      </section>
     </div>
   );
 }
