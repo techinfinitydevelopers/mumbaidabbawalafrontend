@@ -1,3 +1,28 @@
+## 2026-09-07 — The red line above the Plans wave
+
+Two things were drawing a red hairline near that boundary, and both are gone:
+
+1. **`.graph-paper`'s own grid.** Its lines are `rgba(175, 20, 17, 0.07)` — red — and
+   the first horizontal one lands on row 0 of whatever element carries the class.
+   On the divider that put a red rule right along the band's top edge. Already
+   removed by `textured={false}` in the previous commit; this is what "red line"
+   was.
+2. **The terms band's border.** `border-brand-red/12` on a 1329x103 box sitting
+   80px above the wave. Cropped tight it reads as a full-width red rule rather
+   than a card edge, so the border is dropped — the cream tint alone separates it.
+
+Audited every element wider than 300px on the page for a top or bottom border:
+what's left is the header bar, the plan cards, the hero's dashed route rule and
+the footer's top rule. Nothing full-width near the wave.
+
+Also closed the divider's clip shape at `y=-0.2` instead of `0`, as a precaution
+so no clip edge sits on row 0 where partial coverage could bleed the colour
+underneath. Not a diagnosed bug — a guard, and free.
+
+Worth noting for future debugging: a faint 1px seam does show at that boundary in
+the Browser pane's captures even with the section background forced to lime and
+`.grain` stripped, so it comes from the screenshot pipeline rather than the page.
+
 ## 2026-09-07 — Grid removed from the Plans page wave
 
 `WaveDivider` hard-coded `.graph-paper`, which is right on the two pages where the

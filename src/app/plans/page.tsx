@@ -64,10 +64,11 @@ export default function PlansPage() {
             ))}
           </div>
 
-          {/* The doc's closing line, and the one thing still missing from it. */}
+          {/* The doc's closing line. No border: this box is wide and shallow, so a hairline
+              outline reads as a rule across the page rather than as a card edge. */}
           <Reveal
             delay={120}
-            className="mt-10 flex flex-col gap-4 rounded-[28px] border border-brand-red/12 bg-brand-cream/60 p-6 sm:flex-row sm:items-center sm:justify-between sm:p-7"
+            className="mt-10 flex flex-col gap-4 rounded-[28px] bg-brand-cream/60 p-6 sm:flex-row sm:items-center sm:justify-between sm:p-7"
           >
             <p className="max-w-2xl text-[13px] leading-relaxed text-ink/70">{PLAN_TERMS_NOTE}</p>
             <Link

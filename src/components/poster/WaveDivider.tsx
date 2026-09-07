@@ -26,12 +26,15 @@ export default function WaveDivider({
         <defs>
           {/*
             Normalised from a 1440x150 box, so it stretches like preserveAspectRatio="none".
+            It closes at y=-0.2 rather than 0 so the shape has no edge sitting on row 0,
+            where partial coverage would let the colour underneath bleed a hairline. The
+            element's own box still limits what actually paints.
             Every control point is kept between y=30 and y=104 of that 150: the previous path
             swung to -10 and 0, which put the crest above the band's own top edge, so the curve
             flattened against it and the wave read as two separate humps. One trough, one crest.
           */}
           <clipPath id="wave-divider" clipPathUnits="objectBoundingBox">
-            <path d="M0,0.2933 C0.2083,0.64 0.4306,0.6933 0.625,0.4533 C0.8194,0.2133 0.9236,0.2 1,0.2667 L1,0 L0,0 Z" />
+            <path d="M0,0.2933 C0.2083,0.64 0.4306,0.6933 0.625,0.4533 C0.8194,0.2133 0.9236,0.2 1,0.2667 L1,-0.2 L0,-0.2 Z" />
           </clipPath>
         </defs>
       </svg>
