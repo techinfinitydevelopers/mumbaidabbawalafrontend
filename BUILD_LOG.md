@@ -1,3 +1,21 @@
+## 2026-09-07 — Space between the stacked poster lines
+
+Matching the two lines' sizes stopped them colliding, but the upper line's shadow
+still sat right against the lower line's caps. Added a `--po-gap` knob to
+`.poster-stack`:
+
+```css
+.poster-stack > * + * { margin-top: var(--po-gap, 0px); }
+```
+
+It defaults to 0, so the large poster headings keep the reference's deliberate
+overlap — the client asked for that effect explicitly earlier. The two smaller
+`/menu` headings set `12px` / `18px` at `sm`, which clears the upper line's ink
+overflow (`line-height: 0.96`) plus the 5px `--po` shadow.
+
+Verified at 800px and 390px: each line's shadow now reads under its own line, no
+overflow. Every other `.poster-stack` on the site is untouched.
+
 ## 2026-09-07 (end of day) — Poster lines were colliding; standalone HTML dropped
 
 **Overlapping heading lines.** The two lines of the new sections' poster headings

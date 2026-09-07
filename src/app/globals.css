@@ -73,6 +73,14 @@ h1, h2, h3, h4 {
   display: block;
 }
 
+/* Optional breathing room between stacked lines. 0 by default, so the large poster
+   headings keep the reference's deliberate overlap; smaller headings, where that
+   overlap reads as a collision rather than an effect, set --po-gap. It has to clear
+   the upper line's ink overflow (line-height is 0.96) plus the --po shadow offset. */
+.poster-stack > * + * {
+  margin-top: var(--po-gap, 0px);
+}
+
 .poster-stack > *:nth-child(1) { z-index: 4; }
 .poster-stack > *:nth-child(2) { z-index: 3; }
 .poster-stack > *:nth-child(3) { z-index: 2; }
