@@ -11,6 +11,12 @@ export type KitchenRule = {
   footerLabel: string;
   footerTag: string;
   theme: "turmeric" | "basmati" | "citrus" | "curryleaf";
+  /** `desc` broken into the card's bullets — same wording, just set as a list. */
+  points: string[];
+  /** Card colour on the fan, and whether its text sits light or dark on it. */
+  tone: { bg: string; text: string; rule: string; bullet: string };
+  /** Cut-out that peeks over the card's top edge. */
+  sticker: string;
   spotlight?: boolean;
   hangDrop: number;
   swingDur: number;
@@ -31,6 +37,13 @@ export const KITCHEN_RULES: KitchenRule[] = [
     footerIcon: "⏱️",
     footerLabel: "Bloom First",
     footerTag: "Taste Lock ✓",
+    points: [
+      "Whole spices bloom first, in bubbling oil",
+      "Ground masalas follow, to absorb the heat",
+      "Fragrant finishes seal the aromatics",
+    ],
+    tone: { bg: "bg-brand-orange", text: "text-ink", rule: "bg-ink/20", bullet: "text-brand-red" },
+    sticker: "/images/cutouts/spice-cinnamon.png",
     theme: "turmeric",
     hangDrop: 18,
     swingDur: 4.4,
@@ -48,6 +61,13 @@ export const KITCHEN_RULES: KitchenRule[] = [
     footerIcon: "⏱️",
     footerLabel: "10m Steam Cool",
     footerTag: "Fluffy Grains ✓",
+    points: [
+      "Ten minutes for the steam to subside",
+      "No condensation pooling at the bottom",
+      "Fluffy grains, not soggy, in a sealed tin",
+    ],
+    tone: { bg: "bg-brand-cream", text: "text-ink", rule: "bg-brand-red/25", bullet: "text-brand-red" },
+    sticker: "/images/cutouts/spice-staranise.png",
     theme: "basmati",
     hangDrop: 34,
     swingDur: 5.1,
@@ -65,6 +85,13 @@ export const KITCHEN_RULES: KitchenRule[] = [
     footerIcon: "⏱️",
     footerLabel: "At The Latch",
     footerTag: "Citrus Zest ✓",
+    points: [
+      "Coriander and lemon at the final second",
+      "Raw freshness and citrus zest locked in",
+      "Aroma arrives when the lid is unlatched",
+    ],
+    tone: { bg: "bg-brand-red", text: "text-brand-cream", rule: "bg-brand-cream/30", bullet: "text-brand-yellow" },
+    sticker: "/images/cutouts/spice-chilli.png",
     theme: "citrus",
     hangDrop: 22,
     swingDur: 4.1,
@@ -82,6 +109,13 @@ export const KITCHEN_RULES: KitchenRule[] = [
     footerIcon: "⚡",
     footerLabel: "Smoking Tadka",
     footerTag: "Soul of Dabba ✓",
+    points: [
+      "Kadi patta crackled in smoking oil",
+      "Essential oils form an aromatic shield",
+      "The dish stays vivid for hours",
+    ],
+    tone: { bg: "bg-brand-green-dark", text: "text-brand-cream", rule: "bg-brand-cream/30", bullet: "text-brand-green" },
+    sticker: "/images/cutouts/spice-curryleaf.png",
     theme: "curryleaf",
     spotlight: true,
     hangDrop: 30,

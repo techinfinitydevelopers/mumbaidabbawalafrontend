@@ -430,6 +430,51 @@ h1, h2, h3, h4 {
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)' opacity='0.22'/%3E%3C/svg%3E");
 }
 
+/* ── Fanned rule cards ────────────────────────────────────────────────────────
+   Overlapping tilted cards that straighten and pop forward under the cursor.
+
+   The tilt, the vertical drop and the stacking order all come in as custom
+   properties rather than inline styles: an inline `rotate` or `z-index` beats any
+   class, so `:hover` could never override it. Below 640px the fan unstacks into a
+   plain column, so the tilt only applies from there up. */
+.fan-card {
+  position: relative;
+  z-index: var(--fan-z, 1);
+  transition:
+    rotate 420ms cubic-bezier(0.22, 1, 0.36, 1),
+    translate 420ms cubic-bezier(0.22, 1, 0.36, 1),
+    scale 420ms cubic-bezier(0.22, 1, 0.36, 1),
+    box-shadow 420ms ease;
+}
+
+@media (min-width: 640px) {
+  .fan-card {
+    rotate: var(--fan-tilt, 0deg);
+    translate: 0 var(--fan-drop, 0px);
+  }
+}
+
+@media (hover: hover) {
+  .fan-card:hover {
+    rotate: 0deg;
+    translate: 0 calc(var(--fan-drop, 0px) - 18px);
+    scale: 1.05;
+    z-index: 40;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .fan-card {
+    transition: none;
+  }
+  /* leave the geometry alone entirely; only the stacking order still changes */
+  .fan-card:hover {
+    rotate: var(--fan-tilt, 0deg);
+    scale: 1;
+    translate: 0 var(--fan-drop, 0px);
+  }
+}
+
 /* Auto-scrolling card rail */
 @keyframes rail-scroll {
   from { transform: translate3d(0, 0, 0); }

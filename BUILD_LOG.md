@@ -1,3 +1,40 @@
+## 2026-09-07 — Kitchen rules become a fanned deck; note on a force-push
+
+`FromTheKitchen` was a 220vh sticky, scroll-driven 3D playing-card flip. Replaced
+with the client's reference: four overlapping tilted cards, one brand colour each,
+that straighten and pop forward on hover. 474 lines of scroll machinery down to
+plain markup plus one CSS rule, and the section is a normal block again.
+
+`kitchenRules.ts` gains three fields: `points` (each `desc` set out as bullets,
+same wording — not rewritten), `tone` and `sticker`. The orange card takes **ink**
+text, not cream: cream on brand orange measures about 2.4:1, ink on it 6.5:1.
+
+Implementation notes worth keeping:
+
+- Tilt, drop and stacking order arrive as custom properties (`--fan-tilt`,
+  `--fan-drop`, `--fan-z`), not inline styles. An inline `rotate` or `z-index`
+  beats any class, so `:hover` could never override it.
+- Stickers sit on each card's **left**. Each card overlaps the one to its left, so
+  a sticker on the right disappears under the next card.
+- Below 640px the fan unstacks into a plain column — four overlapping tilted cards
+  are unreadable at phone width. Under `prefers-reduced-motion` only the stacking
+  order changes; the geometry holds.
+- Lightning CSS minifies `rotate: 0deg` to `rotate: none`. Same thing, but worth
+  knowing when reading the compiled sheet.
+
+**A force-push on main dropped two of my commits.** `28cb2ec` was rewritten as
+`eae4282`, and the golden-ratio pair (`63cee93`, `b95978c`) that sat on top of it
+went with it — the phi tokens were gone from `origin/main`'s `globals.css`. They
+were still local, so a rebase onto the new tip restored them cleanly (their old
+commit was skipped as already applied). Everything from both sides is now in:
+their latest ChefDeck auto-slide fix is untouched, and my only edit to that file
+is the one line of phi section padding.
+
+Verified: 4 cards at -4.5/3/-2/4.5deg, hover straightens and lifts them to the
+front (checked with a real pointer hover — the card visibly comes over its
+neighbour), stickers break each card's top edge on all four at both widths,
+mobile stacks with no overflow, build and tsc clean.
+
 ## 2026-09-07 — Golden ratio put through the content layer
 
 One ratio now drives the type ramp, the vertical rhythm, the reading measures and
