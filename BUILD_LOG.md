@@ -1,3 +1,32 @@
+## 2026-09-07 — The six values become a single-line marquee
+
+The 3x2 grid is now one continuous line, reusing the site's existing rail rather
+than a new mechanism: `.rail` + `.rail-track` (`rail-scroll`, 22s linear, paused on
+`:hover` and `:focus-within`, and already listed in the `prefers-reduced-motion`
+block). Points worth keeping:
+
+- The track holds the six tiles **twice** because the keyframe travels `-50%`; the
+  loop only reads as seamless if the content is doubled. Measured track width 3392,
+  i.e. exactly two passes.
+- The duplicate set is `aria-hidden`, so the six values are announced once rather
+  than twice. The number keeps counting 01–06 across both passes via
+  `i % VALUES.length`.
+- The rail sits **outside** the padded container so it bleeds edge to edge. A
+  marquee that stops at a page margin reads as a broken row rather than a loop.
+- Tiles are a fixed `236 / 268px` wide with the word at `26 / 32px`, down from
+  38px — a marquee tile can't be as wide as a third of the grid was.
+
+`lg:min-h-[100svh]` came back out. It was there to force two rows of tiles into one
+screen; a single line is 733px at 1440x900 and 644px at 390 wide, comfortably one
+view on its own, so forcing a full screen only bought empty space above and below.
+
+**Not verified: the scroll itself.** CSS animations are throttled with the page in
+this session's hidden Browser pane, same cause as the timeline — the track's
+transform does not advance while `document.visibilityState` is `"hidden"`. The
+declaration is correct (`22s linear infinite rail-scroll`) and this is the same
+class already driving the region rail, but the motion wants a look in a real
+browser.
+
 ## 2026-09-07 — "What We Stand For" fits one screen
 
 The section ran 1004px against a 900px viewport. Now `lg:min-h-[100svh]` with

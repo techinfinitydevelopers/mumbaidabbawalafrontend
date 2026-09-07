@@ -217,7 +217,7 @@ export default function AboutPage() {
       </section>
 
       {/* ───── What We Stand For ───── */}
-      <section className="grain graph-paper relative overflow-hidden bg-brand-cream pb-phi-6 pt-phi-5 sm:pb-phi-7 lg:flex lg:min-h-[100svh] lg:flex-col lg:justify-center lg:pb-phi-4 lg:pt-phi-4">
+      <section className="grain graph-paper relative overflow-hidden bg-brand-cream pb-phi-6 pt-phi-5 sm:pb-phi-7">
         <div className="mx-auto max-w-[1720px] px-5 sm:px-8 lg:px-12">
           <Reveal className="mx-auto max-w-3xl text-center">
             <p className="font-script text-3xl text-brand-orange">What we stand for</p>
@@ -241,14 +241,26 @@ export default function AboutPage() {
             </p>
           </Reveal>
 
-          {/* The doc gives the six words and nothing else. So each tile makes its word
-              the whole subject in poster type rather than propping it up with a made-up
+          {/* The doc gives the six words and nothing else. Each tile makes its word the
+              whole subject in poster type rather than propping it up with a made-up
               one-liner — colour, an icon and scale do the work the copy can't. */}
-          <div className="mt-phi-4 grid grid-cols-2 gap-3 sm:mt-phi-5 sm:gap-4 lg:mt-phi-3 lg:grid-cols-3">
-            {VALUES.map((value, i) => (
-              <Reveal key={value.word} delay={i * 70}>
+        </div>
+
+        {/* One continuous line. `.rail` + `.rail-track` are the site's existing marquee
+            (22s linear, paused on hover and on focus-within, and already switched off
+            under prefers-reduced-motion). The track holds the six tiles twice because
+            the keyframe travels -50%; the second set is aria-hidden so the values are
+            not announced twice. It bleeds past the padded container on purpose — a
+            marquee that stops at a margin reads as a broken row. */}
+        <div className="rail relative mt-phi-4 overflow-hidden py-2 lg:mt-phi-3">
+          <div className="rail-track flex gap-3 sm:gap-4">
+            {[...VALUES, ...VALUES].map((value, i) => {
+              const dup = i >= VALUES.length;
+              return (
                 <div
-                  className={`flex h-full min-h-[168px] flex-col justify-between overflow-hidden rounded-[28px] p-phi-3 lg:min-h-[clamp(150px,21svh,196px)] shadow-[0_10px_30px_-20px_rgba(42,24,16,0.45)] transition-transform duration-500 hover:-translate-y-1.5 sm:min-h-[196px] sm:p-phi-4 ${value.ground} ${value.text}`}
+                  key={`${value.word}-${i}`}
+                  aria-hidden={dup || undefined}
+                  className={`flex min-h-[168px] w-[236px] shrink-0 flex-col justify-between overflow-hidden rounded-[28px] p-phi-3 shadow-[0_10px_30px_-20px_rgba(42,24,16,0.45)] sm:w-[268px] sm:p-phi-4 ${value.ground} ${value.text}`}
                 >
                   <div className="flex items-start justify-between gap-3">
                     <svg
@@ -266,21 +278,23 @@ export default function AboutPage() {
                       {value.icon}
                     </svg>
                     <span className="font-poster text-[22px] leading-none opacity-45">
-                      {String(i + 1).padStart(2, "0")}
+                      {String((i % VALUES.length) + 1).padStart(2, "0")}
                     </span>
                   </div>
 
                   <span
-                    className="poster mt-phi-3 block text-[22px] leading-none [--po:2px] sm:text-[30px] sm:[--po:3px] lg:text-[38px] lg:[--po:4px]"
+                    className="poster mt-phi-3 block text-[26px] leading-none [--po:3px] sm:text-[32px]"
                     style={{ ["--po-color" as string]: value.shadow }}
                   >
                     {value.word}
                   </span>
                 </div>
-              </Reveal>
-            ))}
+              );
+            })}
           </div>
+        </div>
 
+        <div className="mx-auto max-w-[1720px] px-5 sm:px-8 lg:px-12">
           <Reveal delay={140} className="mt-phi-4 text-center lg:mt-phi-3">
             <p className="font-script text-3xl text-brand-red sm:text-4xl">Every single dabba.</p>
           </Reveal>
