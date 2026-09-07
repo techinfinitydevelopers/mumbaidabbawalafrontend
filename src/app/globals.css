@@ -78,11 +78,19 @@ h1, h2, h3, h4 {
 .poster-stack > *:nth-child(3) { z-index: 2; }
 
 /* Graph-paper grid, as on the poster backgrounds */
+/* The printed grid.
+
+   `background-attachment: fixed` anchors the tiling to the viewport rather than to
+   each element, so every section shares one lattice. Without it each section tiles
+   from its own top edge, and wherever two of them meet the previous section's last
+   line and the next one's first line land a few pixels apart — a visible double
+   line at the seam (e.g. a section 843px tall leaves a 3px gap). */
 .graph-paper {
   background-image:
     linear-gradient(to right, rgba(175, 20, 17, 0.07) 1px, transparent 1px),
     linear-gradient(to bottom, rgba(175, 20, 17, 0.07) 1px, transparent 1px);
   background-size: 28px 28px;
+  background-attachment: fixed;
 }
 
 .graph-paper-light {
@@ -90,6 +98,7 @@ h1, h2, h3, h4 {
     linear-gradient(to right, rgba(252, 243, 205, 0.12) 1px, transparent 1px),
     linear-gradient(to bottom, rgba(252, 243, 205, 0.12) 1px, transparent 1px);
   background-size: 28px 28px;
+  background-attachment: fixed;
 }
 
 /* "Download / print menu" prints the rotation itself, not the whole marketing page */

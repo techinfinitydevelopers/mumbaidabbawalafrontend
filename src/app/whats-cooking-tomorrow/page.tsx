@@ -5,6 +5,8 @@ import PageHero from "@/components/PageHero";
 import Reveal from "@/components/Reveal";
 import TomorrowDate from "@/components/TomorrowDate";
 import AddonSlider from "@/components/AddonSlider";
+import WaveDivider from "@/components/poster/WaveDivider";
+import VegMark from "@/components/VegMark";
 import { ADDONS } from "@/data/addons";
 import { DEFAULT_DAY, allergensFor, dishesFor, TOMORROW_TINS } from "@/data/tomorrow";
 
@@ -79,12 +81,6 @@ export default function WhatsCookingTomorrowPage() {
                     </p>
                   </div>
                   <span className="flex shrink-0 items-center gap-2 rounded-full bg-brand-green/20 px-3.5 py-2 text-[10px] font-bold uppercase tracking-[0.16em] text-brand-green-dark">
-                    <span
-                      aria-hidden="true"
-                      className="grid h-3.5 w-3.5 place-items-center rounded-[3px] border-[1.5px] border-brand-green-dark"
-                    >
-                      <span className="h-1.5 w-1.5 rounded-full bg-brand-green-dark" />
-                    </span>
                     Veg or non-veg
                   </span>
                 </figcaption>
@@ -102,10 +98,17 @@ export default function WhatsCookingTomorrowPage() {
                   <ul className="mt-4 grid gap-x-6 gap-y-2 sm:grid-cols-2">
                     {DISHES.map((dish) => (
                       <li key={dish.role} className="flex items-baseline gap-2.5">
-                        <span
-                          aria-hidden="true"
-                          className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-brand-red"
-                        />
+                        {dish.role === "Veg option" || dish.role === "Non-veg option" ? (
+                          <VegMark
+                            type={dish.role === "Veg option" ? "veg" : "nonveg"}
+                            className="mt-0.5 h-3.5 w-3.5"
+                          />
+                        ) : (
+                          <span
+                            aria-hidden="true"
+                            className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-brand-red"
+                          />
+                        )}
                         <span className="min-w-0">
                           <span className="block text-[9.5px] font-bold uppercase tracking-[0.14em] text-ink/45">
                             {dish.role}
@@ -199,17 +202,7 @@ export default function WhatsCookingTomorrowPage() {
 
       {/* ───── From the kitchen ───── */}
       <section className="grain graph-paper-light relative overflow-hidden bg-brand-red pb-20 pt-24 sm:pb-24">
-        <svg
-          viewBox="0 0 1440 150"
-          preserveAspectRatio="none"
-          aria-hidden="true"
-          className="absolute left-0 top-0 z-10 h-[110px] w-full sm:h-[150px]"
-        >
-          <path
-            d="M0,20 C210,-10 360,86 600,74 C840,62 980,0 1200,22 C1320,34 1390,58 1440,74 L1440,0 L0,0 Z"
-            fill="var(--color-brand-cream)"
-          />
-        </svg>
+        <WaveDivider tone="bg-brand-cream" />
 
         <Reveal className="relative z-20 mx-auto max-w-3xl px-5 text-center sm:px-8">
           <p className="font-script text-3xl text-brand-yellow">From the kitchen</p>

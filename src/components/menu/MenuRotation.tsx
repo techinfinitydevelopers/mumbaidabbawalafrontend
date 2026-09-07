@@ -3,6 +3,7 @@
 import { useMemo, useState } from "react";
 import MenuDayCard, { type Diet } from "@/components/menu/MenuDayCard";
 import Reveal from "@/components/Reveal";
+import VegMark from "@/components/VegMark";
 import { FRIDAY_SPECIALS, MENU_DAYS, menuForDate, type MenuDay } from "@/data/menu";
 
 /**
@@ -23,10 +24,10 @@ const RANGES: { id: Range; label: string }[] = [
   { id: "next", label: "Next week" },
 ];
 
-const DIETS: { id: Diet; label: string; dot: string }[] = [
-  { id: "all", label: "All", dot: "bg-brand-green-dark" },
-  { id: "veg", label: "Veg", dot: "bg-brand-green" },
-  { id: "nonveg", label: "Non-Veg", dot: "bg-brand-red" },
+const DIETS: { id: Diet; label: string; mark?: "veg" | "nonveg" }[] = [
+  { id: "all", label: "All" },
+  { id: "veg", label: "Veg", mark: "veg" },
+  { id: "nonveg", label: "Non-Veg", mark: "nonveg" },
 ];
 
 /** Mon–Fri of the week containing `from`, offset by whole weeks */
@@ -148,7 +149,8 @@ export default function MenuRotation() {
                 diet === d.id ? "bg-brand-cream text-brand-red" : "text-ink/70 hover:text-brand-red"
               }`}
             >
-              <span aria-hidden="true" className={`h-2.5 w-2.5 rounded-[3px] ${d.dot}`} />
+              {/* only a single-diet chip carries the mark; "All" makes no claim to mark */}
+              {d.mark && <VegMark type={d.mark} className="h-3.5 w-3.5" />}
               {d.label}
             </button>
           ))}

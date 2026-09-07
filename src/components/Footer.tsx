@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 
 const COLUMNS = [
@@ -43,7 +44,17 @@ export default function Footer() {
       <div className="relative z-10 mx-auto max-w-7xl px-5 py-14 sm:px-8">
         <div className="grid gap-10 lg:grid-cols-[1.4fr_1fr_1fr_1fr]">
           <div>
-            <p className="font-display text-2xl font-bold text-brand-cream">
+            {/* the supplied mark is dark-on-light, so on the red it sits on its own cream chip */}
+            <span className="inline-flex rounded-2xl bg-brand-cream px-4 py-3 shadow-[0_10px_28px_-18px_rgba(0,0,0,0.55)]">
+              <Image
+                src="/images/logo-dabbawala.png"
+                alt="Mumbai Dabbawala — since 1890"
+                width={614}
+                height={149}
+                className="h-9 w-auto sm:h-10"
+              />
+            </span>
+            <p className="mt-6 font-display text-2xl font-bold text-brand-cream">
               Mumbai&rsquo;s Legendary Dabba.
               <br />
               Now in Perth.

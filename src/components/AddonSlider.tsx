@@ -90,7 +90,7 @@ export default function AddonSlider({ items }: { items: Addon[] }) {
         {items.map((addon) => (
           <article
             key={addon.name}
-            className="group w-[248px] shrink-0 snap-start overflow-hidden rounded-[28px] border border-brand-red/10 bg-paper shadow-[0_18px_36px_-24px_rgba(42,24,16,0.55)] transition-transform duration-500 hover:-translate-y-1.5 sm:w-[268px]"
+            className="group w-[248px] shrink-0 snap-start overflow-hidden rounded-[28px] border border-brand-red/10 bg-paper shadow-[0_9px_28px_-20px_rgba(42,24,16,0.55)] transition-transform duration-500 hover:-translate-y-1.5 sm:w-[268px]"
           >
             <div className="relative aspect-[5/4] overflow-hidden bg-gradient-to-b from-[#fff8e3] to-brand-cream">
               <span

@@ -1,3 +1,199 @@
+## 2026-09-07 (end of day) — Poster lines were colliding; standalone HTML dropped
+
+**Overlapping heading lines.** The two lines of the new sections' poster headings
+ran into each other. The line boxes were not overlapping (measured: 4695-4741 and
+4741-4778) — Anton's ink overflows a `line-height: 0.96` box by ~4px top and
+bottom, and the `--po: 5px` shadow adds another 5px below, so the upper line's
+shadow reaches ~9px past its own box. That is by design: `.poster-stack` exists so
+a line's shadow slides *behind* the next line's letters.
+
+What broke it was the second line being smaller than the first (50/40 and 48/38).
+The upper line's shadow drops the same distance regardless, so against shorter
+caps it landed mid-letter instead of behind their tops. Set both lines to one size
+per heading — `46px` for "Food First. / Everything Else Follows." and `42px` for
+"However You Eat, / We've Got a Dabba for It." Audited every `.poster` pair in the
+codebase; these two were the only mismatched ones, every other stack already used
+matching sizes.
+
+Verified at 800px and 390px: no wrap, no overflow, shadow tucking behind as on the
+other headings.
+
+**`chefs-corner.html` and `page-shell.html` deleted** at the client's request — no
+longer needed. They were regenerated artefacts (embedded WebP data URIs), not a
+source of truth; the live pages are `/chefs-corner` and the shared `PageHero`.
+Rebuilding one means re-running the embed + template scripts against the current
+components.
+
+## 2026-09-07 (later still) — Grid made continuous; paired veg marks removed
+
+**Double line at every section seam.** Each `.graph-paper` element tiled from its
+own top edge, so where two of them met the upper section's last horizontal line
+and the lower one's first line landed a few pixels apart. Measured on
+`/whats-cooking-tomorrow`: the cream section is 843px tall, 843 mod 28 = 3, so the
+two lines sat **3px** apart — read as one doubled line. The red section
+(467px, 467 mod 28 = 19) had the same fault against the footer.
+
+Fixed with `background-attachment: fixed` on `.graph-paper` and
+`.graph-paper-light`: the tiling is anchored to the viewport rather than to each
+element, so every section shares one lattice and all seams are continuous — both
+tones, every page, one line of CSS and no structural change. Checked that no
+graph-papered element has a transformed or filtered ancestor, which would
+re-anchor a fixed background to that ancestor's box instead of the viewport.
+
+Trade-off accepted: the grid no longer scrolls with the content. At 0.07 alpha on
+a uniform 28px lattice there is nothing to track it against, and where the
+property is unsupported it falls back to today's behaviour rather than breaking.
+
+Also applied to both standalone HTML files, which carry their own copy of the CSS.
+
+**Paired veg marks removed.** Client: "all ke udar kuch icon mat rakh". The mark
+is a claim about one dish, so showing green and red together says nothing — the
+`All` filter chip and Tomorrow's "Veg or non-veg" badge are now text only. Single
+marks stay where they mean something: the Veg and Non-Veg chips, the day-card
+dish name, and the two diet rows of the thali breakdown.
+
+Verified the cream seam and the red seam at 1:1 (780px viewport) — single
+continuous grid at both. Full eslint and tsc clean.
+
+## 2026-09-07 (later) — Hero wave had the same double-hump defect
+
+Client: "aise double double acha nai lag raha". The CTA divider was fixed earlier,
+but `PageHero`'s bottom wave had the identical fault: its control points hit y=150
+and y=148 inside a 0-150 box, flattening against the bottom edge twice and giving
+two crests. Reshaped to one crest and one trough with everything between y=44 and
+y=118, control points mirrored at the join —
+`M0,104 C300,52 620,44 900,80 C1180,116 1330,118 1440,106`.
+
+Both waves now read as one shape. They run in opposite phase (hero crests
+left-of-centre, the divider troughs there), which keeps a page carrying both from
+looking like a repeat.
+
+Patched in all four copies of the path: `PageHero.tsx`, `src/app/page.tsx` (the
+home hero has its own), `chefs-corner.html` and `page-shell.html`.
+
+Verified on `/`, `/menu` and the standalone file: single sweep, hero still exactly
+one screen (900/900), 12 images 0 broken.
+
+## 2026-09-07 — Two content sections on /menu; wave reshaped
+
+**Wave was overshooting its own band** (client: "aise kyu hai?"). The path swung
+to y=-10 and y=0 inside a 0-150 box, so the crest sat above the band's top edge:
+the curve flattened against it and what was left read as two disconnected red
+humps rather than one wave. Reshaped to a single trough and crest with every
+control point between y=30 and y=104 —
+`M0,44 C300,96 620,104 900,68 C1180,32 1330,30 1440,40` (normalised in
+`WaveDivider.tsx`), with mirrored control points at the join so the two cubics
+stay smooth.
+
+**Two sections from the content doc added to `/menu`**, copy verbatim:
+
+- `src/components/menu/FoodFirst.tsx` — "Food First. Everything Else Follows." and
+  the five promises (Fresh, Authentic, Regional Variety, Home-Style, Everyday
+  Affordable), closing on "Food isn't a feature of Mumbai Dabbawala. It's the
+  entire reason we exist." + the "Explore Our Menu" CTA. Sits between the hero and
+  the rotation grid on `bg-paper` — the tone the hero's bottom wave fills. Kept
+  deliberately plain (numbered text on rules, no cards, no photography) so it
+  hands the page to the card grid instead of competing with it. The CTA points at
+  `#rotation`, since "our menu" is the grid right below it.
+- `src/components/DabbaOfferings.tsx` — "However You Eat, We've Got a Dabba for
+  It." with the five offerings (Daily Meals, Flexible Plans, Free Delivery,
+  Corporate Meals, Festival Specials) as five linked cream cards. Closes the page
+  above the red footer.
+
+The source copy bullets the offerings with emoji (🍱 📅 🚚 🏢 🎉); those are
+replaced with drawn inline SVG icons in the secondary palette (`brand-green-dark`,
+going to `brand-yellow` on hover) — the site uses no emoji anywhere else and they
+render differently per OS.
+
+Verified at 1440x900 and 390x844: no horizontal overflow, heading holds two lines
+at both widths, icons legible. tsc and eslint clean.
+
+## 2026-09-07 — Real logo in, veg / non-veg marks in
+
+**Logo.** Client supplied the wordmark as a JPEG on a flat `#F7F7F7` field
+(`design-assets/brand/logo-dabbawala-source.jpeg`). Matted it to
+`public/images/logo-dabbawala.png` (614x149, transparent) with
+`scratchpad/matte_logo.py`: a straight colour key, with edge pixels given a soft
+alpha and un-premultiplied against the old backdrop so the outline does not
+fringe white on cream. A first pass used a border flood-fill to protect the
+tiffin drawn inside the "D", but that also filled the letter counters with grey —
+a plain key is correct here because every light region is either backdrop or
+counter, and both should show whatever surface the mark sits on.
+
+- Header: replaced the circular icon + "Dabbawala / SINCE 1890 · PERTH" text
+  lockup with the image at `h-8 sm:h-9` (148x36 at desktop), `priority`. The mark
+  already says "Since 1890", so only a small `PERTH` rule remains beside it.
+- Footer: the mark is dark-on-light, so on the red it sits on a `bg-brand-cream`
+  rounded chip rather than being recoloured.
+- Both standalone HTML deliverables updated with the logo embedded as a 15KB WebP
+  data URI (`chefs-corner.html` now 173KB, `page-shell.html` 38KB).
+
+**Veg / non-veg marks.** The green/red dots are replaced by the Indian
+packaged-food mark — a filled dot inside a rounded square — as
+`src/components/VegMark.tsx`. Drawn as SVG, not shipped artwork, so it stays crisp
+at 12px and takes brand green-dark / brand red instead of the stock pure hues;
+`color="currentColor"` is used on the inverted red day card where both brand
+colours would disappear. Placed at:
+
+| Where | Before |
+| --- | --- |
+| `MenuRotation` All / Veg / Non-Veg chips | 10px square dots (All now shows both marks) |
+| `MenuDayCard` dish headline | nothing |
+| Tomorrow's "Veg or non-veg" photo badge | one single-colour outline dot |
+| Tomorrow's thali breakdown | a red dot on every row, diet rows included |
+
+The breakdown's other rows (bread, rice, dal, salad…) keep their plain dot — the
+mark means something specific and should not become generic bullet decoration.
+
+Verified in the browser: header and footer logos load with no fringing at 2.6x
+zoom, marks land on the "Veg option" / "Non-veg option" rows only. tsc and eslint
+clean.
+
+## 2026-09-07 (later) — Graph print off the white story cards
+
+`RegionStoryCards` carried `.graph-paper` on a white card that already sits on a
+`.graph-paper` cream section, so two grids overlapped and the card's edge went
+muddy against the page. Removed the class from the card rather than lowering its
+opacity — a fainter grid only blurs the conflict, it does not resolve it, and the
+print is a property of the paper behind the cards, not of the cards. Card shadow
+also brought onto the house recipe (`0 8px 26px -20px / .28`).
+
+Verified on `/menu#cuisines`: card `background-image: none`, section grid intact.
+
+## 2026-09-07 — Wave divider keeps the graph print; card shadows softened
+
+**Checkered print stopping at the curve.** The cream wave between a paper section
+and the red one below was an `<svg><path fill="…">`, which paints flat colour — so
+the graph-paper grid died at the section seam and the curve read as a blank band.
+Replaced it with `src/components/poster/WaveDivider.tsx`: a `<div>` carrying
+`.graph-paper` + a tone class, clipped by an SVG `clipPath` with
+`clipPathUnits="objectBoundingBox"` (the 1440x150 path normalised to 0-1, which
+stretches exactly like the old `preserveAspectRatio="none"`). The grid now runs
+through the curve, and because both sections tile from x=0 the vertical lines stay
+continuous across the seam. Used on `/regional-food-stories` (tone `bg-paper`) and
+`/whats-cooking-tomorrow` (tone `bg-brand-cream`).
+
+**Shadows reading as a hard line.** Several cards used a large y-offset with a big
+negative spread (e.g. `0 26px 50px -24px / 0.45`), which detaches the shadow from
+the card and renders it as a dark band. Halved the offsets and dropped the alpha:
+
+| Element | Before | After |
+| --- | --- | --- |
+| `RegionCard` body | `0 26px 50px -24px / .45` | `0 10px 36px -22px / .26` |
+| `RegionCard` seal | `0 10px 24px -8px / .45` | `0 6px 18px -8px / .28` |
+| `MenuDayCard` featured | `0 24px 44px -22px / .75` | `0 12px 30px -20px / .5` |
+| `MenuDayCard` ordinary | `0 16px 32px -24px / .55` | `0 8px 26px -20px / .28` |
+| `MenuDayCard` hover | `0 20px 38px -22px / .5` | `0 12px 30px -20px / .34` |
+| `AddonSlider` card | `0 18px 36px -24px` | `0 9px 28px -20px` |
+
+**Starburst moved onto the word.** The `1890 -> 2026` seal on the
+"Taste All Five / Regions" CTA was `mx-auto`, floating centred over the whole
+heading block. It is now absolutely positioned 8px above the word "Taste"
+(`left-[28%] sm:left-[34%]`, `-translate-x-1/2`) and sized down 118px -> 84/96px.
+Measured: burst centre 600px vs word centre 598px at 1440 wide; both 118px at 390.
+
+Verified in the browser at 1440x900 and 390x844; eslint clean.
+
 # Build Log
 
 ## 2026-09-04 (later) — Two cards per row on mobile

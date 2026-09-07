@@ -5,6 +5,7 @@ import PageHero from "@/components/PageHero";
 import Starburst from "@/components/poster/Starburst";
 import RouteTicker from "@/components/poster/RouteTicker";
 import RegionRail from "@/components/regional/RegionRail";
+import WaveDivider from "@/components/poster/WaveDivider";
 
 export const metadata: Metadata = {
   title: "Regional Food Stories — Mumbai Dabbawala",
@@ -65,50 +66,43 @@ export default function RegionalFoodStoriesPage() {
 
       {/* ───── Closing CTA, styled after the "SOME TRADITIONS TRAVEL WELL" poster ───── */}
       <section className="grain graph-paper-light relative overflow-hidden bg-brand-red pb-14 pt-28 sm:pb-16">
-        <svg
-          viewBox="0 0 1440 150"
-          preserveAspectRatio="none"
-          aria-hidden="true"
-          className="absolute left-0 top-0 z-10 h-[110px] w-full sm:h-[150px]"
-        >
-          <path
-            d="M0,20 C210,-10 360,86 600,74 C840,62 980,0 1200,22 C1320,34 1390,58 1440,74 L1440,0 L0,0 Z"
-            fill="var(--color-paper)"
-          />
-        </svg>
+        <WaveDivider tone="bg-paper" />
 
         <Reveal className="relative z-20 mx-auto max-w-3xl px-5 text-center sm:px-8">
-          <Starburst
-            className="mx-auto h-[118px] w-[118px]"
-            fill="var(--color-brand-orange)"
-          >
-            <div>
-              <span className="block font-poster text-xl leading-none text-brand-yellow">
-                1890
-              </span>
-              <span className="block text-[10px] font-bold tracking-[0.2em] text-brand-cream">
-                ↓
-              </span>
-              <span className="block font-poster text-xl leading-none text-brand-yellow">
-                2026
-              </span>
-            </div>
-          </Starburst>
+          {/* the seal sits just above the word "Taste", not floating centred over the block */}
+          <div className="relative pt-[92px] sm:pt-[106px]">
+            <Starburst
+              className="absolute left-[28%] top-0 z-30 h-[84px] w-[84px] -translate-x-1/2 sm:left-[34%] sm:h-[96px] sm:w-[96px]"
+              fill="var(--color-brand-orange)"
+            >
+              <div>
+                <span className="block font-poster text-base leading-none text-brand-yellow sm:text-lg">
+                  1890
+                </span>
+                <span className="block text-[9px] font-bold tracking-[0.2em] text-brand-cream">
+                  ↓
+                </span>
+                <span className="block font-poster text-base leading-none text-brand-yellow sm:text-lg">
+                  2026
+                </span>
+              </div>
+            </Starburst>
 
-          <h2 className="poster-stack mt-7 [--po:4px] sm:[--po:6px]">
-            <span
-              className="poster text-[46px] text-brand-yellow sm:text-[68px]"
-              style={{ ["--po-color" as string]: "rgba(42,24,16,0.85)" }}
-            >
-              Taste All Five
-            </span>
-            <span
-              className="poster text-[46px] text-brand-green sm:text-[68px]"
-              style={{ ["--po-color" as string]: "rgba(42,24,16,0.6)" }}
-            >
-              Regions
-            </span>
-          </h2>
+            <h2 className="poster-stack [--po:4px] sm:[--po:6px]">
+              <span
+                className="poster text-[46px] text-brand-yellow sm:text-[68px]"
+                style={{ ["--po-color" as string]: "rgba(42,24,16,0.85)" }}
+              >
+                Taste All Five
+              </span>
+              <span
+                className="poster text-[46px] text-brand-green sm:text-[68px]"
+                style={{ ["--po-color" as string]: "rgba(42,24,16,0.6)" }}
+              >
+                Regions
+              </span>
+            </h2>
+          </div>
 
           <p className="mx-auto mt-5 max-w-xl text-sm leading-relaxed text-brand-cream/85 sm:text-base">
             Rotating dishes across the 15-day menu — real variety, never the same thing twice

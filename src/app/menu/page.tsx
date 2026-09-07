@@ -4,6 +4,8 @@ import PageHero from "@/components/PageHero";
 import Reveal from "@/components/Reveal";
 import RegionStoryCards from "@/components/regional/RegionStoryCards";
 import MenuRotation from "@/components/menu/MenuRotation";
+import FoodFirst from "@/components/menu/FoodFirst";
+import DabbaOfferings from "@/components/DabbaOfferings";
 
 export const metadata: Metadata = {
   title: "The Rotating Menu — Mumbai Dabbawala",
@@ -28,6 +30,9 @@ export default function MenuPage() {
         secondary={{ href: "/plans", label: "Choose a Plan" }}
         seal={{ eyebrow: "Every card", lines: ["Allergens", "+ Nutrition"], script: "always tagged" }}
       />
+
+      {/* ───── Why the food comes first ───── */}
+      <FoodFirst />
 
       {/* ───── The rotation, day by day ───── */}
       <section id="rotation" className="relative bg-paper pb-24 pt-12 sm:pb-32">
@@ -93,6 +98,9 @@ export default function MenuPage() {
           </Link>
         </Reveal>
       </section>
+
+      {/* ───── However you eat ───── */}
+      <DabbaOfferings />
     </div>
   );
 }

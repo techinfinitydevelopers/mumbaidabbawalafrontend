@@ -49,7 +49,7 @@ export default function RegionCard({
       </div>
 
       {/* Circular seal badge, echoing the reference's price roundel */}
-      <div className="absolute right-3 top-[90px] z-30 grid h-[92px] w-[92px] place-items-center rounded-full bg-paper text-center shadow-[0_10px_24px_-8px_rgba(42,24,16,0.45)] sm:right-4 sm:top-[112px] sm:h-[106px] sm:w-[106px]">
+      <div className="absolute right-3 top-[90px] z-30 grid h-[92px] w-[92px] place-items-center rounded-full bg-paper text-center shadow-[0_6px_18px_-8px_rgba(42,24,16,0.28)] sm:right-4 sm:top-[112px] sm:h-[106px] sm:w-[106px]">
         <div>
           <span className={`block text-[8px] font-bold tracking-[0.22em] ${tone.badgeLabel}`}>
             REGION
@@ -65,7 +65,7 @@ export default function RegionCard({
 
       {/* Card body */}
       <div
-        className={`relative rounded-[46px] px-7 pb-8 pt-20 shadow-[0_26px_50px_-24px_rgba(42,24,16,0.45)] transition-transform duration-500 ease-out group-hover:-translate-y-2 sm:rounded-[54px] sm:px-9 sm:pb-9 sm:pt-24 ${tone.card}`}
+        className={`relative rounded-[46px] px-7 pb-8 pt-20 shadow-[0_10px_36px_-22px_rgba(42,24,16,0.26)] transition-transform duration-500 ease-out group-hover:-translate-y-2 sm:rounded-[54px] sm:px-9 sm:pb-9 sm:pt-24 ${tone.card}`}
       >
         <span className={`block font-script text-2xl leading-none ${tone.kicker}`}>
           {region.kicker}

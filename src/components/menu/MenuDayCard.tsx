@@ -1,5 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
+import VegMark from "@/components/VegMark";
 import { CUISINE_TONE, type MenuDay } from "@/data/menu";
 
 /**
@@ -34,9 +35,9 @@ export default function MenuDayCard({
     <article
       className={`group relative flex h-full flex-col overflow-hidden rounded-[26px] border transition-all duration-500 hover:-translate-y-1.5 ${
         featured
-          ? "border-brand-red bg-brand-red shadow-[0_24px_44px_-22px_rgba(175,20,17,0.75)]"
+          ? "border-brand-red bg-brand-red shadow-[0_12px_30px_-20px_rgba(175,20,17,0.5)]"
           : // the green edge is the hover cue on ordinary days; the featured card keeps its red
-            "border-brand-red/12 bg-paper shadow-[0_16px_32px_-24px_rgba(42,24,16,0.55)] hover:border-brand-green hover:shadow-[0_20px_38px_-22px_rgba(44,73,15,0.5)]"
+            "border-brand-red/12 bg-paper shadow-[0_8px_26px_-20px_rgba(42,24,16,0.28)] hover:border-brand-green hover:shadow-[0_12px_30px_-20px_rgba(44,73,15,0.34)]"
       }`}
     >
       <div className="flex flex-col items-start gap-1 px-3.5 pt-3 sm:flex-row sm:items-start sm:justify-between sm:gap-2 sm:px-5 sm:pt-4">
@@ -87,10 +88,17 @@ export default function MenuDayCard({
         }`}
       >
         <h3
-          className={`font-display text-[13px] font-bold leading-tight sm:text-[15px] ${
+          className={`flex items-start gap-1.5 font-display text-[13px] font-bold leading-tight sm:text-[15px] ${
             featured ? "text-brand-cream" : "text-ink"
           }`}
         >
+          <VegMark
+            type={diet === "nonveg" ? "nonveg" : "veg"}
+            label={diet === "nonveg" ? "Non-vegetarian" : "Vegetarian"}
+            // on the inverted red card the brand green and red both disappear
+            color={featured ? "currentColor" : undefined}
+            className="mt-px h-3.5 w-3.5 sm:h-4 sm:w-4"
+          />
           {headline}
         </h3>
         <p

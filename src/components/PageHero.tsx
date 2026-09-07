@@ -164,7 +164,7 @@ export default function PageHero({
         className="absolute bottom-0 left-0 z-10 h-[110px] w-full sm:h-[150px]"
       >
         <path
-          d="M0,92 C170,150 300,44 520,62 C742,80 900,148 1120,116 C1268,94 1360,52 1440,36 L1440,150 L0,150 Z"
+          d="M0,104 C300,52 620,44 900,80 C1180,116 1330,118 1440,106 L1440,150 L0,150 Z"
           fill="var(--color-paper)"
         />
       </svg>

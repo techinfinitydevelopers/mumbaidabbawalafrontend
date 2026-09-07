@@ -13,7 +13,8 @@ export default function RegionStoryCards({ className = "" }: { className?: strin
           <Reveal key={region.id} delay={i * 80}>
             <div
               id={region.id}
-              className="graph-paper h-full scroll-mt-28 rounded-[28px] border border-brand-red/10 bg-paper p-6 shadow-[0_14px_30px_-22px_rgba(42,24,16,0.5)]"
+              // the graph print belongs to the cream page behind these; on the card it fights it
+              className="h-full scroll-mt-28 rounded-[28px] border border-brand-red/10 bg-paper p-6 shadow-[0_8px_26px_-20px_rgba(42,24,16,0.28)]"
             >
               <span className="font-script text-2xl text-brand-orange">{region.tagline}</span>
               <h3
