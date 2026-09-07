@@ -1,3 +1,39 @@
+## 2026-09-07 — The outgoing card now shrinks back, mirroring the grow
+
+Client wanted the main image to travel the opposite way, as the thumbnail travels
+in. Only the incoming card was animating; the outgoing dish simply vanished,
+because the big card is **one stable node whose `src` swaps** — after the swap
+there is nothing of the old dish left on the page to animate.
+
+So the old card is lifted out first: on pick, before `go()`, the big card is cloned
+into a `position: fixed` element sitting exactly on its own rect, and the layout
+effect then animates that clone down into the thumbnail the outgoing dish now
+occupies. Thumbnails carry `data-chef` so the clone can find its landing slot; if
+the dish has scrolled out of the visible window the clone just fades in place.
+
+Measured on one pick — the two animations are exact mirrors:
+
+| | Keyframes |
+| --- | --- |
+| Incoming card | `translate(-310px, 340px) scale(0.3375, 0.346154)` -> `none` |
+| Outgoing clone | `none` -> `translate(575px, 340px) scale(0.3375, 0.346154)` |
+
+Same scale factors, opposite direction.
+
+**Two things that needed care:**
+
+- **Clones were piling up.** Cleanup hung off `animation.finished`, which never
+  resolves while the document is hidden — WAAPI pauses there — so one clone stayed
+  behind per transition. They now carry `data-deck-ghost`, every stray one is swept
+  before a new one is made, there is a 900ms `setTimeout` floor, and unmount clears
+  them. Measured: 1 clone mid-transition, 0 after it settles, 0 after a five-click
+  burst.
+- **`performance.now()` tripped `react-hooks/purity`.** The hook is aliased
+  (`useIsoLayoutEffect`) to avoid the SSR warning, which stops the lint plugin
+  recognising the body as effect code rather than render. The clock wasn't needed
+  anyway — the hover-pan hold-off is now a `flipBusy` flag released by the grow's
+  own `finished`.
+
 ## 2026-09-07 — Chef deck: glitch-free grow, slower rotation
 
 Client: the glide stutters, and the rotation is too fast. Three separate causes for

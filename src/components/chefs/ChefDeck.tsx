@@ -35,8 +35,15 @@ export default function ChefDeck() {
   const activeCardRef = useRef<HTMLDivElement>(null);
   /** autoplay stops while the pointer is in the deck, so it can't move the card being aimed at */
   const autoplayPaused = useRef(false);
-  /** timestamp until which the grow owns the motion; hover-panning holds off till then */
-  const flipUntil = useRef(0);
+  /** true while the grow owns the motion; hover-panning holds off until it finishes */
+  const flipBusy = useRef(false);
+  /**
+   * The outgoing card, cloned. The big card is one stable node whose `src` swaps, so
+   * there is nothing left of the old dish to animate — this clone is what shrinks
+   * back into the thumbnail the outgoing dish is about to occupy.
+   */
+  const outgoingGhost = useRef<HTMLElement | null>(null);
+  const outgoingTitle = useRef<string | null>(null);
 
   const activeRef = useRef(active);
   useEffect(() => {
@@ -79,12 +86,35 @@ export default function ChefDeck() {
    * long enough that a deliberate hover plays the whole grow, and short enough that
    * it still feels like hover rather than a click.
    */
+  /** Clones the current big card into a fixed-position ghost at its own rect. */
+  const liftOutgoing = () => {
+    const card = activeCardRef.current;
+    if (!card) return;
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+
+    // sweep every clone, not just the one this ref happens to hold: an animation that
+    // never settles (a hidden tab pauses WAAPI, so `finished` never resolves) would
+    // otherwise leave its clone behind and they would stack up
+    document.querySelectorAll("[data-deck-ghost]").forEach((n) => n.remove());
+    const r = card.getBoundingClientRect();
+    const ghost = card.cloneNode(true) as HTMLElement;
+    ghost.setAttribute("aria-hidden", "true");
+    ghost.setAttribute("data-deck-ghost", "");
+    ghost.style.cssText =
+      `position:fixed;left:${r.left}px;top:${r.top}px;width:${r.width}px;` +
+      `height:${r.height}px;margin:0;z-index:60;pointer-events:none;transform-origin:top left;`;
+    document.body.appendChild(ghost);
+    outgoingGhost.current = ghost;
+    outgoingTitle.current = CHEFS[activeRef.current].title;
+  };
+
   const handleCardHover = (event: React.MouseEvent<HTMLButtonElement>, idx: number) => {
     if (isDragging.current || idx === activeRef.current) return;
     const rect = event.currentTarget.getBoundingClientRect();
     if (hoverTimeoutRef.current) clearTimeout(hoverTimeoutRef.current);
     hoverTimeoutRef.current = setTimeout(() => {
       flipFrom.current = rect;
+      liftOutgoing();
       go(idx);
     }, 180);
   };
@@ -104,6 +134,7 @@ export default function ChefDeck() {
     if (hasDragged.current) return;
     if (hoverTimeoutRef.current) clearTimeout(hoverTimeoutRef.current);
     flipFrom.current = event.currentTarget.getBoundingClientRect();
+    liftOutgoing();
     go(idx);
   };
 
@@ -119,9 +150,9 @@ export default function ChefDeck() {
 
     // a fast run of clicks would otherwise stack transforms on the same node
     node.getAnimations().forEach((a) => a.cancel());
-    flipUntil.current = performance.now() + 560;
+    flipBusy.current = true;
 
-    node.animate(
+    const grow = node.animate(
       [
         {
           transform: `translate(${from.left - to.left}px, ${from.top - to.top}px) scale(${
@@ -133,7 +164,50 @@ export default function ChefDeck() {
       ],
       { duration: 520, easing: "cubic-bezier(0.22, 1, 0.36, 1)" },
     );
+    const release = () => (flipBusy.current = false);
+    grow.finished.then(release, release);
+
+    // the mirror of the grow: the old dish shrinks into its new thumbnail
+    const ghost = outgoingGhost.current;
+    const title = outgoingTitle.current;
+    outgoingGhost.current = null;
+    outgoingTitle.current = null;
+    if (!ghost) return;
+
+    const slot = title
+      ? document.querySelector<HTMLElement>(`[data-chef="${CSS.escape(title)}"]`)
+      : null;
+    const ghostRect = ghost.getBoundingClientRect();
+    const slotRect = slot?.getBoundingClientRect();
+
+    const shrink = slotRect
+      ? [
+          { transform: "none", opacity: 1 },
+          {
+            transform: `translate(${slotRect.left - ghostRect.left}px, ${
+              slotRect.top - ghostRect.top
+            }px) scale(${slotRect.width / ghostRect.width}, ${
+              slotRect.height / ghostRect.height
+            })`,
+            opacity: 0,
+          },
+        ]
+      : // nowhere to land (the dish scrolled out of the window): just fade
+        [{ opacity: 1 }, { opacity: 0 }];
+
+    const done = () => ghost.remove();
+    ghost
+      .animate(shrink, { duration: 520, easing: "cubic-bezier(0.22, 1, 0.36, 1)" })
+      .finished.then(done, done);
+    // and a floor, for the case where `finished` never settles
+    window.setTimeout(done, 900);
   }, [active]);
+
+  // never leave a clone behind if the component goes away mid-animation
+  useEffect(
+    () => () => document.querySelectorAll("[data-deck-ghost]").forEach((n) => n.remove()),
+    [],
+  );
 
   // Pointer drag for mouse and touch
   const onPointerDown = (e: React.PointerEvent) => {
@@ -203,7 +277,7 @@ export default function ChefDeck() {
     if (!track) return;
 
     const animate = () => {
-      if (performance.now() < flipUntil.current) {
+      if (flipBusy.current) {
         rafId.current = requestAnimationFrame(animate);
         return;
       }
@@ -284,6 +358,7 @@ export default function ChefDeck() {
                   onMouseLeave={handleCardLeave}
                   onClick={(e) => pick(e, idx)}
                   aria-label={`View ${chef.title}`}
+                  data-chef={chef.title}
                   className="group relative h-[120px] w-[90px] shrink-0 self-end overflow-hidden rounded-[16px] border border-brand-red/10 shadow-[0_4px_12px_-4px_rgba(42,24,16,0.08)] transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] hover:scale-105 hover:shadow-[0_8px_18px_-6px_rgba(42,24,16,0.14)] sm:h-[148px] sm:w-[110px] sm:rounded-[20px] md:h-[168px] md:w-[125px] lg:h-[180px] lg:w-[135px]"
                 >
                   <div className="relative h-full w-full overflow-hidden">
@@ -369,6 +444,7 @@ export default function ChefDeck() {
                   onMouseLeave={handleCardLeave}
                   onClick={(e) => pick(e, idx)}
                       aria-label={`View ${chef.title}`}
+                  data-chef={chef.title}
                       className="group relative h-[120px] w-[90px] shrink-0 self-end overflow-hidden rounded-[16px] border border-brand-red/10 shadow-[0_4px_12px_-4px_rgba(42,24,16,0.08)] transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] hover:scale-105 hover:shadow-[0_8px_18px_-6px_rgba(42,24,16,0.14)] sm:h-[148px] sm:w-[110px] sm:rounded-[20px] md:h-[168px] md:w-[125px] lg:h-[180px] lg:w-[135px]"
                     >
                       <div className="relative h-full w-full overflow-hidden">
