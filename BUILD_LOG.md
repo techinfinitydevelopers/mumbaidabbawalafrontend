@@ -1,3 +1,31 @@
+## 2026-09-07 — 1890/2026 becomes a boarding pass; gallery header centred
+
+**The year block.** Two poster numerals stacked in a plain cream box with a hairline
+between them — no idea in it, and it did not belong to anything else on the page.
+Rebuilt as a boarding pass, which is the motif the hero ("Mumbai To Perth / Carried
+By Hand") and the journey timeline already run on:
+
+- `Departure / 1890 / The first delivery · Mumbai` on the top stub, `Arrival / 2026
+  / Perth · from 14 September` on the bottom one.
+- Between them the site's own `.ticker-rule` dashes with the plane cut-out centred
+  on them, and a `bg-paper` notch punched into each edge so it reads as a
+  perforation.
+- Cream ground with the graph print and a `brand-red/12` edge, so it sits in the
+  paper section as a card rather than a tint.
+
+Measured 495x394 at 1440, 350x310 at 390, no overflow.
+
+**Gallery header centred.** "Life of a Dabbawala" was left-aligned while its
+ten-frame mosaic below it is symmetrical, so the block read as though it had
+slipped. `mx-auto max-w-3xl text-center`, and the paragraph needed `mx-auto` of its
+own because `max-w-measure` was holding it to the left edge.
+
+Worth recording: the plane image reports `complete: false` in this session, and so
+does the existing `RouteTicker` plane on the same page. It is not a bug — the file
+serves 200 (165KB) and `/_next/image` optimises it fine; `next/image` lazy-loads by
+default and this session's Browser pane is hidden, so the intersection never fires.
+Forcing `loading="eager"` in the console made it render.
+
 ## 2026-09-07 — Hover picks the card again, now with the grow visible
 
 Client wants hover selection back, and wants to see the card enlarge while it

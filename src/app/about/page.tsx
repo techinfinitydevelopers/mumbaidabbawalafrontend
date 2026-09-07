@@ -192,24 +192,57 @@ export default function AboutPage() {
               </a>
             </Reveal>
 
+            {/* A boarding pass rather than a plain box: two stubs either side of the
+                site's dashed route rule, which is the motif the hero and the journey
+                timeline already run on. The plane asset points nose-down unrotated,
+                so it needs no transform on a vertical route. */}
             <Reveal delay={120} className="lg:self-start">
-              <div className="rounded-[32px] bg-brand-cream/60 p-phi-3 sm:p-phi-4">
-                <p className="font-poster text-[56px] leading-none text-brand-red sm:text-[76px]">
-                  1890
-                </p>
-                <p className="mt-1 text-phi-0 font-bold uppercase tracking-[0.2em] text-ink/50">
-                  The first delivery, Mumbai
-                </p>
-                <span
-                  aria-hidden="true"
-                  className="mb-phi-3 mt-phi-3 block h-px w-full bg-brand-red/20"
-                />
-                <p className="font-poster text-[56px] leading-none text-brand-green-dark sm:text-[76px]">
-                  2026
-                </p>
-                <p className="mt-1 text-phi-0 font-bold uppercase tracking-[0.2em] text-ink/50">
-                  Perth, from 14 September
-                </p>
+              <div className="grain graph-paper overflow-hidden rounded-[32px] border border-brand-red/12 bg-brand-cream shadow-[0_10px_30px_-20px_rgba(42,24,16,0.4)]">
+                <div className="p-phi-3 text-center sm:p-phi-4">
+                  <p className="text-phi-0 font-bold uppercase tracking-[0.22em] text-brand-red">
+                    Departure
+                  </p>
+                  <p className="mt-1 font-poster text-[56px] leading-none text-brand-red sm:text-[72px]">
+                    1890
+                  </p>
+                  <p className="mt-1 text-phi-0 font-bold uppercase tracking-[0.16em] text-ink/55">
+                    The first delivery · Mumbai
+                  </p>
+                </div>
+
+                {/* the perforation */}
+                <div className="relative flex items-center gap-3 px-phi-3 text-brand-red/45 sm:px-phi-4">
+                  <span
+                    aria-hidden="true"
+                    className="h-4 w-4 shrink-0 -translate-x-1/2 rounded-full bg-paper"
+                  />
+                  <span className="ticker-rule" aria-hidden="true" />
+                  <Image
+                    src="/images/plane.webp"
+                    alt=""
+                    aria-hidden="true"
+                    width={120}
+                    height={120}
+                    className="h-9 w-9 shrink-0 rotate-90 drop-shadow-[0_3px_5px_rgba(42,24,16,0.3)]"
+                  />
+                  <span className="ticker-rule" aria-hidden="true" />
+                  <span
+                    aria-hidden="true"
+                    className="h-4 w-4 shrink-0 translate-x-1/2 rounded-full bg-paper"
+                  />
+                </div>
+
+                <div className="p-phi-3 text-center sm:p-phi-4">
+                  <p className="text-phi-0 font-bold uppercase tracking-[0.22em] text-brand-green-dark">
+                    Arrival
+                  </p>
+                  <p className="mt-1 font-poster text-[56px] leading-none text-brand-green-dark sm:text-[72px]">
+                    2026
+                  </p>
+                  <p className="mt-1 text-phi-0 font-bold uppercase tracking-[0.16em] text-ink/55">
+                    Perth · from 14 September
+                  </p>
+                </div>
               </div>
             </Reveal>
           </div>
@@ -304,7 +337,7 @@ export default function AboutPage() {
       {/* ───── Life of a Dabbawala ───── */}
       <section className="relative bg-paper pb-phi-6 pt-phi-5 sm:pb-phi-7">
         <div className="mx-auto max-w-[1720px] px-5 sm:px-8 lg:px-12">
-          <Reveal className="max-w-3xl">
+          <Reveal className="mx-auto max-w-3xl text-center">
             <p className="font-script text-3xl text-brand-orange">Life of a dabbawala</p>
             <h2 className="poster-stack mt-2 [--po:4px] [--po-gap:12px] sm:[--po:5px] sm:[--po-gap:18px]">
               <span
@@ -320,7 +353,7 @@ export default function AboutPage() {
                 Every Dabba.
               </span>
             </h2>
-            <p className="mt-5 max-w-measure text-phi-2 leading-relaxed text-ink/70">
+            <p className="mx-auto mt-5 max-w-measure text-phi-2 leading-relaxed text-ink/70">
               Long before an app or a delivery van, it was a person — carrying, sorting,
               delivering, without fail, day after day. This gallery isn&rsquo;t about
               logistics. It&rsquo;s about the people who&rsquo;ve made &ldquo;on time, every
