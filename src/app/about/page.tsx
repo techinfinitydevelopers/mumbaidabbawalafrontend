@@ -217,7 +217,7 @@ export default function AboutPage() {
       </section>
 
       {/* ───── What We Stand For ───── */}
-      <section className="grain graph-paper relative overflow-hidden bg-brand-cream pb-phi-6 pt-phi-5 sm:pb-phi-7">
+      <section className="grain graph-paper relative overflow-hidden bg-brand-cream pb-phi-6 pt-phi-5 sm:pb-phi-7 lg:flex lg:min-h-[100svh] lg:flex-col lg:justify-center lg:pb-phi-4 lg:pt-phi-4">
         <div className="mx-auto max-w-[1720px] px-5 sm:px-8 lg:px-12">
           <Reveal className="mx-auto max-w-3xl text-center">
             <p className="font-script text-3xl text-brand-orange">What we stand for</p>
@@ -244,11 +244,11 @@ export default function AboutPage() {
           {/* The doc gives the six words and nothing else. So each tile makes its word
               the whole subject in poster type rather than propping it up with a made-up
               one-liner — colour, an icon and scale do the work the copy can't. */}
-          <div className="mt-phi-4 grid grid-cols-2 gap-3 sm:mt-phi-5 sm:gap-4 lg:grid-cols-3">
+          <div className="mt-phi-4 grid grid-cols-2 gap-3 sm:mt-phi-5 sm:gap-4 lg:mt-phi-3 lg:grid-cols-3">
             {VALUES.map((value, i) => (
               <Reveal key={value.word} delay={i * 70}>
                 <div
-                  className={`flex h-full min-h-[168px] flex-col justify-between overflow-hidden rounded-[28px] p-phi-3 shadow-[0_10px_30px_-20px_rgba(42,24,16,0.45)] transition-transform duration-500 hover:-translate-y-1.5 sm:min-h-[196px] sm:p-phi-4 ${value.ground} ${value.text}`}
+                  className={`flex h-full min-h-[168px] flex-col justify-between overflow-hidden rounded-[28px] p-phi-3 lg:min-h-[clamp(150px,21svh,196px)] shadow-[0_10px_30px_-20px_rgba(42,24,16,0.45)] transition-transform duration-500 hover:-translate-y-1.5 sm:min-h-[196px] sm:p-phi-4 ${value.ground} ${value.text}`}
                 >
                   <div className="flex items-start justify-between gap-3">
                     <svg
@@ -281,7 +281,7 @@ export default function AboutPage() {
             ))}
           </div>
 
-          <Reveal delay={140} className="mt-phi-4 text-center">
+          <Reveal delay={140} className="mt-phi-4 text-center lg:mt-phi-3">
             <p className="font-script text-3xl text-brand-red sm:text-4xl">Every single dabba.</p>
           </Reveal>
         </div>

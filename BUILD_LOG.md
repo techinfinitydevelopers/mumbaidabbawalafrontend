@@ -1,3 +1,31 @@
+## 2026-09-07 — "What We Stand For" fits one screen
+
+The section ran 1004px against a 900px viewport. Now `lg:min-h-[100svh]` with
+`flex-col justify-center` and `lg:py-phi-4`, so it centres in exactly one screen.
+
+Fitting it at one height is easy; fitting it at every height is the actual problem.
+At 900 it landed at 900, but a 1440x768 laptop was still 105px over. The tile
+height therefore follows the viewport:
+
+```
+lg:min-h-[clamp(150px,21svh,196px)]
+```
+
+plus the grid and closing line drop to `lg:mt-phi-3`. Measured, section height
+against viewport height:
+
+| Viewport | Section | Over | Tile |
+| --- | --- | --- | --- |
+| 1600 x 1080 | 1080 | 0 | 196 |
+| 1440 x 900 | 900 | 0 | 189 |
+| 1440 x 768 | 768 | 0 | 161 |
+| 390 x 844 | 988 | — flows | 168 |
+
+Left to flow below `lg` on purpose: six tiles stack three rows deep on a phone, and
+forcing 100svh there would squash them to about 90px each — which is the squat pill
+this section was just rebuilt to get away from. All six poster words still fit with
+no overflow at 390.
+
 ## 2026-09-07 — "What We Stand For" rebuilt as poster tiles
 
 Six identical squat white pills carrying a number and a word, in a six-across row,
