@@ -34,10 +34,16 @@ export default function FromTheKitchen() {
           </div>
 
           <h2 className="poster-stack mx-auto mt-3 [--po:3px] [--po-gap:12px] sm:[--po:5px] sm:[--po-gap:18px]">
-            <span className="poster block text-[32px] text-ink sm:text-[46px]">
+            <span
+              className="poster block text-[32px] text-brand-red sm:text-[46px]"
+              style={{ ["--po-color" as string]: "var(--color-brand-yellow)" }}
+            >
               Wisdom From The
             </span>
-            <span className="poster block text-[32px] text-brand-red sm:text-[46px]">
+            <span
+              className="poster block text-[32px] text-brand-green-dark sm:text-[46px]"
+              style={{ ["--po-color" as string]: "var(--color-brand-yellow)" }}
+            >
               Dabbawala Kitchen
             </span>
           </h2>

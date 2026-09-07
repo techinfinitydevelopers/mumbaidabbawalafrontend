@@ -1,3 +1,25 @@
+## 2026-09-07 — Chef's Corner headings brought onto the palette convention
+
+Every poster stack on the site runs **brand-red -> brand-green-dark** on a
+brand-yellow shadow. Chef's Corner's two section headings were the only pair left
+running **ink -> brand-red**:
+
+- `ChefDeck` — "The People Behind / Every Dabba"
+- `FromTheKitchen` — "Wisdom From The / Dabbawala Kitchen"
+
+Both recoloured, and both lines given an explicit `--po-color` rather than relying
+on the `.poster` fallback, so they read the same as the rest without depending on a
+default.
+
+Verified all three stacks on the page compute `rgb(175, 20, 17)` then
+`rgb(44, 73, 15)` with a `rgb(255, 218, 45)` shadow. The hero ("Fresh Ingredients /
+Nothing Fussy") was already correct.
+
+**Worth the client's attention:** "The People Behind / Every Dabba" is now the
+heading of a section on *both* `/chefs-corner` and `/about` — the About one comes
+from the content doc's "Life of a Dabbawala" copy, so the Chef's Corner one is the
+one to rename. Not changed here; it is a copy decision.
+
 ## 2026-09-07 — Autoplay runs the morph, right to left
 
 Three things, all in the deck.

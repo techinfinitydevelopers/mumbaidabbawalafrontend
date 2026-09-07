@@ -357,13 +357,13 @@ export default function ChefDeck() {
           <p className="font-script text-2xl text-brand-orange sm:text-3xl">Meet the kitchen</p>
           <h2 className="poster-stack mx-auto mt-2 [--po:3px] sm:[--po:5px]">
             <span
-              className="poster block text-[32px] text-ink sm:text-[48px] lg:text-[54px]"
+              className="poster block text-[32px] text-brand-red sm:text-[48px] lg:text-[54px]"
               style={{ ["--po-color" as string]: "var(--color-brand-yellow)" }}
             >
               The People Behind
             </span>
             <span
-              className="poster block text-[32px] text-brand-red sm:text-[48px] lg:text-[54px]"
+              className="poster block text-[32px] text-brand-green-dark sm:text-[48px] lg:text-[54px]"
               style={{ ["--po-color" as string]: "var(--color-brand-yellow)" }}
             >
               Every Dabba
