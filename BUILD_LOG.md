@@ -1,3 +1,18 @@
+## 2026-09-07 — Slideshow cadence on the chef deck
+
+Client asked for fast auto rotation, "like slideshow type". `AUTOPLAY_MS` 6500 ->
+**3200**. Measured over four ticks: 3230 / 3217 / 3138ms, mean 3195 — so the 760ms
+morph plays and the card then holds still for about 2.4s before the next one.
+
+Worth noting it sat at 3000 before and the client called it too fast. That was the
+morph glitching, not the interval — the promoted image was being downloaded
+mid-animation and `transition-all` was fighting the FLIP. With the morph on the
+compositor the same cadence reads as a slideshow rather than a jitter.
+
+Pause-on-hover stays: the client picked the plain speed-up over the variant that
+also dropped it, and at a 3.2s cadence the deck would otherwise move the card out
+from under the cursor faster than before.
+
 ## 2026-09-07 — Morph slowed and the curve softened
 
 **Length wasn't the only problem — the curve was.**

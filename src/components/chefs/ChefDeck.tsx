@@ -70,7 +70,7 @@ export default function ChefDeck() {
 
   // Auto-slide through the chefs from left to right continuously on a timer
   useEffect(() => {
-    const AUTOPLAY_MS = 6500;
+    const AUTOPLAY_MS = 3200;
     const interval = setInterval(() => {
       if (isDragging.current || autoplayPaused.current) return;
       setActive((prev) => {
