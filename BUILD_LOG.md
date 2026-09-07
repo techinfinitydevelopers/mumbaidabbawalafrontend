@@ -1,3 +1,45 @@
+## 2026-09-07 — About page rebuilt in the site's own language
+
+The page's own sections were written in a different visual language to the rest of
+the site: `bg-white` grounds, `font-display font-extrabold` headings, and
+`tracking-[0.24em]` uppercase eyebrows, where every other page uses `--color-paper`
+/ `bg-brand-cream` grounds, `.poster-stack` headings with the offset shadow, and a
+`font-script` kicker in brand orange. Rewrote the three off-brand sections and
+added the closing band the other pages all have.
+
+| Section | Ground | Rhythm |
+| --- | --- | --- |
+| Hero (`PageHero`) | cream | 89 / 89 |
+| Journey timeline | paper | 89 / 144 |
+| 135+ Years | paper | 55 / 89 |
+| What We Stand For | cream + graph print | 55 / 144 |
+| Life of a Dabbawala | paper | 55 / 144 |
+| Perth 2026 (new) | brand red + wave | 233 / 89 |
+
+- **What We Stand For** now leads with a `font-script` kicker and a poster stack
+  ("Six Words. / One Promise."), then the six values as numbered cards with poster
+  numerals cycling red / orange / green-dark, closing on "Every single dabba." in
+  script. The doc gives the six words and nothing else, so they stand on their own
+  — no invented one-liner under each, which is the obvious thing to add and the
+  wrong thing to make up for a real brand's values page.
+- **Life of a Dabbawala** gets the same kicker + poster stack treatment, and the
+  ten-frame mosaic keeps its two-up lead frame but on brand paper with a hover
+  scale.
+- **Perth 2026** was a plain centred paragraph on white. It is now the red closing
+  band the other pages use: `WaveDivider`, poster stack, two CTAs and the
+  `RouteTicker`.
+
+**`.journey-flow` was the only pure `#ffffff` on the site.** Everything else is
+`--color-paper` (`#fffdf6`), so the timeline had a visible seam against the cream
+hero above it. Moved onto `var(--color-paper)` with the phi rhythm. The two
+remaining `#fff` in the stylesheet are correct: one is inside `@media print`, the
+other is `.tl-sticker`, where white reads as photo mount.
+
+Verified at 1440 and 390: six sections, zero pure-white grounds, five poster stacks,
+seven script kickers, rhythm entirely on the Fibonacci steps, hero exactly one
+screen (844/844 at 390), values and gallery both two-up on mobile, ten gallery
+images with none broken, no horizontal overflow, build and tsc clean.
+
 ## 2026-09-07 — About page content, timeline robustness, closing-CTA clearance
 
 ### Closing CTAs started inside the wave

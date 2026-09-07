@@ -1096,9 +1096,17 @@ h1, h2, h3, h4 {
 .journey-flow {
   position: relative;
   width: 100%;
-  background-color: #ffffff;
+  /* was #ffffff, the one pure white on the site — everything else is --color-paper,
+     and the seam against the cream hero was visible. Rhythm on the phi scale too. */
+  background-color: var(--color-paper);
   margin: 0 auto;
-  padding: 10px 12px 50px;
+  padding: var(--space-phi-5) 12px var(--space-phi-6);
+}
+
+@media (min-width: 640px) {
+  .journey-flow {
+    padding: var(--space-phi-6) 12px var(--space-phi-7);
+  }
 }
 
 /* The hand-tuned flight-svg art (path, pins) and the 5 timeline cards are all
