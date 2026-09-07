@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 import PageHero from "@/components/PageHero";
+import ChefDeck from "@/components/chefs/ChefDeck";
+import FromTheKitchen from "@/components/chefs/FromTheKitchen";
 
 export const metadata: Metadata = {
   title: "Chef's Corner — Mumbai Dabbawala",
@@ -9,7 +11,7 @@ export const metadata: Metadata = {
 
 export default function ChefsCornerPage() {
   return (
-    <div className="overflow-x-hidden">
+    <>
       <PageHero
         kicker="The people behind the flavour"
         titleTop="Fresh Ingredients"
@@ -27,6 +29,8 @@ export default function ChefsCornerPage() {
         secondary={{ href: "/menu", label: "See the Menu" }}
         seal={{ eyebrow: "Cooked", lines: ["Fresh", "Daily"], script: "never reheated" }}
       />
-    </div>
+      <ChefDeck />
+      <FromTheKitchen />
+    </>
   );
 }

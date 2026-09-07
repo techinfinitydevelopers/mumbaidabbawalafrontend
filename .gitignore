@@ -45,8 +45,16 @@ next-env.d.ts
 
 # client source documents — kept local, not for a public repo
 *.pdf
+
 # one-off asset scripts run by hand; the outputs they produce are committed
 /scratchpad/
 # third-party reference clipart used only as a visual spec; the mark itself is drawn
 # in VegMark.tsx, so this file is not needed to build the site
 /design-assets/brand/veg-nonveg-mark-reference.jpg
+
+# scratch and test artifacts
+/scratch/
+/.shots/
+/chefs-corner/
+*.log
+
