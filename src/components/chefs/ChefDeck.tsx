@@ -7,6 +7,14 @@ import { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react
 const useIsoLayoutEffect = typeof window === "undefined" ? useEffect : useLayoutEffect;
 import { CHEFS } from "@/data/chefs";
 
+/**
+ * The morph's timing, in one place. `cubic-bezier(0.22, 1, 0.36, 1)` was an
+ * ease-out quint: it leaves fast and brakes hard, which reads as a snap however long
+ * you make it. This is a gentle ease-in-out, so both ends settle instead.
+ */
+const MORPH_MS = 760;
+const MORPH_EASE = "cubic-bezier(0.4, 0, 0.2, 1)";
+
 const N = CHEFS.length;
 const mod = (i: number) => ((i % N) + N) % N;
 
@@ -57,7 +65,7 @@ export default function ChefDeck() {
 
     setTimeout(() => {
       setIsTransitioning(false);
-    }, 400);
+    }, MORPH_MS);
   }, []);
 
   // Auto-slide through the chefs from left to right continuously on a timer
@@ -70,7 +78,7 @@ export default function ChefDeck() {
         setIsTransitioning(true);
         setTimeout(() => {
           setIsTransitioning(false);
-        }, 400);
+        }, MORPH_MS);
         return next;
       });
     }, AUTOPLAY_MS);
@@ -81,7 +89,7 @@ export default function ChefDeck() {
    * Hover picks the card, and so does a click.
    *
    * The settle delay is 180ms rather than the original 40ms for a reason: the grow
-   * runs for 520ms, and at 40ms a sweep across the rail re-selected every thumbnail
+   * runs for MORPH_MS, and at 40ms a sweep across the rail re-selected every thumbnail
    * it passed, cancelling each animation before a frame of it was visible. 180ms is
    * long enough that a deliberate hover plays the whole grow, and short enough that
    * it still feels like hover rather than a click.
@@ -163,7 +171,7 @@ export default function ChefDeck() {
         },
         { transform: "none" },
       ],
-      { duration: 520, easing: "cubic-bezier(0.22, 1, 0.36, 1)" },
+      { duration: MORPH_MS, easing: MORPH_EASE },
     );
     const release = () => {
       flipBusy.current = false;
@@ -202,10 +210,10 @@ export default function ChefDeck() {
 
     const done = () => ghost.remove();
     ghost
-      .animate(shrink, { duration: 520, easing: "cubic-bezier(0.22, 1, 0.36, 1)" })
+      .animate(shrink, { duration: MORPH_MS, easing: MORPH_EASE })
       .finished.then(done, done);
     // and a floor, for the case where `finished` never settles
-    window.setTimeout(done, 900);
+    window.setTimeout(done, MORPH_MS + 400);
   }, [active]);
 
   // never leave a clone behind if the component goes away mid-animation
@@ -364,7 +372,7 @@ export default function ChefDeck() {
                   onClick={(e) => pick(e, idx)}
                   aria-label={`View ${chef.title}`}
                   data-chef={chef.title}
-                  className="group relative h-[120px] w-[90px] shrink-0 self-end overflow-hidden rounded-[16px] border border-brand-red/10 shadow-[0_4px_12px_-4px_rgba(42,24,16,0.08)] transition-[transform,box-shadow] duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] hover:scale-105 hover:shadow-[0_8px_18px_-6px_rgba(42,24,16,0.14)] sm:h-[148px] sm:w-[110px] sm:rounded-[20px] md:h-[168px] md:w-[125px] lg:h-[180px] lg:w-[135px]"
+                  className="group relative h-[120px] w-[90px] shrink-0 self-end overflow-hidden rounded-[16px] border border-brand-red/10 shadow-[0_4px_12px_-4px_rgba(42,24,16,0.08)] transition-[transform,box-shadow] duration-500 ease-[cubic-bezier(0.4,0,0.2,1)] hover:scale-105 hover:shadow-[0_8px_18px_-6px_rgba(42,24,16,0.14)] sm:h-[148px] sm:w-[110px] sm:rounded-[20px] md:h-[168px] md:w-[125px] lg:h-[180px] lg:w-[135px]"
                 >
                   <div className="relative h-full w-full overflow-hidden">
                     <Image
@@ -384,7 +392,7 @@ export default function ChefDeck() {
             {/* 2. Active Enlarged Main Card */}
             <div
               ref={activeCardRef}
-              className="relative h-[360px] w-[270px] shrink-0 self-end overflow-hidden rounded-[26px] border border-brand-red/15 shadow-[0_12px_28px_-10px_rgba(42,24,16,0.18)] ring-1 ring-brand-yellow/60 transition-[box-shadow] duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] sm:h-[440px] sm:w-[330px] sm:rounded-[30px] md:h-[490px] md:w-[370px] lg:h-[520px] lg:w-[400px]"
+              className="relative h-[360px] w-[270px] shrink-0 self-end overflow-hidden rounded-[26px] border border-brand-red/15 shadow-[0_12px_28px_-10px_rgba(42,24,16,0.18)] ring-1 ring-brand-yellow/60 transition-[box-shadow] duration-700 ease-[cubic-bezier(0.4,0,0.2,1)] sm:h-[440px] sm:w-[330px] sm:rounded-[30px] md:h-[490px] md:w-[370px] lg:h-[520px] lg:w-[400px]"
             >
               <div className="relative h-full w-full overflow-hidden">
                 <Image
@@ -409,7 +417,7 @@ export default function ChefDeck() {
             >
               {/* Active Chef Details & Quote with smooth crossfade */}
               <div
-                className={`max-w-[320px] pt-1 transition-[opacity,translate] duration-400 ease-out sm:max-w-[420px] md:max-w-[480px] lg:max-w-[540px] ${
+                className={`max-w-[320px] pt-1 transition-[opacity,translate] duration-700 ease-[cubic-bezier(0.4,0,0.2,1)] sm:max-w-[420px] md:max-w-[480px] lg:max-w-[540px] ${
                   isTransitioning ? "translate-y-1 opacity-70" : "translate-y-0 opacity-100"
                 }`}
               >
@@ -450,7 +458,7 @@ export default function ChefDeck() {
                   onClick={(e) => pick(e, idx)}
                       aria-label={`View ${chef.title}`}
                   data-chef={chef.title}
-                      className="group relative h-[120px] w-[90px] shrink-0 self-end overflow-hidden rounded-[16px] border border-brand-red/10 shadow-[0_4px_12px_-4px_rgba(42,24,16,0.08)] transition-[transform,box-shadow] duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] hover:scale-105 hover:shadow-[0_8px_18px_-6px_rgba(42,24,16,0.14)] sm:h-[148px] sm:w-[110px] sm:rounded-[20px] md:h-[168px] md:w-[125px] lg:h-[180px] lg:w-[135px]"
+                      className="group relative h-[120px] w-[90px] shrink-0 self-end overflow-hidden rounded-[16px] border border-brand-red/10 shadow-[0_4px_12px_-4px_rgba(42,24,16,0.08)] transition-[transform,box-shadow] duration-500 ease-[cubic-bezier(0.4,0,0.2,1)] hover:scale-105 hover:shadow-[0_8px_18px_-6px_rgba(42,24,16,0.14)] sm:h-[148px] sm:w-[110px] sm:rounded-[20px] md:h-[168px] md:w-[125px] lg:h-[180px] lg:w-[135px]"
                     >
                       <div className="relative h-full w-full overflow-hidden">
                         <Image

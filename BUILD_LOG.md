@@ -1,3 +1,30 @@
+## 2026-09-07 — Morph slowed and the curve softened
+
+**Length wasn't the only problem — the curve was.**
+`cubic-bezier(0.22, 1, 0.36, 1)` is an ease-out quint: it leaves fast and brakes
+hard, so it reads as a snap no matter how long you make it. Slowing that curve down
+would just have made a slow snap. Both animations now run
+`cubic-bezier(0.4, 0, 0.2, 1)` — a gentle ease-in-out, so each end settles instead
+of one end whipping.
+
+520ms -> **760ms**, and the timing lives in `MORPH_MS` / `MORPH_EASE` at the top of
+the file rather than being written out at each call site. Four things were timed
+against the old 520 and would have drifted out of step:
+
+| | Before | After |
+| --- | --- | --- |
+| Grow and shrink | 520ms | `MORPH_MS` (760) |
+| `isTransitioning` window, which drives the copy fade | 400ms | `MORPH_MS` |
+| Copy block transition | 400ms ease-out | 700ms, same curve |
+| Clone cleanup floor | 900ms | `MORPH_MS + 400` |
+
+The big card's `box-shadow` transition also went 500 -> 700ms so the shadow doesn't
+finish settling while the card is still moving.
+
+Verified: two animations at 760ms on `cubic-bezier(0.4, 0, 0.2, 1)`, still
+transform and opacity only, copy block at `0.7s` on the same curve, and no clones
+left behind after a settle or after a four-click burst.
+
 ## 2026-09-07 — Deck transitions moved entirely onto the compositor
 
 Four things were still making the main thread work during the 520ms transition.
