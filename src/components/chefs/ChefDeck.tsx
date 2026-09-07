@@ -360,13 +360,13 @@ export default function ChefDeck() {
               className="poster block text-[32px] text-brand-red sm:text-[48px] lg:text-[54px]"
               style={{ ["--po-color" as string]: "var(--color-brand-yellow)" }}
             >
-              The People Behind
+              Meet The Hands
             </span>
             <span
               className="poster block text-[32px] text-brand-green-dark sm:text-[48px] lg:text-[54px]"
               style={{ ["--po-color" as string]: "var(--color-brand-yellow)" }}
             >
-              Every Dabba
+              Behind It
             </span>
           </h2>
           <p className="mx-auto mt-3 max-w-lg text-sm text-ink/75 sm:text-base">

@@ -1,3 +1,20 @@
+## 2026-09-07 — Chef's Corner deck heading renamed
+
+"The People Behind / Every Dabba" -> **"Meet The Hands / Behind It"**, which also
+clears the duplicate with `/about`, where the same words are the content doc's own
+"Life of a Dabbawala" heading. `The People Behind` no longer appears on
+`/chefs-corner`.
+
+Split after "Hands" so the strong phrase carries the first line and the poster
+stack keeps two lines of similar weight. Both lines fit with no wrap at 1440 and at
+390, and the colours stayed on the convention (`rgb(175, 20, 17)` then
+`rgb(44, 73, 15)`).
+
+**One thing left for the client:** the script kicker directly above still reads
+"Meet the kitchen", so "Meet" now opens both the kicker and the headline. Not
+changed — it is their copy — but it wants a different kicker, e.g. "Behind the
+counter" or "The kitchen crew".
+
 ## 2026-09-07 — Chef's Corner headings brought onto the palette convention
 
 Every poster stack on the site runs **brand-red -> brand-green-dark** on a
