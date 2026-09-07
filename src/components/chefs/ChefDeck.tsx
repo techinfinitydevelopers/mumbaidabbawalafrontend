@@ -159,7 +159,7 @@ export default function ChefDeck() {
   const rightIndices = [1, 2, 3, 4, 5].map((offset) => mod(active + offset));
 
   return (
-    <section className="overflow-hidden bg-paper px-4 py-16 sm:px-8 sm:py-24">
+    <section className="overflow-hidden bg-paper px-4 py-phi-5 sm:px-8 sm:py-phi-6">
       <div className="mx-auto w-full max-w-[1600px]">
         {/* Title Header */}
         <div className="text-center">

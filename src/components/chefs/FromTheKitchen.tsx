@@ -454,7 +454,7 @@ export default function FromTheKitchen() {
                         }}
                       >
                         <BicycleLogo color="#AF1411" size={40} />
-                        <span className="font-display text-[13px] font-black uppercase tracking-[0.1em] text-brand-red">
+                        <span className="font-display text-phi-1 font-black uppercase tracking-[0.1em] text-brand-red">
                           Dabbawala
                         </span>
                         <span className="text-[9px] font-bold uppercase tracking-[0.16em] text-brand-red/80">

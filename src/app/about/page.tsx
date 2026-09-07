@@ -34,7 +34,7 @@ export default function AboutPage() {
       <JourneyTimeline />
 
       {/* ───── What We Stand For ───── */}
-      <section className="relative w-full bg-brand-cream px-5 py-20 text-center sm:px-8 sm:py-28">
+      <section className="relative w-full bg-brand-cream px-5 py-phi-6 text-center sm:px-8 sm:py-phi-6">
         <Reveal className="mx-auto max-w-3xl">
           <span className="inline-block rounded-full bg-brand-red/10 px-4 py-1.5 text-[11px] font-bold uppercase tracking-[0.24em] text-brand-red">
             What We Stand For
@@ -57,7 +57,7 @@ export default function AboutPage() {
             Six words. One promise. Every single dabba.
           </h2>
 
-          <p className="mx-auto mt-5 max-w-xl text-sm leading-relaxed text-ink/70 sm:text-base">
+          <p className="mx-auto mt-5 max-w-measure text-phi-2 leading-relaxed text-ink/70 sm:text-phi-3">
             We don&rsquo;t just deliver meals — we deliver on a set of values that don&rsquo;t
             change, no matter how big we get or how far from Mumbai we travel.
           </p>
@@ -72,7 +72,7 @@ export default function AboutPage() {
       </section>
 
       {/* ───── Life of a Dabbawala — photo gallery ───── */}
-      <section className="relative w-full bg-white px-5 py-20 sm:px-8 sm:py-28">
+      <section className="relative w-full bg-white px-5 py-phi-6 sm:px-8 sm:py-phi-6">
         <Reveal className="mx-auto max-w-2xl text-center">
           <span className="text-xs font-bold uppercase tracking-[0.24em] text-brand-orange">
             Life of a Dabbawala
@@ -80,7 +80,7 @@ export default function AboutPage() {
           <h2 className="mt-2 font-display text-3xl font-extrabold text-brand-red sm:text-4xl">
             The People Behind Every Dabba.
           </h2>
-          <p className="mx-auto mt-4 max-w-xl text-sm leading-relaxed text-ink/70 sm:text-base">
+          <p className="mx-auto mt-4 max-w-measure text-phi-2 leading-relaxed text-ink/70 sm:text-phi-3">
             Long before an app or a delivery van, it was a person — carrying, sorting,
             delivering, without fail, day after day. This gallery isn&rsquo;t about logistics.
             It&rsquo;s about the people who&rsquo;ve made &ldquo;on time, every time&rdquo; a
@@ -121,7 +121,7 @@ export default function AboutPage() {
         </div>
       </section>
 
-      <section className="relative w-full bg-white px-5 pb-28 pt-12 text-center sm:px-8">
+      <section className="relative w-full bg-white px-5 pb-phi-6 pt-phi-4 text-center sm:px-8">
         <Reveal className="mx-auto max-w-2xl">
           <span className="text-xs font-bold uppercase tracking-[0.24em] text-brand-orange">
             Across the Ocean · 2026
@@ -129,7 +129,7 @@ export default function AboutPage() {
           <h2 className="mt-2 font-display text-3xl font-extrabold text-brand-red sm:text-4xl">
             The Mumbai Dabbawala Arrives in Perth
           </h2>
-          <p className="mx-auto mt-4 max-w-xl text-sm leading-relaxed text-ink/70 sm:text-base">
+          <p className="mx-auto mt-4 max-w-measure text-phi-2 leading-relaxed text-ink/70 sm:text-phi-3">
             The world&rsquo;s most disciplined food network expands beyond Indian shores for
             the first time. Bringing daily homestyle tiffin service, multi-regional culinary
             heritage, and six generations of six-sigma punctuality to the streets of Perth.
