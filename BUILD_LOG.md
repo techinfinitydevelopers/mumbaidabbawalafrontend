@@ -1,3 +1,18 @@
+## 2026-09-07 — Dropped the duplicate Follow block from the post rail
+
+Client: "ye 2 baar kyu hai?" — fair. Share and Follow do different jobs (send this
+article to the reader's own network vs. link the brand's profiles) but they reuse
+the same glyphs, so Facebook and LinkedIn appeared twice in one 220px column and
+it read as a duplicate.
+
+Removed the Follow block, its email and its phone from `PostSidebar`, leaving
+Share + Subscribe — which is what the Litmus rail actually carries. The profiles,
+email and phone are still in the footer on every page, so nothing was lost;
+`src/data/contact.ts` now has one consumer instead of two, which is still worth
+keeping as the single source.
+
+Rail is now: 4 share links + the subscribe button, still sticky.
+
 ## 2026-09-07 — Sticky share/subscribe rail on post pages
 
 Client asked for the Litmus post-page rail, and supplied the brand's email, phone
