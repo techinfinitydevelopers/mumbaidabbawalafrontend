@@ -5,6 +5,7 @@ import PageHero from "@/components/PageHero";
 import JourneyTimeline from "@/components/journey/JourneyTimeline";
 import Reveal from "@/components/Reveal";
 import RouteTicker from "@/components/poster/RouteTicker";
+import Starburst from "@/components/poster/Starburst";
 import WaveDivider from "@/components/poster/WaveDivider";
 
 export const metadata: Metadata = {
@@ -192,58 +193,40 @@ export default function AboutPage() {
               </a>
             </Reveal>
 
-            {/* A boarding pass rather than a plain box: two stubs either side of the
-                site's dashed route rule, which is the motif the hero and the journey
-                timeline already run on. The plane asset points nose-down unrotated,
-                so it needs no transform on a vertical route. */}
+            {/* This column used to restate 1890 -> 2026, which the journey timeline
+                directly above already tells in full — so it had nothing of its own to
+                say and read as an empty slab. A photograph of the actual network does
+                the job the heading needs: studied and respected, by people. */}
             <Reveal delay={120} className="lg:self-start">
-              <div className="grain graph-paper overflow-hidden rounded-[32px] border border-brand-red/12 bg-brand-cream shadow-[0_10px_30px_-20px_rgba(42,24,16,0.4)]">
-                <div className="p-phi-3 text-center sm:p-phi-4">
-                  <p className="text-phi-0 font-bold uppercase tracking-[0.22em] text-brand-red">
-                    Departure
-                  </p>
-                  <p className="mt-1 font-poster text-[56px] leading-none text-brand-red sm:text-[72px]">
-                    1890
-                  </p>
-                  <p className="mt-1 text-phi-0 font-bold uppercase tracking-[0.16em] text-ink/55">
-                    The first delivery · Mumbai
-                  </p>
-                </div>
-
-                {/* the perforation */}
-                <div className="relative flex items-center gap-3 px-phi-3 text-brand-red/45 sm:px-phi-4">
-                  <span
-                    aria-hidden="true"
-                    className="h-4 w-4 shrink-0 -translate-x-1/2 rounded-full bg-paper"
-                  />
-                  <span className="ticker-rule" aria-hidden="true" />
+              <figure className="relative mx-auto max-w-[460px] lg:mx-0">
+                <div className="relative aspect-[4/3] overflow-hidden rounded-[28px] shadow-[0_18px_44px_-24px_rgba(42,24,16,0.5)]">
                   <Image
-                    src="/images/plane.webp"
-                    alt=""
-                    aria-hidden="true"
-                    width={120}
-                    height={120}
-                    className="h-9 w-9 shrink-0 rotate-90 drop-shadow-[0_3px_5px_rgba(42,24,16,0.3)]"
-                  />
-                  <span className="ticker-rule" aria-hidden="true" />
-                  <span
-                    aria-hidden="true"
-                    className="h-4 w-4 shrink-0 translate-x-1/2 rounded-full bg-paper"
+                    src="/images/about/net-02.jpg"
+                    alt="A dabbawala carrying a crate of tiffins along a Mumbai station platform"
+                    fill
+                    sizes="(min-width: 1024px) 420px, 90vw"
+                    className="object-cover"
                   />
                 </div>
 
-                <div className="p-phi-3 text-center sm:p-phi-4">
-                  <p className="text-phi-0 font-bold uppercase tracking-[0.22em] text-brand-green-dark">
-                    Arrival
-                  </p>
-                  <p className="mt-1 font-poster text-[56px] leading-none text-brand-green-dark sm:text-[72px]">
-                    2026
-                  </p>
-                  <p className="mt-1 text-phi-0 font-bold uppercase tracking-[0.16em] text-ink/55">
-                    Perth · from 14 September
-                  </p>
-                </div>
-              </div>
+                <Starburst
+                  className="absolute -left-2 -top-3 h-[88px] w-[88px] rotate-[-8deg] sm:-left-5 sm:-top-5 sm:h-[104px] sm:w-[104px]"
+                  fill="var(--color-brand-orange)"
+                >
+                  <div>
+                    <span className="block font-poster text-sm leading-none text-brand-cream">
+                      SINCE
+                    </span>
+                    <span className="block font-poster text-2xl leading-none text-brand-yellow">
+                      1890
+                    </span>
+                  </div>
+                </Starburst>
+
+                <figcaption className="mt-phi-2 text-phi-0 font-bold uppercase tracking-[0.18em] text-ink/50">
+                  Mumbai · the daily run
+                </figcaption>
+              </figure>
             </Reveal>
           </div>
         </div>

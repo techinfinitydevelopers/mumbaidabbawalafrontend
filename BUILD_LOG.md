@@ -1,3 +1,29 @@
+## 2026-09-07 — Right column of the 135+ section is a photograph now
+
+The boarding pass went the same way as the plain box before it, and for the same
+underlying reason: **that column was restating 1890 -> 2026, which the journey
+timeline immediately above already tells in full.** With nothing of its own to say
+it was always going to read as decoration, whatever it was dressed as. So it now
+carries content instead — `net-02.jpg`, the platform shot of a dabbawala with a
+crate of tiffins overhead, with the site's `Starburst` as a "Since 1890" seal
+breaking its top-left corner and a small caption underneath.
+
+Two details worth the note:
+
+- **The frame follows the photograph, not the other way round.** `net-02` is
+  900x600, so the container is `aspect-[4/3]`. The first attempt used `net-03` in a
+  4:5 portrait frame — that image is a ceremonial handover, which the caption
+  "Mumbai · the daily run" did not describe, and the portrait crop threw away the
+  width the crate needs.
+- **The seal was being clipped on mobile.** At 390 the figure starts 20px in, so
+  `-left-5` plus the −8deg rotation's spill put it past the viewport edge, where the
+  page wrapper's `overflow-x-hidden` cut it off. Now `-left-2 -top-3` at 88px on
+  mobile, stepping to `-left-5 -top-5` at 104px from `sm`. Measured: seal left edge
+  at 6px at 390, and at 1440 it sits 26px over the photo's corner as intended.
+
+`net-02` also appears as a 2x1 frame in the gallery further down the page. Worth a
+dedicated photograph here if one exists.
+
 ## 2026-09-07 — 1890/2026 becomes a boarding pass; gallery header centred
 
 **The year block.** Two poster numerals stacked in a plain cream box with a hairline
