@@ -1,31 +1,114 @@
 "use client";
 
-import { useEffect, useRef } from "react";
-import { MILESTONES, FLIGHT_SVG, type Milestone } from "@/data/journeyMilestones";
+import { useEffect, useRef, useState } from "react";
+import { MILESTONES, type Milestone } from "@/data/journeyMilestones";
 
 function clamp(v: number, a: number, b: number) {
   return Math.max(a, Math.min(b, v));
 }
 
+/** Must stay equal to `.flight-corridor { min-height }` and `.flight-svg
+ *  { height }` in globals.css — the SVG viewBox uses it so one SVG unit is
+ *  one corridor pixel, which is what keeps the path glued to the cards. */
+const CORRIDOR_HEIGHT = 2230;
+
+/** Fraction of the viewport height the flight path is pinned to. A card's
+ *  "hero" moment — plane level with its pin — happens here. */
+const FOCUS_RATIO = 0.6;
+
+/** Distance from a card's top edge down to its pin on the flight path. */
+const PIN_OFFSET = 154;
+
+/**
+ * Builds the flight path FROM the milestones' own `side` + `top` values,
+ * instead of a hardcoded L/R alternation — so the string, its pins, and the
+ * plane always pass through exactly where each card actually sits. A
+ * mismatch here (pin on one side, card on the other) is what made the plane
+ * and the cards look disconnected from the line.
+ */
+function getFlightGeometry(W: number) {
+  const isMobile = W < 768;
+  const cardWidth = isMobile ? Math.min(168, Math.round(W * 0.44)) : clamp(Math.round(W * 0.26), 65, 300);
+  const xL = cardWidth;
+  const xR = W - cardWidth;
+  const xM = isMobile ? cardWidth : clamp(Math.round(W * 0.22), 45, 220);
+  const pinOffset = isMobile ? 95 : PIN_OFFSET;
+  const startY = isMobile ? 120 : 176;
+
+  const stops = MILESTONES.map((m) => ({
+    x: m.side === "right" ? xR : xL,
+    y: m.top + pinOffset,
+  }));
+  const last = stops[stops.length - 1];
+  const runOut =
+    last.x === xR
+      ? [{ x: xL, y: last.y + 155 }, { x: xR, y: 1674 }]
+      : [{ x: xR, y: 1674 }];
+  const points = [{ x: xM, y: startY }, ...stops, ...runOut];
+
+  let path = `M ${points[0].x} ${points[0].y}`;
+  for (let i = 1; i < points.length; i++) {
+    const p0 = points[i - 1];
+    const p1 = points[i];
+    const delta = p1.y - p0.y;
+    if (i === 1) {
+      // first segment only: horizontal tangent leaving Mumbai
+      const c1x = p0.x + (p1.x - p0.x) * 0.29;
+      const c2y = p0.y + delta * 0.47;
+      path += ` C ${c1x} ${p0.y}, ${p1.x} ${c2y}, ${p1.x} ${p1.y}`;
+    } else {
+      // vertical-tangent S-curve, symmetric about the segment's midpoint
+      const c1y = p0.y + delta / 2;
+      const c2y = p1.y - delta / 2;
+      path += ` C ${p0.x} ${c1y}, ${p1.x} ${c2y}, ${p1.x} ${p1.y}`;
+    }
+  }
+
+  const pins = [
+    { cx: xM, cy: startY, r: isMobile ? 6.5 : 9, fill: "#AF1411" },
+    ...stops.map((s, i) => ({
+      cx: s.x,
+      cy: s.y,
+      r: isMobile ? 5 : 7,
+      fill: MILESTONES[i].side === "right" ? "#F36220" : "#AF1411",
+    })),
+    {
+      cx: points[points.length - 1].x,
+      cy: points[points.length - 1].y,
+      r: isMobile ? 6.5 : 9,
+      fill: "#F36220",
+    },
+  ];
+
+  return { path, pins };
+}
+
 function MilestonePlate({ plate, side }: { plate: Milestone["plate"]; side: "left" | "right" }) {
   return (
-    <div className={`menu-card-plate menu-card-plate--${side}`}>
+    <figure className={`tl-sticker tl-sticker--${side === "left" ? "a" : "b"}`}>
       {plate.kind === "photo" ? (
         // plain <img>, not next/image: these are animated GIFs and must keep animating
         // eslint-disable-next-line @next/next/no-img-element
         <img src={plate.src} alt={plate.alt} />
       ) : (
-        <div className={`timeline-seal timeline-seal--${plate.tone}`}>
-          <span className="seal-icon">{plate.icon}</span>
-          <span className="seal-yr">{plate.year}</span>
-          <span className="seal-txt">{plate.label}</span>
-          <span className="seal-sub">{plate.sub}</span>
+        <div className="tl-sticker-seal-frame">
+          <div className={`timeline-seal timeline-seal--${plate.tone}`}>
+            <span className="seal-icon">{plate.icon}</span>
+            <span className="seal-yr">{plate.year}</span>
+            <span className="seal-txt">{plate.label}</span>
+            <span className="seal-sub">{plate.sub}</span>
+          </div>
         </div>
       )}
-    </div>
+    </figure>
   );
 }
 
+/**
+ * Same layout as the Mumbai/Perth corridor nodes: a badge, a tilted
+ * .tl-sticker polaroid, then a bold caption line and a short blurb — right
+ * side alternates to the orange badge variant, mirroring the Perth node.
+ */
 function MilestoneCard({
   milestone,
   cardRef,
@@ -38,36 +121,28 @@ function MilestoneCard({
   bodyRef: (node: HTMLDivElement | null) => void;
 }) {
   const isRight = milestone.side === "right";
-  const body = (
-    <div className="menu-card-body" ref={bodyRef}>
-      <div className="timeline-badge-row">
-        <span className="timeline-badge-year">{milestone.year}</span>
-        <span className="timeline-badge-tag">{milestone.tag}</span>
-      </div>
-      <h3 className="menu-card-title">{milestone.title}</h3>
-      <p className="menu-card-sub">{milestone.description}</p>
-    </div>
-  );
-  const plate = <MilestonePlate plate={milestone.plate} side={milestone.side} />;
 
   return (
     <div
-      className={`menu-food-card menu-food-card--${milestone.side} timeline-card`}
+      className={`timeline-postcard timeline-postcard--${milestone.side} timeline-card`}
       id={`card${milestone.id}`}
       ref={cardRef}
       style={{ top: `${milestone.top}px` }}
     >
-      {isRight ? (
-        <>
-          {body}
-          <div ref={plateRef}>{plate}</div>
-        </>
-      ) : (
-        <>
-          <div ref={plateRef}>{plate}</div>
-          {body}
-        </>
-      )}
+      <div className={`node-badge${isRight ? " node-badge--perth" : ""}`}>
+        <span className="pulse-dot" /> {milestone.year}
+      </div>
+
+      <div className="timeline-postcard-media" ref={plateRef}>
+        <MilestonePlate plate={milestone.plate} side={milestone.side} />
+      </div>
+
+      <div className="timeline-postcard-caption" ref={bodyRef}>
+        <div className="node-location">
+          <span className="loc-city">{milestone.tag}</span>
+        </div>
+        <p className="node-history-sub">{milestone.description}</p>
+      </div>
     </div>
   );
 }
@@ -92,6 +167,25 @@ export default function JourneyTimeline() {
   const plateRefs = useRef<(HTMLDivElement | null)[]>([]);
   const bodyRefs = useRef<(HTMLDivElement | null)[]>([]);
 
+  const [corridorWidth, setCorridorWidth] = useState(1000);
+
+  useEffect(() => {
+    const corridor = corridorRef.current;
+    if (!corridor) return;
+
+    function handleResize() {
+      if (corridor) {
+        setCorridorWidth(corridor.clientWidth || 1000);
+      }
+    }
+
+    handleResize();
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
+  const flightGeometry = getFlightGeometry(corridorWidth);
+
   useEffect(() => {
     const corridor = corridorRef.current;
     const routeProgress = routeProgressRef.current;
@@ -100,60 +194,101 @@ export default function JourneyTimeline() {
     let routeLen = 0;
     let smoothedProgress = 0;
     let raf = 0;
+    // y → arc-length samples, so the plane can be driven by how far the page
+    // has scrolled vertically rather than by distance along the curve. Arc
+    // length runs ahead of vertical travel on the wide horizontal sweeps,
+    // which is what let the plane drift off-screen away from its card.
+    let yTable: { y: number; len: number }[] = [];
 
     function measure() {
       routeLen = routeProgress!.getTotalLength();
       routeProgress!.style.strokeDasharray = `${routeLen}`;
       routeProgress!.style.strokeDashoffset = `${routeLen}`;
+
+      yTable = [];
+      const samples = 240;
+      for (let i = 0; i <= samples; i++) {
+        const len = (i / samples) * routeLen;
+        yTable.push({ y: routeProgress!.getPointAtLength(len).y, len });
+      }
+    }
+
+    // the path only ever descends, so a binary search over y is safe
+    function lengthAtY(y: number) {
+      if (yTable.length === 0) return 0;
+      if (y <= yTable[0].y) return 0;
+      if (y >= yTable[yTable.length - 1].y) return routeLen;
+
+      let lo = 0;
+      let hi = yTable.length - 1;
+      while (hi - lo > 1) {
+        const mid = (lo + hi) >> 1;
+        if (yTable[mid].y <= y) lo = mid;
+        else hi = mid;
+      }
+      const a = yTable[lo];
+      const b = yTable[hi];
+      const t = b.y === a.y ? 0 : (y - a.y) / (b.y - a.y);
+      return a.len + (b.len - a.len) * t;
     }
 
     function calculateProgress() {
       const rect = corridor!.getBoundingClientRect();
       const vh = window.innerHeight;
-      // progress starts as Mumbai scrolls up into view, and completes when Perth enters
-      const startY = vh * 0.5;
+      // The corridor y that sits on this line is the one the plane flies along,
+      // so it doubles as each card's "hero" position. Kept below centre so a
+      // 421px card still clears the header there and holds full opacity for a
+      // good stretch either side of the plane reaching its pin.
+      const startY = vh * FOCUS_RATIO;
       const totalTravel = rect.height;
       const currentTravel = startY - rect.top;
       return clamp(currentTravel / totalTravel, 0, 1);
     }
 
-    function updateMilestoneCard(i: number, triggerP: number, isRight: boolean) {
+    function updateMilestoneCard(i: number, isRight: boolean) {
       const card = cardRefs.current[i];
       const plate = plateRefs.current[i];
       const body = bodyRefs.current[i];
       if (!card || !plate || !body) return;
 
-      const cardAlpha = clamp((smoothedProgress - (triggerP - 0.08)) / 0.08, 0, 1);
-      const plateScale = clamp((smoothedProgress - (triggerP - 0.06)) / 0.12, 0, 1);
-      const bodySlide = clamp((smoothedProgress - triggerP) / 0.12, 0, 1);
+      // Driven off the card's own live position rather than a hand-tuned
+      // progress fraction, so every card tracks the real scroll and can't
+      // drift out of step with the plane.
+      const rect = card.getBoundingClientRect();
+      const vh = window.innerHeight;
 
-      card.style.opacity = String(cardAlpha);
-      card.style.transform = isRight ? "rotate(2deg)" : "rotate(-2deg)";
+      // Rises into view from the bottom of the viewport and then simply stays:
+      // once a card has arrived it keeps full opacity and scrolls away with the
+      // page, rather than fading back out as the next one arrives.
+      const enter = clamp((vh - rect.top) / 300, 0, 1);
 
-      plate.style.transform = `scale(${plateScale})`;
-      plate.style.opacity = String(plateScale);
+      // no rotation on the outer card — only the .tl-sticker itself tilts
+      // (via its own CSS, --a/--b), exactly like the Mumbai/Perth nodes.
+      card.style.opacity = String(enter);
 
+      plate.style.transform = `scale(${0.88 + enter * 0.12})`;
+      plate.style.opacity = String(clamp(enter * 1.4, 0, 1));
+
+      const bodySlide = clamp((enter - 0.2) / 0.5, 0, 1);
       const slideOffset = isRight ? (1 - bodySlide) * 40 : (1 - bodySlide) * -40;
       body.style.transform = `translateX(${slideOffset}px)`;
       body.style.opacity = String(bodySlide);
     }
 
     function applyProgress(p: number) {
-      // getTotalLength() can return 0 if it is called before layout settles, and the
-      // old code measured once on mount: a single 0 there disabled the whole section
-      // for the life of the page. Re-measure instead of giving up.
-      if (!routeLen) measure();
       if (!routeLen) return;
 
-      const offset = routeLen * (1 - p);
-      routeProgress!.style.strokeDashoffset = `${offset}`;
+      // one SVG unit == one corridor pixel, so the scrolled-to y in corridor
+      // space is simply p * height — the plane then always sits level with
+      // whichever card is currently on screen.
+      const currentDist = lengthAtY(p * CORRIDOR_HEIGHT);
+      routeProgress!.style.strokeDashoffset = `${routeLen - currentDist}`;
 
       if (routeGhostRef.current) {
         routeGhostRef.current.style.opacity = String(0.22 * (1 - p * 0.4));
       }
 
       // position and orient the plane along the curved string
-      const currentDist = p * routeLen;
       const pt = routeProgress!.getPointAtLength(currentDist);
       const delta = 2.5;
       const ahead = routeProgress!.getPointAtLength(clamp(currentDist + delta, 0, routeLen));
@@ -167,72 +302,41 @@ export default function JourneyTimeline() {
         nodeMumbaiRef.current.style.transform = `translateY(${clamp(p * 15, 0, 15)}px) rotate(-2deg)`;
       }
 
-      MILESTONES.forEach((m, i) => updateMilestoneCard(i, m.triggerP, m.side === "right"));
+      MILESTONES.forEach((m, i) => updateMilestoneCard(i, m.side === "right"));
 
       if (nodePerthRef.current) {
-        const perthAlpha = clamp((p - 0.78) / 0.18, 0, 1);
+        // the plane touches down at y 1674 of 2230, i.e. p ≈ 0.75
+        const perthAlpha = clamp((p - 0.64) / 0.12, 0, 1);
         nodePerthRef.current.style.opacity = String(perthAlpha);
         nodePerthRef.current.style.transform = `translateY(${(1 - perthAlpha) * 35}px) scale(${0.92 + perthAlpha * 0.08}) rotate(2deg)`;
       }
     }
 
-    /**
-     * Progress is applied straight from the scroll event, with a frame used only to
-     * coalesce bursts. The previous version ran a permanent rAF loop that eased
-     * towards the target, which had two problems:
-     *
-     *  - `applyProgress(0)` on mount writes `opacity: 0` inline on every card, and
-     *    only the loop brought them back. Anywhere frames are not served — a
-     *    background tab, a hidden window — the whole section stayed invisible, and
-     *    a section whose content only exists while an animation runs can vanish.
-     *  - it ran every frame for the life of the page, even far off-screen.
-     *
-     * Easing now comes from CSS transitions on the cards, so there is nothing to
-     * interpolate in JS and no loop to keep alive.
-     */
-    let queued = false;
-
-    function render() {
-      queued = false;
+    function tick() {
+      // no easing toward the target: the corridor's live rect IS the scroll
+      // position, so reading it every frame is already smooth, and damping it
+      // only made the plane and the cards lag behind the actual scroll.
       smoothedProgress = calculateProgress();
       applyProgress(smoothedProgress);
-    }
-
-    function onScroll() {
-      if (queued) return;
-      queued = true;
-      // rAF when frames are available; the timeout is the floor that guarantees the
-      // section still updates when they are not
-      raf = requestAnimationFrame(render);
-      window.setTimeout(() => {
-        if (queued) render();
-      }, 120);
+      raf = requestAnimationFrame(tick);
     }
 
     function onResize() {
       measure();
-      render();
+      applyProgress(smoothedProgress);
     }
 
     measure();
-
-    const still = window.matchMedia("(prefers-reduced-motion: reduce)");
-    if (still.matches) {
-      // no scroll choreography: show the finished state and leave it alone
-      applyProgress(1);
-      return;
-    }
-
-    render();
-    window.addEventListener("scroll", onScroll, { passive: true });
+    smoothedProgress = calculateProgress();
+    applyProgress(smoothedProgress);
+    raf = requestAnimationFrame(tick);
     window.addEventListener("resize", onResize);
 
     return () => {
-      window.removeEventListener("scroll", onScroll);
       window.removeEventListener("resize", onResize);
       cancelAnimationFrame(raf);
     };
-  }, []);
+  }, [corridorWidth]);
 
   return (
     <section id="journey" className="journey-flow">
@@ -255,7 +359,7 @@ export default function JourneyTimeline() {
         {/* 2. flight string with the 5-milestone S-curve */}
         <svg
           className="flight-svg"
-          viewBox={FLIGHT_SVG.viewBox}
+          viewBox={`0 0 ${corridorWidth} ${CORRIDOR_HEIGHT}`}
           preserveAspectRatio="xMidYMid meet"
           aria-label="Flight line from Mumbai to Perth"
         >
@@ -272,7 +376,7 @@ export default function JourneyTimeline() {
           <path
             ref={routeGhostRef}
             className="route-ghost"
-            d={FLIGHT_SVG.path}
+            d={flightGeometry.path}
             fill="none"
             stroke="#241008"
             strokeWidth="3.5"
@@ -283,17 +387,15 @@ export default function JourneyTimeline() {
           <path
             ref={routeProgressRef}
             className="route-progress"
-            d={FLIGHT_SVG.path}
+            d={flightGeometry.path}
             fill="none"
             stroke="url(#stringGradient)"
             strokeWidth="6"
             strokeLinecap="round"
           />
 
-
-
           <g id="svgPins">
-            {FLIGHT_SVG.pins.map((pin, i) => (
+            {flightGeometry.pins.map((pin, i) => (
               <circle
                 key={i}
                 cx={pin.cx}
@@ -308,7 +410,14 @@ export default function JourneyTimeline() {
 
           <g id="plane" ref={planeRef}>
             <g transform="rotate(-90)">
-              <image href="/images/plane.webp" x="-42" y="-42" width="84" height="84" preserveAspectRatio="xMidYMid meet" />
+              <image
+                href="/images/plane.webp"
+                x={corridorWidth < 768 ? "-29" : "-50"}
+                y={corridorWidth < 768 ? "-29" : "-50"}
+                width={corridorWidth < 768 ? "58" : "100"}
+                height={corridorWidth < 768 ? "58" : "100"}
+                preserveAspectRatio="xMidYMid meet"
+              />
             </g>
           </g>
         </svg>

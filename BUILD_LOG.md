@@ -1717,3 +1717,35 @@ Chef's Corner, Blog, and Contact Us full builds — currently on-brand stub page
 
 **Open item for the user**: confirm whether to proceed with Roboto Slab/DM Sans permanently,
 or supply Acumin Variable Concept / Gilroy font files to match the brief exactly.
+
+---
+
+## Merge: origin/main (24 commits) into local timeline rework
+
+Pulled the 24 upstream commits (phi type scale, About rebuild, Chef's Corner deck rewrite,
+"What We Stand For" poster tiles) on top of substantial uncommitted local work. Local work
+was CRLF while the repo is LF, which made a naive 3-way merge report every file as one
+whole-file conflict — normalising line endings first reduced it to 2 real hunks per file.
+
+Resolutions:
+- **Timeline (`JourneyTimeline.tsx`, `journeyMilestones.ts`, `dish-gujarati.gif`)** — kept
+  local wholesale, per instruction. Upstream's own timeline commit was therefore not taken;
+  its two robustness ideas are noted below as follow-ups.
+- **`globals.css`** — kept upstream's non-timeline work (paper background on `.journey-flow`,
+  phi padding, `.fan-card`, `.route-progress`). Rejected two upstream hunks:
+  - `transition: opacity .5s` on `.timeline-postcard`: upstream moved its easing into CSS,
+    but the local JS writes opacity every frame from the card's live rect, so a transition
+    would lag the scroll by half a second — the exact problem that rework removed.
+  - re-added `.menu-card-*` / `.menu-food-card` rules: dead, nothing renders those classes
+    any more (verified by grep across `src/`).
+- **`page.tsx` / `PageHero.tsx`** — kept the local mobile-responsive sizing, so 4 spots stay
+  on explicit `text-[9px] sm:…` values rather than upstream's `text-phi-*` scale.
+- **`ChefDeck.tsx`** — took upstream. Local held only autoplay/duration tweaks (3000→1400ms,
+  400→180ms) against the old deck, which upstream rewrote (287 lines).
+
+Verified after merge: `tsc --noEmit` clean; `/`, `/about`, `/chefs-corner` all 200; timeline
+geometry unchanged (path 3124, corridor 2230, every pin still inside its card at 1440/1100/820).
+
+**Follow-ups worth taking from upstream's timeline commit**: re-measuring when
+`getTotalLength()` returns 0 before layout settles, and a `prefers-reduced-motion` branch.
+Neither is in the local version.

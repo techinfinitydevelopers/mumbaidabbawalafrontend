@@ -1109,29 +1109,37 @@ h1, h2, h3, h4 {
   }
 }
 
-/* The hand-tuned flight-svg art (path, pins) and the 5 timeline cards are all
-   pixel-positioned against a 1650px-tall coordinate space. Perth's node sits
-   at a fixed position below the last card (see journeyMilestones.ts), in
-   space the corridor height is extended to provide. */
+/* The flight-svg art (path, pins) and the 4 timeline cards are all
+   pixel-positioned against a 2230px-tall coordinate space — must match
+   CORRIDOR_HEIGHT in JourneyTimeline.tsx. Perth's node sits at a fixed
+   position below the last card, in space this height provides.
+
+   The max-width also sets how far the cards sit from the flight path: they
+   anchor to these edges, so a narrower corridor pulls them in against the
+   line and shortens the route's lateral travel with them. */
 .flight-corridor {
   position: relative;
   width: 100%;
-  max-width: 1320px;
-  min-height: 1850px;
+  max-width: 1040px;
+  min-height: 2230px;
   margin: 0 auto;
 }
 
-/* fixed height (not 100%) so it stays locked to its own 1650px coordinate
-   space regardless of the corridor's total height */
+/* Height MUST equal both the corridor's min-height and the viewBox height the
+   component renders, so the SVG maps 1:1 onto corridor pixels — otherwise
+   preserveAspectRatio silently scales and re-centres the whole path and the
+   line stops lining up with the cards. z-index kept below both
+   .corridor-node (3) and .timeline-postcard (5) so the flight path/pins/plane
+   sit behind the cards and stickers, not drawn over them. */
 .flight-svg {
   position: absolute;
   top: 0;
   left: 0;
   width: 100%;
-  height: 1650px;
+  height: 2230px;
   overflow: visible;
   pointer-events: none;
-  z-index: 6;
+  z-index: 1;
 }
 
 .corridor-node {
@@ -1156,7 +1164,7 @@ h1, h2, h3, h4 {
 /* Perth shifted out to the right edge, in the extended space below the last
    timeline card so the two don't overlap */
 .corridor-node--perth {
-  top: 1500px;
+  top: 1674px;
   right: 0;
   align-items: flex-end;
   text-align: right;
@@ -1203,7 +1211,8 @@ h1, h2, h3, h4 {
   margin-top: 14px;
 }
 
-.corridor-node--perth .node-location {
+.corridor-node--perth .node-location,
+.timeline-postcard--right .node-location {
   justify-content: flex-end;
 }
 
@@ -1222,74 +1231,48 @@ h1, h2, h3, h4 {
   color: var(--color-brand-red);
 }
 
-/* ---------- Timeline milestone cards, direct scroll-synced interpolation ---------- */
-.menu-food-card {
+/* ---------- Timeline milestone cards ----------
+   Same layout as the Mumbai/Perth corridor nodes: a badge, then a tilted
+   .tl-sticker polaroid (reused as-is, tilt included), then a bold caption
+   line and a short blurb underneath. Only the .tl-sticker itself carries a
+   tilt (its own CSS, --a/--b) — the outer card stays untilted, exactly
+   matching how the corridor nodes are built. */
+.timeline-postcard {
   position: absolute;
   z-index: 5;
   display: flex;
-  align-items: center;
-  background: var(--color-paper);
-  border: 1.5px solid rgba(175, 20, 17, 0.22);
-  border-radius: 20px;
-  box-shadow: 0 18px 45px rgba(36, 16, 8, 0.14), 0 2px 8px rgba(36, 16, 8, 0.06);
-  width: 440px;
-  min-height: 175px;
-  max-width: 90vw;
+  flex-direction: column;
+  width: min(360px, 88vw);
   will-change: opacity, transform;
-  transition: opacity 0.5s ease, transform 0.35s ease, box-shadow 0.35s ease,
-    border-color 0.35s ease;
 }
 
-.menu-food-card--right {
+.timeline-postcard--right {
   right: 0%;
-  padding: 24px 0 24px 28px;
-  transform: rotate(2deg);
+  align-items: flex-end;
 }
 
-.menu-food-card--right:hover {
-  transform: translateY(-5px) rotate(2deg) scale(1.02);
-  box-shadow: 0 26px 54px rgba(36, 16, 8, 0.2);
-  border-color: var(--color-brand-orange);
-}
-
-.menu-food-card--left {
+.timeline-postcard--left {
   left: 0%;
-  padding: 24px 28px 24px 0;
-  transform: rotate(-2deg);
+  align-items: flex-start;
 }
 
-.menu-food-card--left:hover {
-  transform: translateY(-5px) rotate(-2deg) scale(1.02);
-  box-shadow: 0 26px 54px rgba(36, 16, 8, 0.2);
-  border-color: var(--color-brand-orange);
+.timeline-postcard .node-badge {
+  margin-bottom: 10px;
 }
 
-.timeline-badge-row {
+.timeline-postcard .tl-sticker {
+  width: 100%;
+}
+
+/* the seal replaces the photo for some milestones, framed in the same
+   260px-tall slot a .tl-sticker photo would occupy */
+.tl-sticker-seal-frame {
+  height: 260px;
   display: flex;
   align-items: center;
-  gap: 10px;
-  margin-bottom: 6px;
-}
-
-.timeline-badge-year {
-  display: inline-block;
-  background: var(--color-brand-red);
-  color: var(--color-brand-cream);
-  font-family: var(--font-poster);
-  font-size: 15px;
-  letter-spacing: 0.04em;
-  padding: 3px 12px;
-  border-radius: 999px;
-  box-shadow: 0 4px 12px -3px rgba(175, 20, 17, 0.4);
-}
-
-.timeline-badge-tag {
-  color: var(--color-brand-orange);
-  font-family: var(--font-body);
-  font-size: 11px;
-  font-weight: 700;
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
+  justify-content: center;
+  border-radius: 4px;
+  background: linear-gradient(160deg, #fffdf6, #fcf3cd);
 }
 
 .timeline-seal {
@@ -1356,82 +1339,21 @@ h1, h2, h3, h4 {
   margin-top: 2px;
 }
 
-/* the seal replaces the photo for some milestones, sized a little smaller
-   than the 165px plate so it reads as a medallion set into the ring —
-   centred here since the seal isn't guaranteed to fill the circle exactly */
-.menu-card-plate {
-  width: 165px;
-  height: 165px;
-  border-radius: 50%;
-  overflow: hidden;
-  flex-shrink: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border: 4px solid var(--color-paper);
-  box-shadow: 0 12px 28px rgba(36, 16, 8, 0.22);
-  background: var(--color-brand-cream);
-  position: relative;
-  transition: opacity 0.5s ease, transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
-  will-change: transform, opacity;
-  transform-origin: center center;
-}
-
-.menu-card-plate--right {
-  margin-right: -45px;
-  margin-left: 14px;
-}
-
-.menu-card-plate--left {
-  margin-left: -45px;
-  margin-right: 14px;
-}
-
-.menu-card-plate img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  display: block;
-  transition: transform 0.4s ease;
-}
-
-.menu-food-card:hover .menu-card-plate img {
-  transform: scale(1.08) rotate(3deg);
-}
-
-.menu-card-body {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  gap: 5px;
-  will-change: transform, opacity;
-  transition: opacity 0.5s ease, transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
-}
-
-.menu-card-title {
-  font-family: var(--font-display);
-  font-size: 20px;
-  font-weight: 700;
-  color: var(--color-brand-red);
-  margin: 0;
-  line-height: 1.25;
-}
-
-.menu-card-sub {
-  font-family: var(--font-body);
-  font-size: 13.5px;
-  line-height: 1.62;
-  color: rgba(42, 24, 16, 0.85);
-  margin: 4px 0 0;
-}
-
 .node-history-sub {
   font-size: 13.5px;
   line-height: 1.5;
   color: #5a4a3f;
   margin: 10px 0 0;
   max-width: 440px;
+}
+
+.corridor-node--perth .node-history-sub,
+.timeline-postcard--right .node-history-sub {
   text-align: right;
+}
+
+.timeline-postcard--left .node-history-sub {
+  text-align: left;
 }
 
 /* ---------- Sticker aesthetics (trimmed border & washi tape) ---------- */
@@ -1504,93 +1426,147 @@ h1, h2, h3, h4 {
 }
 
 @media (max-width: 1080px) {
-  .menu-food-card {
-    width: 430px;
-  }
-
-  .menu-card-plate {
-    width: 135px;
-    height: 135px;
-  }
-
   .timeline-seal {
     width: 125px;
     height: 125px;
-  }
-
-  .menu-card-plate--right {
-    margin-right: -28px;
-  }
-
-  .menu-card-plate--left {
-    margin-left: -28px;
-  }
-
-  .menu-card-title {
-    font-size: 18px;
-  }
-
-  .menu-card-sub {
-    font-size: 13px;
   }
 }
 
 @media (max-width: 768px) {
   .flight-corridor {
-    min-height: auto;
+    min-height: 2230px;
+    width: 100%;
+    overflow: visible;
   }
 
   .flight-svg {
-    display: none;
+    display: block !important;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 2230px;
+    pointer-events: none;
+    z-index: 10;
   }
 
-  .menu-food-card {
-    position: relative;
-    top: auto !important;
-    left: auto !important;
+  .timeline-postcard {
+    position: absolute;
+    width: min(168px, 44vw);
+    z-index: 5;
+  }
+
+  .timeline-postcard--left {
+    left: 0 !important;
     right: auto !important;
-    margin: 32px auto;
-    width: min(480px, 94vw);
-    padding: 20px;
-    opacity: 1 !important;
-    transform: none !important;
+    align-items: flex-start;
   }
 
-  .menu-card-plate,
-  .menu-card-body {
-    opacity: 1 !important;
-    transform: none !important;
+  .timeline-postcard--right {
+    right: 0 !important;
+    left: auto !important;
+    align-items: flex-end;
   }
 
-  .menu-card-plate--right,
-  .menu-card-plate--left {
-    margin: 0 0 0 10px;
+  .corridor-node {
+    position: absolute;
+    width: min(168px, 44vw);
+    z-index: 3;
   }
 
-  .corridor-node--mumbai,
+  .corridor-node--mumbai {
+    top: 6px;
+    left: 0 !important;
+    right: auto !important;
+    align-items: flex-start;
+    text-align: left;
+  }
+
   .corridor-node--perth {
-    position: static;
-    top: auto;
-    left: auto;
-    right: auto;
-    margin: 0 auto 24px;
-    text-align: center;
-    align-items: center;
-    max-width: 100%;
-    opacity: 1 !important;
-    transform: none !important;
+    top: 1674px;
+    right: 0 !important;
+    left: auto !important;
+    align-items: flex-end;
+    text-align: right;
   }
 
-  .corridor-node--perth .node-location {
-    justify-content: center;
+  .timeline-postcard .node-badge,
+  .corridor-node .node-badge {
+    font-size: 8.5px;
+    padding: 3px 8px;
+    margin-bottom: 6px;
+    gap: 5px;
+    letter-spacing: 1.2px;
+  }
+
+  .tl-sticker {
+    padding: 5px 5px 6px;
+  }
+
+  .tl-sticker::before,
+  .tl-sticker::after {
+    width: 36px;
+    height: 14px;
+    top: -6px;
+  }
+
+  .tl-sticker::before {
+    left: 10px;
+  }
+
+  .tl-sticker::after {
+    right: 10px;
   }
 
   .tl-sticker img {
-    height: 200px;
+    height: 125px;
   }
 
-  .flight-corridor {
-    min-height: auto;
+  .tl-sticker-seal-frame {
+    height: 125px;
+  }
+
+  .timeline-seal {
+    width: 88px;
+    height: 88px;
+    padding: 4px;
+    border-width: 2px;
+  }
+
+  .seal-icon {
+    font-size: 16px;
+  }
+
+  .seal-yr {
+    font-size: 13px;
+  }
+
+  .seal-txt {
+    font-size: 7px;
+  }
+
+  .seal-sub {
+    font-size: 9.5px;
+  }
+
+  .node-location {
+    margin-top: 8px;
+    gap: 6px;
+  }
+
+  .node-location .loc-city {
+    font-size: 15px;
+  }
+
+  .node-location .loc-code {
+    font-size: 11px;
+  }
+
+  .node-history-sub {
+    font-size: 11px;
+    line-height: 1.35;
+    max-width: 165px;
+    margin-top: 5px;
   }
 }
 
@@ -1598,8 +1574,8 @@ h1, h2, h3, h4 {
   .pulse-dot {
     animation: none;
   }
-  .menu-card-plate,
-  .menu-card-body,
+  .timeline-postcard-media,
+  .timeline-postcard-caption,
   .corridor-node {
     transform: none !important;
     opacity: 1 !important;
