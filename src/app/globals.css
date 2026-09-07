@@ -48,6 +48,7 @@
   --space-phi-5: 3.4375rem; /* 55px */
   --space-phi-6: 5.5625rem; /* 89px */
   --space-phi-7: 9rem;      /* 144px */
+  --space-phi-8: 14.5625rem; /* 233px */
 }
 
 @theme inline {
@@ -83,6 +84,7 @@
   --spacing-phi-5: var(--space-phi-5);
   --spacing-phi-6: var(--space-phi-6);
   --spacing-phi-7: var(--space-phi-7);
+  --spacing-phi-8: var(--space-phi-8);
 
   /* max-w-measure / max-w-measure-* — reading widths on the same integers */
   --container-measure: 34rem;
@@ -1132,6 +1134,7 @@ h1, h2, h3, h4 {
   max-width: 470px;
   width: min(470px, 88vw);
   will-change: transform, opacity;
+  transition: opacity 0.5s ease, transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 /* Mumbai shifted out to the left edge, near the string's start pin (y: 80) */
@@ -1225,7 +1228,8 @@ h1, h2, h3, h4 {
   min-height: 175px;
   max-width: 90vw;
   will-change: opacity, transform;
-  transition: transform 0.35s ease, box-shadow 0.35s ease, border-color 0.35s ease;
+  transition: opacity 0.5s ease, transform 0.35s ease, box-shadow 0.35s ease,
+    border-color 0.35s ease;
 }
 
 .menu-food-card--right {
@@ -1360,6 +1364,7 @@ h1, h2, h3, h4 {
   box-shadow: 0 12px 28px rgba(36, 16, 8, 0.22);
   background: var(--color-brand-cream);
   position: relative;
+  transition: opacity 0.5s ease, transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
   will-change: transform, opacity;
   transform-origin: center center;
 }
@@ -1392,6 +1397,7 @@ h1, h2, h3, h4 {
   flex-direction: column;
   gap: 5px;
   will-change: transform, opacity;
+  transition: opacity 0.5s ease, transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 .menu-card-title {
@@ -1473,6 +1479,11 @@ h1, h2, h3, h4 {
 .tl-sticker::after {
   right: 20px;
   transform: rotate(6deg);
+}
+
+.route-progress,
+.route-ghost {
+  transition: stroke-dashoffset 0.5s ease, opacity 0.5s ease;
 }
 
 .route-ghost {

@@ -139,6 +139,10 @@ export default function JourneyTimeline() {
     }
 
     function applyProgress(p: number) {
+      // getTotalLength() can return 0 if it is called before layout settles, and the
+      // old code measured once on mount: a single 0 there disabled the whole section
+      // for the life of the page. Re-measure instead of giving up.
+      if (!routeLen) measure();
       if (!routeLen) return;
 
       const offset = routeLen * (1 - p);
@@ -172,26 +176,59 @@ export default function JourneyTimeline() {
       }
     }
 
-    function tick() {
-      const target = calculateProgress();
-      smoothedProgress += (target - smoothedProgress) * 0.14;
-      if (Math.abs(target - smoothedProgress) < 0.0002) smoothedProgress = target;
+    /**
+     * Progress is applied straight from the scroll event, with a frame used only to
+     * coalesce bursts. The previous version ran a permanent rAF loop that eased
+     * towards the target, which had two problems:
+     *
+     *  - `applyProgress(0)` on mount writes `opacity: 0` inline on every card, and
+     *    only the loop brought them back. Anywhere frames are not served — a
+     *    background tab, a hidden window — the whole section stayed invisible, and
+     *    a section whose content only exists while an animation runs can vanish.
+     *  - it ran every frame for the life of the page, even far off-screen.
+     *
+     * Easing now comes from CSS transitions on the cards, so there is nothing to
+     * interpolate in JS and no loop to keep alive.
+     */
+    let queued = false;
+
+    function render() {
+      queued = false;
+      smoothedProgress = calculateProgress();
       applyProgress(smoothedProgress);
-      raf = requestAnimationFrame(tick);
+    }
+
+    function onScroll() {
+      if (queued) return;
+      queued = true;
+      // rAF when frames are available; the timeout is the floor that guarantees the
+      // section still updates when they are not
+      raf = requestAnimationFrame(render);
+      window.setTimeout(() => {
+        if (queued) render();
+      }, 120);
     }
 
     function onResize() {
       measure();
-      applyProgress(smoothedProgress);
+      render();
     }
 
     measure();
-    smoothedProgress = calculateProgress();
-    applyProgress(smoothedProgress);
-    raf = requestAnimationFrame(tick);
+
+    const still = window.matchMedia("(prefers-reduced-motion: reduce)");
+    if (still.matches) {
+      // no scroll choreography: show the finished state and leave it alone
+      applyProgress(1);
+      return;
+    }
+
+    render();
+    window.addEventListener("scroll", onScroll, { passive: true });
     window.addEventListener("resize", onResize);
 
     return () => {
+      window.removeEventListener("scroll", onScroll);
       window.removeEventListener("resize", onResize);
       cancelAnimationFrame(raf);
     };

@@ -82,7 +82,7 @@ export default function PlansPage() {
       </section>
 
       {/* ───── Closing CTA ───── */}
-      <section className="grain graph-paper-light relative overflow-hidden bg-brand-red pb-phi-5 pt-phi-6 sm:pb-phi-6">
+      <section className="grain graph-paper-light relative overflow-hidden bg-brand-red pb-phi-5 pt-phi-7 sm:pt-phi-8 sm:pb-phi-6">
         <WaveDivider tone="bg-paper" textured={false} />
 
         <Reveal className="relative z-20 mx-auto max-w-3xl px-5 text-center sm:px-8">

@@ -65,7 +65,7 @@ export default function RegionalFoodStoriesPage() {
       </section>
 
       {/* ───── Closing CTA, styled after the "SOME TRADITIONS TRAVEL WELL" poster ───── */}
-      <section className="grain graph-paper-light relative overflow-hidden bg-brand-red pb-phi-5 pt-phi-6 sm:pb-phi-5">
+      <section className="grain graph-paper-light relative overflow-hidden bg-brand-red pb-phi-5 pt-phi-7 sm:pt-phi-8 sm:pb-phi-5">
         <WaveDivider tone="bg-paper" />
 
         <Reveal className="relative z-20 mx-auto max-w-3xl px-5 text-center sm:px-8">

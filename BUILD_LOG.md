@@ -1,3 +1,59 @@
+## 2026-09-07 — About page content, timeline robustness, closing-CTA clearance
+
+### Closing CTAs started inside the wave
+
+All three red closing sections carried `pt-phi-6` (89px) against a wave band that
+is 110px tall on mobile and 150px on desktop, so the first line of copy sat inside
+the curve. Added `--space-phi-8: 233px` (the next Fibonacci step) and set
+`pt-phi-7 sm:pt-phi-8`. Measured after: 233px padding against a 150px band leaves
+115px of clearance on desktop, 144 against 110 leaves 66px on mobile. Fixed on
+`/plans`, `/regional-food-stories` and `/whats-cooking-tomorrow` — the same fault
+was on all three, not just the one flagged.
+
+### About page — content from section 2 of the doc
+
+Added the lead the doc opens with and the page was missing: "135+ Years. Studied,
+Respected, Still Delivering." with the Harvard Business School sentence, on a
+1.618fr split beside a 1890/2026 block. "What We Stand For" and "Life of a
+Dabbawala" were already present and already match the doc.
+
+**Removed two claims the client's own document forbids.** Section 2 carries the
+note: *"Specific accuracy statistics to be reinstated only once independently
+verified and legally cleared."* The page was publishing:
+
+- a hero fact reading **"99.9% — Six Sigma accuracy"**, now "5 — Regional cuisines";
+- "six generations of **six-sigma punctuality**" in the Perth paragraph, now "six
+  generations of practice".
+
+The 200k daily-deliveries figure stays: it is a scale figure the client already
+publishes on their existing site, not an accuracy statistic.
+
+### Timeline
+
+Two real faults, both of which could leave the section blank:
+
+1. `measure()` ran once on mount and `applyProgress` began `if (!routeLen) return`.
+   `getTotalLength()` can return 0 before layout settles, and a single 0 there
+   disabled the section for the life of the page. It now re-measures instead of
+   giving up.
+2. Everything was driven by a permanent `requestAnimationFrame` loop, while the one
+   synchronous `applyProgress(0)` on mount writes `opacity: 0` inline on every card.
+   Anywhere frames are not served the section stayed invisible — and the loop also
+   ran every frame for the life of the page, far off-screen, calling
+   `getPointAtLength` each time. Now driven from a passive `scroll` listener,
+   coalesced through one frame with a 120ms timeout as the floor so an unserved
+   frame cannot strand it, and the easing moved into CSS transitions on the cards,
+   plates, bodies, nodes and the route dash. `prefers-reduced-motion` renders the
+   finished state and attaches nothing.
+
+**Not verified: the scroll choreography itself.** The Browser pane in this session
+is hidden — `document.visibilityState` is `"hidden"` and `requestAnimationFrame`
+serves 0 frames in 600ms — which is also why screenshots kept coming back blank all
+session. That is what made the timeline look permanently dead when I first measured
+it. What is verified is the resting state: route length 4643, plane positioned, and
+all five cards, plates, bodies and both nodes at opacity 1, so the content can no
+longer be stuck hidden. The motion needs a look in a real browser.
+
 ## 2026-09-07 — Hovered fan card now actually comes forward
 
 Client: the hovered card stayed behind its neighbours. Cause: each card was wrapped

@@ -20,7 +20,7 @@ export default function AboutPage() {
         facts={[
           { value: "135+", label: "Years of\npractice" },
           { value: "200k", label: "Daily Mumbai\ndeliveries" },
-          { value: "99.9%", label: "Six Sigma\naccuracy" },
+          { value: "5", label: "Regional\ncuisines" },
         ]}
         quote={{
           name: "Six Generations Of Punctuality",
@@ -32,6 +32,64 @@ export default function AboutPage() {
       />
 
       <JourneyTimeline />
+
+      {/* ───── 135+ years — the About lead from the content doc, which was missing ───── */}
+      <section className="relative bg-paper pb-phi-6 pt-phi-5">
+        <div className="mx-auto max-w-[1720px] px-5 sm:px-8 lg:px-12">
+          <div className="grid gap-phi-4 lg:grid-cols-[1.618fr_1fr] lg:items-center">
+            <Reveal>
+              <p className="font-script text-3xl text-brand-orange">Studied for a reason</p>
+              <h2 className="poster-stack mt-2 [--po:4px] [--po-gap:12px] sm:[--po:5px] sm:[--po-gap:18px]">
+                <span
+                  className="poster text-[26px] text-brand-red sm:text-[42px]"
+                  style={{ ["--po-color" as string]: "var(--color-brand-yellow)" }}
+                >
+                  135+ Years. Studied,
+                </span>
+                <span
+                  className="poster text-[26px] text-brand-green-dark sm:text-[42px]"
+                  style={{ ["--po-color" as string]: "var(--color-brand-yellow)" }}
+                >
+                  Respected, Still Delivering.
+                </span>
+              </h2>
+              <p className="mt-5 max-w-measure text-phi-2 leading-relaxed text-ink/70 sm:text-phi-3">
+                The Mumbai Dabbawala system has been studied by institutions including
+                Harvard Business School, for a level of reliability that&rsquo;s rare in any
+                industry, anywhere in the world. We don&rsquo;t lead with the numbers — we
+                lead with what they represent: a promise, kept, for well over a century.
+              </p>
+              <a
+                href="#journey"
+                className="mt-8 inline-block rounded-full bg-brand-red px-8 py-4 text-[11px] font-bold uppercase tracking-[0.18em] text-brand-cream transition-transform duration-300 hover:-translate-y-0.5 hover:bg-brand-orange"
+              >
+                Our Story
+              </a>
+            </Reveal>
+
+            <Reveal delay={120} className="lg:self-start">
+              <div className="rounded-[32px] bg-brand-cream/60 p-phi-3 sm:p-phi-4">
+                <p className="font-poster text-[56px] leading-none text-brand-red sm:text-[76px]">
+                  1890
+                </p>
+                <p className="mt-1 text-phi-0 font-bold uppercase tracking-[0.2em] text-ink/50">
+                  The first delivery, Mumbai
+                </p>
+                <span
+                  aria-hidden="true"
+                  className="mb-phi-3 mt-phi-3 block h-px w-full bg-brand-red/20"
+                />
+                <p className="font-poster text-[56px] leading-none text-brand-green-dark sm:text-[76px]">
+                  2026
+                </p>
+                <p className="mt-1 text-phi-0 font-bold uppercase tracking-[0.2em] text-ink/50">
+                  Perth, from 14 September
+                </p>
+              </div>
+            </Reveal>
+          </div>
+        </div>
+      </section>
 
       {/* ───── What We Stand For ───── */}
       <section className="relative w-full bg-brand-cream px-5 py-phi-6 text-center sm:px-8 sm:py-phi-6">
@@ -130,9 +188,9 @@ export default function AboutPage() {
             The Mumbai Dabbawala Arrives in Perth
           </h2>
           <p className="mx-auto mt-4 max-w-measure text-phi-2 leading-relaxed text-ink/70 sm:text-phi-3">
-            The world&rsquo;s most disciplined food network expands beyond Indian shores for
-            the first time. Bringing daily homestyle tiffin service, multi-regional culinary
-            heritage, and six generations of six-sigma punctuality to the streets of Perth.
+            The network steps beyond Indian shores for the first time — bringing daily
+            homestyle tiffin service, five regional cuisines, and six generations of
+            practice to the streets of Perth.
           </p>
         </Reveal>
       </section>
