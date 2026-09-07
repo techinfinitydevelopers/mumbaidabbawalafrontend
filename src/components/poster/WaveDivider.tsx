@@ -7,10 +7,17 @@
  */
 export default function WaveDivider({
   tone = "bg-paper",
+  textured = true,
   className = "",
 }: {
   /** Background utility for the cream side of the wave. */
   tone?: string;
+  /**
+   * Carry the graph print through the curve. Only correct when the section ABOVE is
+   * printed too — on a plain `bg-paper` section the grid would start abruptly inside
+   * the band and draw a hard line along its top edge.
+   */
+  textured?: boolean;
   className?: string;
 }) {
   return (
@@ -31,7 +38,7 @@ export default function WaveDivider({
 
       <div
         aria-hidden="true"
-        className={`graph-paper absolute left-0 top-0 z-10 h-[110px] w-full sm:h-[150px] ${tone} ${className}`}
+        className={`absolute left-0 top-0 z-10 h-[110px] w-full sm:h-[150px] ${textured ? "graph-paper" : ""} ${tone} ${className}`}
         style={{ clipPath: "url(#wave-divider)" }}
       />
     </>

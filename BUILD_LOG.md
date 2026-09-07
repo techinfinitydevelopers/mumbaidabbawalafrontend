@@ -1,3 +1,15 @@
+## 2026-09-07 — Grid removed from the Plans page wave
+
+`WaveDivider` hard-coded `.graph-paper`, which is right on the two pages where the
+section above the band is printed too. On `/plans` the section above is plain
+`bg-paper`, so the grid started abruptly inside the band and its first horizontal
+line landed on the band's top edge — reading as a rule across the page.
+
+Added a `textured` prop (default `true`, so the other two are untouched) and set
+`textured={false}` on `/plans`. Verified the plans divider is now
+`background-image: none` on paper with no border anywhere, and that the regional
+and tomorrow dividers still carry the print.
+
 ## 2026-09-07 — Plans page built
 
 Section 3 of the content doc, "PLANS — A DABBA FOR EVERY ROUTINE", built out below
