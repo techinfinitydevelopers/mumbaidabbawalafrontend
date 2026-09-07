@@ -1,3 +1,32 @@
+## 2026-09-07 — Hovered fan card now actually comes forward
+
+Client: the hovered card stayed behind its neighbours. Cause: each card was wrapped
+in its own `Reveal`, and `.reveal` keeps `transform: translate3d(0,0,0)` even once
+shown. A non-`none` transform creates a stacking context, so a card's hover
+`z-index: 40` only competed inside its own wrapper — the wrappers themselves sat at
+`z-index: auto` and stacked in DOM order, meaning the leftmost card could never
+rise above the others.
+
+Fixed by hoisting `Reveal` to wrap the whole row, so the four cards are siblings in
+one stacking context. Cost: the per-card entrance stagger goes (the fan now rises
+as a group). Not worth reintroducing with a keyframe — an entrance animation on
+`rotate`/`translate` would fight the hover transition on the same properties.
+
+Also moved the hover's `rotate` and `translate` onto hover-only custom properties
+(`--fan-rot`, `--fan-lift`) read through a fallback chain:
+`rotate: var(--fan-rot, var(--fan-tilt, 0deg))`. The base values arrive as inline
+custom properties, and an inline custom property beats a stylesheet one — the
+hover-only variables are never set inline, so the hover rule always wins.
+
+Verified with a real pointer: with the pointer away the cards read z 1/2/3/4 and the
+overlap between cards 1 and 2 belongs to "Rested Grain"; hovering the leftmost card
+takes it to z 40 and that same overlap point becomes "Staged Spicing". The lift,
+straighten and scale are in the compiled sheet and were confirmed by applying the
+same declarations as a class (rotate 0deg, scale 1.06); they could not be observed
+under a live pointer because the Browser pane appears to emulate
+`prefers-reduced-motion: reduce` while it drives pointer actions, which is exactly
+the branch that holds the geometry still.
+
 ## 2026-09-07 — Kitchen rules become a fanned deck; note on a force-push
 
 `FromTheKitchen` was a 220vh sticky, scroll-driven 3D playing-card flip. Replaced

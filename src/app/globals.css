@@ -449,17 +449,22 @@ h1, h2, h3, h4 {
 
 @media (min-width: 640px) {
   .fan-card {
-    rotate: var(--fan-tilt, 0deg);
-    translate: 0 var(--fan-drop, 0px);
+    /* Read through --fan-rot / --fan-lift so :hover can change those instead of
+       re-declaring `rotate` and `translate`. The base values arrive as inline custom
+       properties, and an inline custom property beats a stylesheet one — but the
+       hover-only variables are never set inline, so the hover rule always wins. */
+    rotate: var(--fan-rot, var(--fan-tilt, 0deg));
+    translate: 0 var(--fan-lift, var(--fan-drop, 0px));
   }
 }
 
 @media (hover: hover) {
   .fan-card:hover {
-    rotate: 0deg;
-    translate: 0 calc(var(--fan-drop, 0px) - 18px);
-    scale: 1.05;
+    --fan-rot: 0deg;
+    --fan-lift: calc(var(--fan-drop, 0px) - 22px);
+    scale: 1.06;
     z-index: 40;
+    box-shadow: 0 34px 60px -28px rgb(42 24 16 / 0.55);
   }
 }
 
@@ -469,9 +474,9 @@ h1, h2, h3, h4 {
   }
   /* leave the geometry alone entirely; only the stacking order still changes */
   .fan-card:hover {
-    rotate: var(--fan-tilt, 0deg);
+    --fan-rot: var(--fan-tilt, 0deg);
+    --fan-lift: var(--fan-drop, 0px);
     scale: 1;
-    translate: 0 var(--fan-drop, 0px);
   }
 }
 
