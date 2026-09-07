@@ -1,3 +1,36 @@
+## 2026-09-07 — Deck transitions moved entirely onto the compositor
+
+Four things were still making the main thread work during the 520ms transition.
+
+**1. The grow interpolated `border-radius`.** Radius is not a compositable
+property, so the card was repainted every frame for the whole animation — the
+single biggest cost here. Both animations are now transform and opacity only.
+Verified by reading the running keyframes: nothing outside
+`transform` / `opacity` / `composite` appears in either.
+
+**2. Nothing declared `will-change`,** so the browser only promoted a layer once
+the animation had already begun. The card gets `will-change: transform` when the
+grow starts and has it cleared again by the grow's own `finished` — a permanent
+`will-change` holds a layer alive for nothing. The clone declares
+`transform, opacity` up front.
+
+**3. All seven thumbnails were rebuilt on every change.** They were keyed
+`left-${title}-${idx}-${pos}` and `right-${title}-${idx}-${pos}`, so a position
+shift changed every key and React destroyed and recreated all seven buttons and
+their images mid-animation. Keyed by `chef.title` now — measured 3 of 7 nodes
+reused where it was 0. It is not 7 of 7 because chefs move between the left and
+right groups, which are different parents, so React cannot carry a node across;
+that would need the windowed layout replaced by one flat list.
+
+**4. Three `transition-all` declarations were left** — on the thumbnails, the tag
+pill (over a `backdrop-blur`, so the worst place for it) and the quote block.
+Narrowed to the properties that actually change: `transform,box-shadow`,
+`opacity`, `opacity,translate`. `transition-all` count in the file is now 0.
+
+The 16 elements still computing `transition-property: all` are a red herring —
+that is the property's initial value, and their duration is `0s`, so nothing
+transitions.
+
 ## 2026-09-07 — The outgoing card now shrinks back, mirroring the grow
 
 Client wanted the main image to travel the opposite way, as the thumbnail travels

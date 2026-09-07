@@ -102,7 +102,8 @@ export default function ChefDeck() {
     ghost.setAttribute("data-deck-ghost", "");
     ghost.style.cssText =
       `position:fixed;left:${r.left}px;top:${r.top}px;width:${r.width}px;` +
-      `height:${r.height}px;margin:0;z-index:60;pointer-events:none;transform-origin:top left;`;
+      `height:${r.height}px;margin:0;z-index:60;pointer-events:none;` +
+      `transform-origin:top left;will-change:transform,opacity;`;
     document.body.appendChild(ghost);
     outgoingGhost.current = ghost;
     outgoingTitle.current = CHEFS[activeRef.current].title;
@@ -151,6 +152,7 @@ export default function ChefDeck() {
     // a fast run of clicks would otherwise stack transforms on the same node
     node.getAnimations().forEach((a) => a.cancel());
     flipBusy.current = true;
+    node.style.willChange = "transform";
 
     const grow = node.animate(
       [
@@ -158,13 +160,16 @@ export default function ChefDeck() {
           transform: `translate(${from.left - to.left}px, ${from.top - to.top}px) scale(${
             from.width / to.width
           }, ${from.height / to.height})`,
-          borderRadius: "20px",
         },
-        { transform: "none", borderRadius: "30px" },
+        { transform: "none" },
       ],
       { duration: 520, easing: "cubic-bezier(0.22, 1, 0.36, 1)" },
     );
-    const release = () => (flipBusy.current = false);
+    const release = () => {
+      flipBusy.current = false;
+      // a permanent will-change keeps a layer alive for nothing
+      node.style.willChange = "";
+    };
     grow.finished.then(release, release);
 
     // the mirror of the grow: the old dish shrinks into its new thumbnail
@@ -348,18 +353,18 @@ export default function ChefDeck() {
             className="no-scrollbar flex cursor-grab items-end justify-start gap-3 overflow-x-auto px-2 py-4 select-none sm:gap-4 md:justify-center md:gap-5 active:cursor-grabbing will-change-scroll"
           >
             {/* 1. Left Small Cards */}
-            {leftIndices.map((idx, pos) => {
+            {leftIndices.map((idx) => {
               const chef = CHEFS[idx];
               return (
                 <button
-                  key={`left-${chef.title}-${idx}-${pos}`}
+                  key={chef.title}
                   type="button"
                   onMouseEnter={(e) => handleCardHover(e, idx)}
                   onMouseLeave={handleCardLeave}
                   onClick={(e) => pick(e, idx)}
                   aria-label={`View ${chef.title}`}
                   data-chef={chef.title}
-                  className="group relative h-[120px] w-[90px] shrink-0 self-end overflow-hidden rounded-[16px] border border-brand-red/10 shadow-[0_4px_12px_-4px_rgba(42,24,16,0.08)] transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] hover:scale-105 hover:shadow-[0_8px_18px_-6px_rgba(42,24,16,0.14)] sm:h-[148px] sm:w-[110px] sm:rounded-[20px] md:h-[168px] md:w-[125px] lg:h-[180px] lg:w-[135px]"
+                  className="group relative h-[120px] w-[90px] shrink-0 self-end overflow-hidden rounded-[16px] border border-brand-red/10 shadow-[0_4px_12px_-4px_rgba(42,24,16,0.08)] transition-[transform,box-shadow] duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] hover:scale-105 hover:shadow-[0_8px_18px_-6px_rgba(42,24,16,0.14)] sm:h-[148px] sm:w-[110px] sm:rounded-[20px] md:h-[168px] md:w-[125px] lg:h-[180px] lg:w-[135px]"
                 >
                   <div className="relative h-full w-full overflow-hidden">
                     <Image
@@ -391,7 +396,7 @@ export default function ChefDeck() {
                   priority
                   draggable={false}
                 />
-                <span className="absolute left-4 top-4 rounded-full bg-brand-cream/95 px-3.5 py-1 text-[9.5px] font-bold uppercase tracking-[0.14em] text-brand-red shadow-sm backdrop-blur-sm transition-all duration-300 sm:left-5 sm:top-5 sm:text-[10.5px]">
+                <span className="absolute left-4 top-4 rounded-full bg-brand-cream/95 px-3.5 py-1 text-[9.5px] font-bold uppercase tracking-[0.14em] text-brand-red shadow-sm backdrop-blur-sm transition-opacity duration-300 sm:left-5 sm:top-5 sm:text-[10.5px]">
                   {activeChef.tag}
                 </span>
               </div>
@@ -404,7 +409,7 @@ export default function ChefDeck() {
             >
               {/* Active Chef Details & Quote with smooth crossfade */}
               <div
-                className={`max-w-[320px] pt-1 transition-all duration-400 ease-out sm:max-w-[420px] md:max-w-[480px] lg:max-w-[540px] ${
+                className={`max-w-[320px] pt-1 transition-[opacity,translate] duration-400 ease-out sm:max-w-[420px] md:max-w-[480px] lg:max-w-[540px] ${
                   isTransitioning ? "translate-y-1 opacity-70" : "translate-y-0 opacity-100"
                 }`}
               >
@@ -434,18 +439,18 @@ export default function ChefDeck() {
 
               {/* Right Small Cards */}
               <div className="mt-4 flex items-end gap-3 sm:gap-4 md:gap-5">
-                {rightIndices.map((idx, pos) => {
+                {rightIndices.map((idx) => {
                   const chef = CHEFS[idx];
                   return (
                     <button
-                      key={`right-${chef.title}-${idx}-${pos}`}
+                      key={chef.title}
                       type="button"
                       onMouseEnter={(e) => handleCardHover(e, idx)}
                   onMouseLeave={handleCardLeave}
                   onClick={(e) => pick(e, idx)}
                       aria-label={`View ${chef.title}`}
                   data-chef={chef.title}
-                      className="group relative h-[120px] w-[90px] shrink-0 self-end overflow-hidden rounded-[16px] border border-brand-red/10 shadow-[0_4px_12px_-4px_rgba(42,24,16,0.08)] transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] hover:scale-105 hover:shadow-[0_8px_18px_-6px_rgba(42,24,16,0.14)] sm:h-[148px] sm:w-[110px] sm:rounded-[20px] md:h-[168px] md:w-[125px] lg:h-[180px] lg:w-[135px]"
+                      className="group relative h-[120px] w-[90px] shrink-0 self-end overflow-hidden rounded-[16px] border border-brand-red/10 shadow-[0_4px_12px_-4px_rgba(42,24,16,0.08)] transition-[transform,box-shadow] duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] hover:scale-105 hover:shadow-[0_8px_18px_-6px_rgba(42,24,16,0.14)] sm:h-[148px] sm:w-[110px] sm:rounded-[20px] md:h-[168px] md:w-[125px] lg:h-[180px] lg:w-[135px]"
                     >
                       <div className="relative h-full w-full overflow-hidden">
                         <Image
