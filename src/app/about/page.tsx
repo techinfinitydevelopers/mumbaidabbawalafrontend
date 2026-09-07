@@ -178,7 +178,7 @@ export default function AboutPage() {
                   Respected, Still Delivering.
                 </span>
               </h2>
-              <p className="mt-5 max-w-measure text-phi-2 leading-relaxed text-ink/70 sm:text-phi-3">
+              <p className="mt-5 max-w-measure text-phi-2 leading-relaxed text-ink/70">
                 The Mumbai Dabbawala system has been studied by institutions including
                 Harvard Business School, for a level of reliability that&rsquo;s rare in any
                 industry, anywhere in the world. We don&rsquo;t lead with the numbers — we
@@ -235,7 +235,7 @@ export default function AboutPage() {
                 One Promise.
               </span>
             </h2>
-            <p className="mx-auto mt-5 max-w-measure text-phi-2 leading-relaxed text-ink/70 sm:text-phi-3">
+            <p className="mx-auto mt-5 max-w-measure text-phi-2 leading-relaxed text-ink/70">
               We don&rsquo;t just deliver meals — we deliver on a set of values that
               don&rsquo;t change, no matter how big we get or how far from Mumbai we travel.
             </p>
@@ -320,7 +320,7 @@ export default function AboutPage() {
                 Every Dabba.
               </span>
             </h2>
-            <p className="mt-5 max-w-measure text-phi-2 leading-relaxed text-ink/70 sm:text-phi-3">
+            <p className="mt-5 max-w-measure text-phi-2 leading-relaxed text-ink/70">
               Long before an app or a delivery van, it was a person — carrying, sorting,
               delivering, without fail, day after day. This gallery isn&rsquo;t about
               logistics. It&rsquo;s about the people who&rsquo;ve made &ldquo;on time, every
@@ -379,7 +379,7 @@ export default function AboutPage() {
               In Perth.
             </span>
           </h2>
-          <p className="mx-auto mt-5 max-w-measure text-phi-2 leading-relaxed text-brand-cream/85 sm:text-phi-3">
+          <p className="mx-auto mt-5 max-w-measure text-phi-2 leading-relaxed text-brand-cream/85">
             The network steps beyond Indian shores for the first time — bringing daily
             homestyle tiffin service, five regional cuisines, and six generations of practice
             to the streets of Perth.

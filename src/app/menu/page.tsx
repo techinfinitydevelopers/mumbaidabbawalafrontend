@@ -43,7 +43,7 @@ export default function MenuPage() {
               <h2 className="poster mt-1 text-[34px] text-brand-red [--po:4px] sm:text-[54px] sm:[--po:5px]">
                 The Rotation
               </h2>
-              <p className="mt-2 max-w-measure text-phi-2 text-ink/70 sm:text-phi-3">
+              <p className="mt-2 max-w-measure text-phi-2 text-ink/70">
                 Sixteen weekday menus on rotation. Tomorrow&rsquo;s is first — tap it to see
                 the full dabba.
               </p>
@@ -82,7 +82,7 @@ export default function MenuPage() {
               Cuisines
             </span>
           </h2>
-          <p className="mx-auto mt-5 max-w-measure text-phi-2 leading-relaxed text-ink/70 sm:text-phi-3">
+          <p className="mx-auto mt-5 max-w-measure text-phi-2 leading-relaxed text-ink/70">
             The regions with a story worth telling — and what each one brings to your dabba.
           </p>
         </Reveal>

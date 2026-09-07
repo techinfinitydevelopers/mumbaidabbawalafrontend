@@ -33,7 +33,7 @@ export default function BlogPage() {
                 the Relay.
               </span>
             </h1>
-            <p className="mt-5 max-w-measure text-phi-2 leading-relaxed text-ink/70 sm:text-phi-3">
+            <p className="mt-5 max-w-measure text-phi-2 leading-relaxed text-ink/70">
               Dispatches from the daily run — how the coding system works, who books the
               seminars, and what a training batch actually looks like.
             </p>
@@ -64,7 +64,7 @@ export default function BlogPage() {
                 <h2 className="mt-2 font-display text-2xl font-bold leading-tight text-ink sm:text-[32px]">
                   {FEATURED_POST.title}
                 </h2>
-                <p className="mt-3 max-w-2xl text-sm leading-relaxed text-ink/70 sm:text-phi-3">
+                <p className="mt-3 max-w-2xl text-sm leading-relaxed text-ink/70">
                   {FEATURED_POST.excerpt}
                 </p>
                 <span className="mt-5 inline-flex items-center gap-2 text-[11px] font-bold uppercase tracking-[0.18em] text-brand-red">
@@ -145,7 +145,7 @@ export default function BlogPage() {
           <h2 className="poster text-[26px] text-brand-red [--po:4px] sm:text-[40px] sm:[--po:5px]">
             Keep Up With the Relay
           </h2>
-          <p className="mx-auto mt-4 max-w-measure text-phi-2 leading-relaxed text-ink/70 sm:text-phi-3">
+          <p className="mx-auto mt-4 max-w-measure text-phi-2 leading-relaxed text-ink/70">
             New dispatches from the kitchen and the route, plus what&rsquo;s coming to the
             Perth menu — straight to your inbox.
           </p>

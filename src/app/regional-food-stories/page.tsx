@@ -52,7 +52,7 @@ export default function RegionalFoodStoriesPage() {
               Like Something
             </span>
           </h2>
-          <p className="mx-auto mt-5 max-w-measure text-phi-2 leading-relaxed text-ink/70 sm:text-phi-3">
+          <p className="mx-auto mt-5 max-w-measure text-phi-2 leading-relaxed text-ink/70">
             A dabba isn&rsquo;t a delivery. It&rsquo;s a mother&rsquo;s recipe, carried state
             by state, kitchen by kitchen — five distinct cuisines across the 15-day menu.
           </p>
@@ -104,7 +104,7 @@ export default function RegionalFoodStoriesPage() {
             </h2>
           </div>
 
-          <p className="mx-auto mt-5 max-w-measure text-phi-2 leading-relaxed text-brand-cream/85 sm:text-phi-3">
+          <p className="mx-auto mt-5 max-w-measure text-phi-2 leading-relaxed text-brand-cream/85">
             Rotating dishes across the 15-day menu — real variety, never the same thing twice
             in a row.
           </p>

@@ -1,3 +1,18 @@
+## 2026-09-07 — Lead paragraphs down one rung on the ramp
+
+Lead paragraphs were `text-phi-2 sm:text-phi-3`, i.e. 16px stepping to 20px on
+desktop. Against the poster headings the 20px read oversized. Dropped the `sm:`
+step so they hold at `text-phi-2` (16px) at every width — still the ramp's body
+size, nothing off-scale.
+
+Changed site-wide rather than only on About: it is the same lead-paragraph token on
+every page (15 occurrences across 7 files), and shrinking it on one page is exactly
+the sort of per-page drift that caused the "not matching the look and feel" note
+earlier.
+
+Verified on About: four lead paragraphs, all computing 16px, no `sm:text-phi-3`
+left anywhere in `src`.
+
 ## 2026-09-07 — Void under the values marquee closed
 
 `pb-phi-6 sm:pb-phi-7` left 144px of empty cream under a single line of script,

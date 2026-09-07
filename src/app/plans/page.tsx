@@ -49,7 +49,7 @@ export default function PlansPage() {
                 Looks Like.
               </span>
             </h2>
-            <p className="mt-5 max-w-measure text-phi-2 leading-relaxed text-ink/70 sm:text-phi-3">
+            <p className="mt-5 max-w-measure text-phi-2 leading-relaxed text-ink/70">
               Start with three meals, settle into a work week, or set the whole month and
               forget about lunch. Every plan runs on the same 15-day rotation and the same
               free delivery.
@@ -101,7 +101,7 @@ export default function PlansPage() {
               Meals.
             </span>
           </h2>
-          <p className="mx-auto mt-5 max-w-measure text-phi-2 leading-relaxed text-brand-cream/85 sm:text-phi-3">
+          <p className="mx-auto mt-5 max-w-measure text-phi-2 leading-relaxed text-brand-cream/85">
             The 3-day taster is the whole idea in miniature — one cuisine, no commitment,
             and the same food everyone else is eating that week.
           </p>

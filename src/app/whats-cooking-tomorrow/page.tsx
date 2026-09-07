@@ -170,7 +170,7 @@ export default function WhatsCookingTomorrowPage() {
             <h2 className="poster mt-2 text-[34px] text-brand-red [--po:4px] sm:text-[54px] sm:[--po:5px]">
               Add-ons
             </h2>
-            <p className="mt-3 max-w-xl text-sm leading-relaxed text-ink/70 sm:text-phi-3">
+            <p className="mt-3 max-w-xl text-sm leading-relaxed text-ink/70">
               Top up any day&rsquo;s thali with a real extra — priced individually, on top of
               your plan.
             </p>

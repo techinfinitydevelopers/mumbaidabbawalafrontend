@@ -42,7 +42,7 @@ export default function FromTheKitchen() {
             </span>
           </h2>
 
-          <p className="mx-auto mt-5 max-w-measure text-phi-2 leading-relaxed text-ink/70 sm:text-phi-3">
+          <p className="mx-auto mt-5 max-w-measure text-phi-2 leading-relaxed text-ink/70">
             Four rules the kitchen never breaks — the ones that decide whether food
             still tastes cooked-just-now three hours after it left the pan.
           </p>
