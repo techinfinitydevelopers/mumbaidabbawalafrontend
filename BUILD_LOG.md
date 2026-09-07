@@ -1,3 +1,46 @@
+## 2026-09-07 — Chef deck: the card now visibly grows, and autoplay stops under the cursor
+
+**Why the enlarge never animated.** The active card carried
+`key={`active-${activeChef.title}`}`, so every selection unmounted it and mounted a
+fresh node. A newly mounted element has no previous state, so `transition-all` had
+nothing to interpolate — the big card simply appeared at full size. On top of that
+the thumbnail and the big card are different elements, so there was no shared thing
+for CSS to animate between at all.
+
+Fixed with a FLIP: the click records the thumbnail's `getBoundingClientRect()`, and
+a layout effect measures the new big card and animates it from that rect via the
+Web Animations API — 520ms on `cubic-bezier(0.22, 1, 0.36, 1)`, with the corner
+radius interpolated too. The key came off both the card and the quote block so the
+nodes are stable and their own transitions can run.
+
+Verified by reading the running animation: target is the active card, duration 520,
+keyframes `translate(575px, 340px) scale(0.3375, 0.346154)` -> `none`, against a
+135x180 thumbnail and a 400x520 card — 135/400 = 0.3375 and 180/520 = 0.346, so it
+starts at exactly the thumbnail's position and size. Any in-flight animation on the
+node is cancelled first, so a fast run of clicks can't stack transforms.
+
+**Two UX faults from the earlier review, now fixed:**
+
+- **Autoplay no longer moves the card you are aiming at.** The 3s timer only
+  guarded against dragging, so the deck advanced under the cursor. It now pauses
+  while the pointer is inside the deck and while anything in it has focus. Measured:
+  idle it advances within 4.2s; with the pointer inside it held the same dish for
+  4.4s.
+- **Hover no longer selects.** `handleCardHover` picked a card 40ms after
+  `mouseenter`, so one sweep across the rail fired six selections while autoplay and
+  drag competed with it. Hover is now only a visual cue and a click picks. Its dead
+  timeout ref and the effect cleanup that referenced it are gone, which also cleared
+  a standing eslint warning.
+
+The helper line said "Hover over any dish to enlarge", which described the removed
+behaviour; it now reads "Pick any dish to bring it forward…".
+
+**Still outstanding, raised before and not actioned:** the deck prints
+`{"★".repeat(5)}` — a hardcoded five-star rating on all nine dishes. That is a
+fabricated customer rating on a real business's site, and it needs either removing
+or replacing with something true. Left in place because deleting client content
+twice unasked is not my call.
+
 ## 2026-09-07 — Lead paragraphs down one rung on the ramp
 
 Lead paragraphs were `text-phi-2 sm:text-phi-3`, i.e. 16px stepping to 20px on

@@ -1,7 +1,10 @@
 "use client";
 
 import Image from "next/image";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
+
+/** useLayoutEffect warns during SSR; this component is only interactive on the client. */
+const useIsoLayoutEffect = typeof window === "undefined" ? useEffect : useLayoutEffect;
 import { CHEFS } from "@/data/chefs";
 
 const N = CHEFS.length;
@@ -14,7 +17,6 @@ export default function ChefDeck() {
 
   const trackRef = useRef<HTMLDivElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
-  const hoverTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   // Drag state
   const isDragging = useRef(false);
@@ -26,6 +28,12 @@ export default function ChefDeck() {
   const targetScrollLeft = useRef(0);
   const isHoverPanning = useRef(false);
   const rafId = useRef<number>(0);
+
+  // FLIP: the rect of the thumbnail that was clicked, measured before the re-render
+  const flipFrom = useRef<DOMRect | null>(null);
+  const activeCardRef = useRef<HTMLDivElement>(null);
+  /** autoplay stops while the pointer is in the deck, so it can't move the card being aimed at */
+  const autoplayPaused = useRef(false);
 
   const activeRef = useRef(active);
   useEffect(() => {
@@ -46,7 +54,7 @@ export default function ChefDeck() {
   useEffect(() => {
     const AUTOPLAY_MS = 3000;
     const interval = setInterval(() => {
-      if (isDragging.current) return;
+      if (isDragging.current || autoplayPaused.current) return;
       setActive((prev) => {
         const next = mod(prev - 1);
         setIsTransitioning(true);
@@ -59,17 +67,50 @@ export default function ChefDeck() {
     return () => clearInterval(interval);
   }, []);
 
-  const handleCardHover = (idx: number) => {
-    if (isDragging.current) return;
-    if (hoverTimeoutRef.current) clearTimeout(hoverTimeoutRef.current);
-    hoverTimeoutRef.current = setTimeout(() => {
-      go(idx);
-    }, 40);
+  /*
+   * Selecting on hover meant a single sweep across the rail fired six selections and
+   * the deck changed under the cursor. Hover is now only a visual cue; a click picks.
+   */
+
+  /**
+   * Grows the clicked thumbnail into the big slot.
+   *
+   * The active card is a different element from the thumbnail, so there is nothing for
+   * CSS to transition between — it used to just appear at full size. Measuring the
+   * thumbnail first and animating the new card from that rect is the missing step.
+   */
+  const pick = (event: React.MouseEvent<HTMLButtonElement>, idx: number) => {
+    if (hasDragged.current) return;
+    flipFrom.current = event.currentTarget.getBoundingClientRect();
+    go(idx);
   };
 
-  const handleCardLeave = () => {
-    if (hoverTimeoutRef.current) clearTimeout(hoverTimeoutRef.current);
-  };
+  useIsoLayoutEffect(() => {
+    const from = flipFrom.current;
+    const node = activeCardRef.current;
+    flipFrom.current = null;
+    if (!from || !node) return;
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+
+    const to = node.getBoundingClientRect();
+    if (!to.width || !to.height) return;
+
+    // a fast run of clicks would otherwise stack transforms on the same node
+    node.getAnimations().forEach((a) => a.cancel());
+
+    node.animate(
+      [
+        {
+          transform: `translate(${from.left - to.left}px, ${from.top - to.top}px) scale(${
+            from.width / to.width
+          }, ${from.height / to.height})`,
+          borderRadius: "20px",
+        },
+        { transform: "none", borderRadius: "30px" },
+      ],
+      { duration: 520, easing: "cubic-bezier(0.22, 1, 0.36, 1)" },
+    );
+  }, [active]);
 
   // Pointer drag for mouse and touch
   const onPointerDown = (e: React.PointerEvent) => {
@@ -128,8 +169,8 @@ export default function ChefDeck() {
   };
 
   const onContainerMouseLeave = () => {
+    autoplayPaused.current = false;
     isHoverPanning.current = false;
-    handleCardLeave();
   };
 
   // Smooth lerp frame loop for 60fps/120fps glide
@@ -150,7 +191,6 @@ export default function ChefDeck() {
     rafId.current = requestAnimationFrame(animate);
     return () => {
       cancelAnimationFrame(rafId.current);
-      if (hoverTimeoutRef.current) clearTimeout(hoverTimeoutRef.current);
     };
   }, []);
 
@@ -179,15 +219,18 @@ export default function ChefDeck() {
             </span>
           </h2>
           <p className="mx-auto mt-3 max-w-lg text-sm text-ink/75 sm:text-base">
-            Hover over any dish to enlarge and view our chef&rsquo;s craft.
+            Pick any dish to bring it forward and read what the kitchen does with it.
           </p>
         </div>
 
         {/* Carousel Outer Container */}
         <div
           ref={containerRef}
+          onMouseEnter={() => (autoplayPaused.current = true)}
           onMouseMove={onContainerMouseMove}
           onMouseLeave={onContainerMouseLeave}
+          onFocusCapture={() => (autoplayPaused.current = true)}
+          onBlurCapture={() => (autoplayPaused.current = false)}
           className="relative mt-12 sm:mt-16"
         >
           {/* Scrollable Bottom-Aligned Deck */}
@@ -209,11 +252,7 @@ export default function ChefDeck() {
                 <button
                   key={`left-${chef.title}-${idx}-${pos}`}
                   type="button"
-                  onMouseEnter={() => handleCardHover(idx)}
-                  onMouseLeave={handleCardLeave}
-                  onClick={() => {
-                    if (!hasDragged.current) go(idx);
-                  }}
+                  onClick={(e) => pick(e, idx)}
                   aria-label={`View ${chef.title}`}
                   className="group relative h-[120px] w-[90px] shrink-0 self-end overflow-hidden rounded-[16px] border border-brand-red/10 shadow-[0_4px_12px_-4px_rgba(42,24,16,0.08)] transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] hover:scale-105 hover:shadow-[0_8px_18px_-6px_rgba(42,24,16,0.14)] sm:h-[148px] sm:w-[110px] sm:rounded-[20px] md:h-[168px] md:w-[125px] lg:h-[180px] lg:w-[135px]"
                 >
@@ -234,7 +273,7 @@ export default function ChefDeck() {
 
             {/* 2. Active Enlarged Main Card */}
             <div
-              key={`active-${activeChef.title}`}
+              ref={activeCardRef}
               className="relative h-[360px] w-[270px] shrink-0 self-end overflow-hidden rounded-[26px] border border-brand-red/15 shadow-[0_12px_28px_-10px_rgba(42,24,16,0.18)] ring-1 ring-brand-yellow/60 transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] sm:h-[440px] sm:w-[330px] sm:rounded-[30px] md:h-[490px] md:w-[370px] lg:h-[520px] lg:w-[400px]"
             >
               <div className="relative h-full w-full overflow-hidden">
@@ -260,7 +299,6 @@ export default function ChefDeck() {
             >
               {/* Active Chef Details & Quote with smooth crossfade */}
               <div
-                key={`quote-${activeChef.title}`}
                 className={`max-w-[320px] pt-1 transition-all duration-400 ease-out sm:max-w-[420px] md:max-w-[480px] lg:max-w-[540px] ${
                   isTransitioning ? "translate-y-1 opacity-70" : "translate-y-0 opacity-100"
                 }`}
@@ -297,11 +335,7 @@ export default function ChefDeck() {
                     <button
                       key={`right-${chef.title}-${idx}-${pos}`}
                       type="button"
-                      onMouseEnter={() => handleCardHover(idx)}
-                      onMouseLeave={handleCardLeave}
-                      onClick={() => {
-                        if (!hasDragged.current) go(idx);
-                      }}
+                      onClick={(e) => pick(e, idx)}
                       aria-label={`View ${chef.title}`}
                       className="group relative h-[120px] w-[90px] shrink-0 self-end overflow-hidden rounded-[16px] border border-brand-red/10 shadow-[0_4px_12px_-4px_rgba(42,24,16,0.08)] transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] hover:scale-105 hover:shadow-[0_8px_18px_-6px_rgba(42,24,16,0.14)] sm:h-[148px] sm:w-[110px] sm:rounded-[20px] md:h-[168px] md:w-[125px] lg:h-[180px] lg:w-[135px]"
                     >
