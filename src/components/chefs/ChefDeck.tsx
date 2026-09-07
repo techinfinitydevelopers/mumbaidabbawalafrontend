@@ -10,7 +10,6 @@ const mod = (i: number) => ((i % N) + N) % N;
 export default function ChefDeck() {
   const [active, setActive] = useState(1);
   const [isTransitioning, setIsTransitioning] = useState(false);
-  const [slideDirection, setSlideDirection] = useState<"left" | "right">("right");
   const activeChef = CHEFS[active];
 
   const trackRef = useRef<HTMLDivElement>(null);
@@ -33,9 +32,8 @@ export default function ChefDeck() {
     activeRef.current = active;
   }, [active]);
 
-  const go = useCallback((index: number, direction: "left" | "right" = "right") => {
+  const go = useCallback((index: number) => {
     const nextIdx = mod(index);
-    setSlideDirection(direction);
     setIsTransitioning(true);
     setActive(nextIdx);
 
@@ -44,22 +42,28 @@ export default function ChefDeck() {
     }, 400);
   }, []);
 
-  // Auto-slide through the chefs from left to right on a timer, pausing whenever the user is
-  // hovering, dragging, or has a pointer down over the carousel.
+  // Auto-slide through the chefs from left to right continuously on a timer
   useEffect(() => {
-    const AUTOPLAY_MS = 3500;
+    const AUTOPLAY_MS = 3000;
     const interval = setInterval(() => {
-      if (isDragging.current || isHoverPanning.current) return;
-      go(activeRef.current - 1, "right");
+      if (isDragging.current) return;
+      setActive((prev) => {
+        const next = mod(prev - 1);
+        setIsTransitioning(true);
+        setTimeout(() => {
+          setIsTransitioning(false);
+        }, 400);
+        return next;
+      });
     }, AUTOPLAY_MS);
     return () => clearInterval(interval);
-  }, [go]);
+  }, []);
 
   const handleCardHover = (idx: number) => {
     if (isDragging.current) return;
     if (hoverTimeoutRef.current) clearTimeout(hoverTimeoutRef.current);
     hoverTimeoutRef.current = setTimeout(() => {
-      go(idx, idx > activeRef.current ? "left" : "right");
+      go(idx);
     }, 40);
   };
 
@@ -258,11 +262,7 @@ export default function ChefDeck() {
               <div
                 key={`quote-${activeChef.title}`}
                 className={`max-w-[320px] pt-1 transition-all duration-400 ease-out sm:max-w-[420px] md:max-w-[480px] lg:max-w-[540px] ${
-                  isTransitioning
-                    ? slideDirection === "right"
-                      ? "-translate-x-3 opacity-60"
-                      : "translate-x-3 opacity-60"
-                    : "translate-x-0 opacity-100"
+                  isTransitioning ? "translate-y-1 opacity-70" : "translate-y-0 opacity-100"
                 }`}
               >
                 {/* 5 Golden Stars */}
