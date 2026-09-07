@@ -37,8 +37,8 @@ export default function PageHero({
   tins?: Piece[];
 }) {
   return (
-    <section className="grain graph-paper relative flex min-h-[100svh] flex-col justify-center overflow-hidden bg-brand-cream pb-phi-4 pt-phi-6 sm:pb-phi-6 sm:pt-phi-6">
-      <div className="relative z-10 mx-auto grid w-full max-w-[1720px] items-center gap-4 px-5 sm:px-8 lg:grid-cols-[1.02fr_1fr] lg:gap-10 lg:px-12 2xl:px-16">
+    <section className="grain graph-paper relative flex min-h-[100svh] flex-col justify-start lg:justify-center overflow-hidden bg-brand-cream pb-12 pt-16 sm:pb-24 sm:pt-24">
+      <div className="relative z-10 mx-auto grid w-full max-w-[1720px] items-center gap-3 px-5 sm:gap-6 sm:px-8 lg:grid-cols-[1.02fr_1fr] lg:gap-10 lg:px-12 2xl:px-16">
         {/* Food group */}
         <div className="relative">
           <div
@@ -50,21 +50,21 @@ export default function PageHero({
             }}
           />
           <HeroPlatter
-            className="slide-in-left relative mx-auto w-[82%] max-w-[560px] lg:w-[min(100%,80svh)] lg:max-w-[780px]"
+            className="slide-in-left relative mx-auto w-[52%] max-w-[240px] sm:w-[72%] sm:max-w-[460px] lg:w-[min(100%,80svh)] lg:max-w-[780px]"
             tins={tins}
           />
 
-          <Starburst className="slide-in-left absolute left-[2%] top-[15%] z-30 hidden h-[118px] w-[118px] rotate-[-10deg] lg:block xl:h-[138px] xl:w-[138px]">
-            <div className="px-5">
-              <span className="block text-[9px] font-bold uppercase tracking-[0.2em] text-brand-cream/85">
+          <Starburst className="slide-in-left absolute left-[10%] top-[4%] z-30 h-[78px] w-[78px] rotate-[-10deg] sm:left-[2%] sm:top-[15%] sm:h-[118px] sm:w-[118px] xl:h-[138px] xl:w-[138px]">
+            <div className="px-2 sm:px-5">
+              <span className="block text-[7px] font-bold uppercase tracking-[0.2em] text-brand-cream/85 sm:text-[9px]">
                 {seal.eyebrow}
               </span>
-              <span className="block font-poster text-xl uppercase leading-[0.9] text-brand-cream xl:text-2xl">
+              <span className="block font-poster text-xs uppercase leading-[0.9] text-brand-cream sm:text-xl xl:text-2xl">
                 {seal.lines[0]}
                 <br />
                 {seal.lines[1]}
               </span>
-              <span className="mt-0.5 block font-script text-base leading-none text-brand-yellow">
+              <span className="mt-0.5 block font-script text-[10px] leading-none text-brand-yellow sm:text-base">
                 {seal.script}
               </span>
             </div>
@@ -73,22 +73,22 @@ export default function PageHero({
 
         {/* Copy */}
         <div>
-          <p className="slide-in-right font-script text-3xl text-brand-orange sm:text-4xl 2xl:text-5xl">
+          <p className="slide-in-right font-script text-xl text-brand-orange sm:text-4xl 2xl:text-5xl">
             {kicker}
           </p>
 
           <h1
-            className="poster-stack slide-in-right mt-1 [--po:5px] sm:[--po:7px]"
+            className="poster-stack slide-in-right mt-1 [--po:3px] sm:[--po:7px]"
             style={{ animationDelay: "0.08s" }}
           >
             <span
-              className="poster whitespace-nowrap text-[40px] text-brand-red sm:text-[66px] lg:text-[76px] xl:text-[92px] 2xl:text-[104px]"
+              className="poster block text-[26px] leading-[0.95] text-brand-red sm:text-[66px] lg:text-[76px] xl:text-[92px] 2xl:text-[104px]"
               style={{ ["--po-color" as string]: "var(--color-brand-yellow)" }}
             >
               {titleTop}
             </span>
             <span
-              className="poster whitespace-nowrap text-[40px] text-brand-green-dark sm:text-[66px] lg:text-[76px] xl:text-[92px] 2xl:text-[104px]"
+              className="poster block text-[26px] leading-[0.95] text-brand-green-dark sm:text-[66px] lg:text-[76px] xl:text-[92px] 2xl:text-[104px]"
               style={{ ["--po-color" as string]: "var(--color-brand-yellow)" }}
             >
               {titleBottom}
@@ -96,15 +96,15 @@ export default function PageHero({
           </h1>
 
           <div
-            className="slide-in-right mt-3 flex flex-wrap items-center gap-x-6 gap-y-2"
+            className="slide-in-right mt-2 flex flex-wrap items-center gap-x-3.5 gap-y-1 sm:mt-3 sm:gap-x-6 sm:gap-y-2"
             style={{ animationDelay: "0.16s" }}
           >
             {facts.map((fact) => (
-              <span key={fact.label} className="flex items-baseline gap-2">
-                <span className="font-poster text-2xl text-brand-orange sm:text-3xl 2xl:text-4xl">
+              <span key={fact.label} className="flex items-baseline gap-1 sm:gap-2">
+                <span className="font-poster text-lg text-brand-orange sm:text-3xl 2xl:text-4xl">
                   {fact.value}
                 </span>
-                <span className="whitespace-pre-line text-[11px] font-bold uppercase leading-[1.3] tracking-[0.16em] text-brand-green-dark">
+                <span className="whitespace-pre-line text-[8.5px] font-bold uppercase leading-[1.25] tracking-[0.12em] text-brand-green-dark sm:text-[11px] sm:tracking-[0.16em]">
                   {fact.label}
                 </span>
               </span>
@@ -113,19 +113,19 @@ export default function PageHero({
 
           {quote && (
             <div
-              className="slide-in-right mt-5 hidden max-w-lg rounded-[24px] bg-paper p-5 shadow-[0_20px_40px_-22px_rgba(42,24,16,0.45)] sm:block 2xl:p-6"
+              className="slide-in-right mt-2.5 max-w-lg rounded-[14px] bg-paper p-3 shadow-[0_12px_24px_-14px_rgba(42,24,16,0.4)] sm:mt-5 sm:rounded-[24px] sm:p-5 2xl:p-6"
               style={{ animationDelay: "0.24s" }}
             >
-              <p className="text-phi-1 font-bold uppercase tracking-[0.14em] text-ink">
+              <p className="text-[9.5px] font-bold uppercase tracking-[0.14em] text-ink sm:text-[13px]">
                 {quote.name}
               </p>
-              <p className="mt-2 text-sm leading-relaxed text-ink/75">{quote.text}</p>
+              <p className="mt-1 text-[11.5px] leading-relaxed text-ink/75 sm:mt-2 sm:text-sm">{quote.text}</p>
             </div>
           )}
 
           {lead && (
             <p
-              className="slide-in-right mt-5 hidden max-w-lg text-sm leading-relaxed text-ink/75 sm:block sm:text-base"
+              className="slide-in-right mt-2.5 max-w-lg text-xs leading-relaxed text-ink/75 sm:mt-5 sm:text-base"
               style={{ animationDelay: "0.24s" }}
             >
               {lead}
@@ -133,25 +133,25 @@ export default function PageHero({
           )}
 
           <div
-            className="slide-in-right mt-5 flex flex-wrap gap-3"
+            className="slide-in-right mt-3 flex flex-wrap gap-2.5 sm:mt-5 sm:gap-3"
             style={{ animationDelay: "0.32s" }}
           >
             <Link
               href={primary.href}
-              className="rounded-full bg-brand-orange px-7 py-3.5 text-[11px] font-bold uppercase tracking-[0.18em] text-brand-cream shadow-[0_14px_26px_-12px_rgba(243,98,32,0.9)] transition-transform duration-300 hover:-translate-y-0.5"
+              className="rounded-full bg-brand-orange px-5 py-2.5 text-[10px] font-bold uppercase tracking-[0.16em] text-brand-cream shadow-[0_12px_22px_-10px_rgba(243,98,32,0.9)] transition-transform duration-300 hover:-translate-y-0.5 sm:px-7 sm:py-3.5 sm:text-[11px] sm:tracking-[0.18em]"
             >
               {primary.label}
             </Link>
             <Link
               href={secondary.href}
-              className="rounded-full bg-paper px-7 py-3.5 text-[11px] font-bold uppercase tracking-[0.18em] text-brand-red shadow-[0_14px_26px_-16px_rgba(42,24,16,0.6)] transition-transform duration-300 hover:-translate-y-0.5"
+              className="rounded-full bg-paper px-5 py-2.5 text-[10px] font-bold uppercase tracking-[0.16em] text-brand-red shadow-[0_12px_22px_-14px_rgba(42,24,16,0.6)] transition-transform duration-300 hover:-translate-y-0.5 sm:px-7 sm:py-3.5 sm:text-[11px] sm:tracking-[0.18em]"
             >
               {secondary.label}
             </Link>
           </div>
 
           <RouteTicker
-            className="slide-in-right mt-6 max-w-lg text-brand-red"
+            className="slide-in-right mt-3.5 max-w-lg text-brand-red sm:mt-6"
             style={{ animationDelay: "0.4s" }}
           />
         </div>

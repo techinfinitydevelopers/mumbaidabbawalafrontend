@@ -7,11 +7,10 @@ import { HERO_CLUSTER } from "@/data/regions";
 export default function Home() {
   return (
     <div className="overflow-x-hidden">
-      <section className="grain graph-paper relative bg-brand-cream pb-phi-6 pt-phi-6 sm:pb-phi-7 sm:pt-phi-7">
-
-        <div className="relative z-10 mx-auto grid max-w-7xl items-center gap-4 px-5 sm:px-8 lg:grid-cols-[1.05fr_1fr]">
+      <section className="grain graph-paper relative bg-brand-cream pb-20 pt-20 sm:pb-36 sm:pt-32">
+        <div className="relative z-10 mx-auto grid max-w-7xl items-center gap-3 px-5 sm:gap-6 sm:px-8 lg:grid-cols-[1.05fr_1fr]">
           <div className="relative">
-            <div className="rise mx-auto w-[94%] max-w-[580px] lg:w-full">
+            <div className="rise mx-auto w-[54%] max-w-[250px] sm:w-[78%] sm:max-w-[480px] lg:w-full">
                 <DishCluster
                   cluster={HERO_CLUSTER}
                   alt="A steel tiffin dabba with bowls of dal and raita and a stack of rotis"
@@ -20,17 +19,17 @@ export default function Home() {
                 />
             </div>
 
-            <Starburst className="absolute -bottom-2 right-[2%] z-30 h-[112px] w-[112px] rotate-[-8deg] sm:h-[136px] sm:w-[136px] lg:-bottom-6 lg:right-[6%]">
-              <div className="px-5">
-                <span className="block text-[9px] font-bold tracking-[0.2em] text-brand-cream/85">
+            <Starburst className="absolute -bottom-2 right-[10%] z-30 h-[80px] w-[80px] rotate-[-8deg] sm:right-[2%] sm:h-[136px] sm:w-[136px] lg:-bottom-6 lg:right-[6%]">
+              <div className="px-2 sm:px-5">
+                <span className="block text-[7px] font-bold tracking-[0.2em] text-brand-cream/85 sm:text-[9px]">
                   Perth
                 </span>
-                <span className="block font-poster text-xl uppercase leading-[0.9] text-brand-cream sm:text-2xl">
+                <span className="block font-poster text-xs uppercase leading-[0.9] text-brand-cream sm:text-2xl">
                   Launching
                   <br />
                   Soon
                 </span>
-                <span className="block font-script text-sm leading-none text-brand-cream/90 sm:text-base">
+                <span className="block font-script text-[10px] leading-none text-brand-cream/90 sm:text-base">
                   14 Sept 2026
                 </span>
               </div>
@@ -38,19 +37,19 @@ export default function Home() {
           </div>
 
           <div>
-            <span className="inline-block rounded-full bg-brand-green-dark px-4 py-1.5 text-phi-0 font-bold uppercase tracking-[0.22em] text-brand-cream">
+            <span className="inline-block rounded-full bg-brand-green-dark px-3 py-1 text-[9px] font-bold uppercase tracking-[0.2em] text-brand-cream sm:px-4 sm:py-1.5 sm:text-[10px] sm:tracking-[0.22em]">
               Mumbai since 1890
             </span>
 
-            <h1 className="poster-stack rise mt-4 [--po:5px] sm:[--po:7px]">
+            <h1 className="poster-stack rise mt-2.5 [--po:3px] sm:mt-4 sm:[--po:7px]">
               <span
-                className="poster whitespace-nowrap text-[40px] text-brand-red sm:text-[64px] lg:text-[72px] xl:text-[84px]"
+                className="poster block text-[26px] leading-[0.95] text-brand-red sm:text-[64px] lg:text-[72px] xl:text-[84px]"
                 style={{ ["--po-color" as string]: "var(--color-brand-yellow)" }}
               >
                 The Dabba That
               </span>
               <span
-                className="poster whitespace-nowrap text-[40px] text-brand-green-dark sm:text-[64px] lg:text-[72px] xl:text-[84px]"
+                className="poster block text-[26px] leading-[0.95] text-brand-green-dark sm:text-[64px] lg:text-[72px] xl:text-[84px]"
                 style={{ ["--po-color" as string]: "var(--color-brand-yellow)" }}
               >
                 Never Stops
@@ -58,14 +57,14 @@ export default function Home() {
             </h1>
 
             <p
-              className="rise mt-4 font-poster text-xl uppercase tracking-[0.04em] text-brand-orange sm:text-2xl"
+              className="rise mt-2.5 font-poster text-base uppercase tracking-[0.04em] text-brand-orange sm:mt-4 sm:text-2xl"
               style={{ animationDelay: "0.1s" }}
             >
               Fresh food · Fair price · Free delivery
             </p>
 
             <p
-              className="rise mt-5 max-w-md text-sm leading-relaxed text-ink/75 sm:text-base"
+              className="rise mt-3 max-w-md text-xs leading-relaxed text-ink/75 sm:mt-5 sm:text-base"
               style={{ animationDelay: "0.2s" }}
             >
               For 135+ years, one dabba has never missed a delivery, never broken a promise,
@@ -73,22 +72,22 @@ export default function Home() {
               Perth.
             </p>
 
-            <div className="rise mt-7 flex flex-wrap gap-3" style={{ animationDelay: "0.3s" }}>
+            <div className="rise mt-3.5 flex flex-wrap gap-2.5 sm:mt-7 sm:gap-3" style={{ animationDelay: "0.3s" }}>
               <Link
                 href="/plans"
-                className="rounded-full bg-brand-orange px-7 py-3.5 text-[11px] font-bold uppercase tracking-[0.18em] text-brand-cream shadow-[0_14px_26px_-12px_rgba(243,98,32,0.9)] transition-transform duration-300 hover:-translate-y-0.5"
+                className="rounded-full bg-brand-orange px-5 py-2.5 text-[10px] font-bold uppercase tracking-[0.16em] text-brand-cream shadow-[0_12px_22px_-10px_rgba(243,98,32,0.9)] transition-transform duration-300 hover:-translate-y-0.5 sm:px-7 sm:py-3.5 sm:text-[11px] sm:tracking-[0.18em]"
               >
                 Order Your Dabba
               </Link>
               <Link
                 href="/menu"
-                className="rounded-full bg-paper px-7 py-3.5 text-[11px] font-bold uppercase tracking-[0.18em] text-brand-red shadow-[0_14px_26px_-16px_rgba(42,24,16,0.6)] transition-transform duration-300 hover:-translate-y-0.5"
+                className="rounded-full bg-paper px-5 py-2.5 text-[10px] font-bold uppercase tracking-[0.16em] text-brand-red shadow-[0_12px_22px_-14px_rgba(42,24,16,0.6)] transition-transform duration-300 hover:-translate-y-0.5 sm:px-7 sm:py-3.5 sm:text-[11px] sm:tracking-[0.18em]"
               >
                 See What&rsquo;s Cooking
               </Link>
             </div>
 
-            <RouteTicker className="mt-8 max-w-md text-brand-red" />
+            <RouteTicker className="mt-4 max-w-md text-brand-red sm:mt-8" />
           </div>
         </div>
 
