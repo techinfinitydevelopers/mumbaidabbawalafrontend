@@ -1,3 +1,50 @@
+## 2026-09-07 — Blog page, on the Litmus layout
+
+Client asked for `/blog` to follow https://www.litmus.com/blog, with the posts
+taken from the earlier UI at https://mumbai-dabbawala-ui.vercel.app/blog.
+
+**Litmus's structure, as measured on the live page** (its grid columns sit at
+x=118/430/742, so a three-up):
+
+1. Lead story in a wide left column beside a "Most Popular" rail of three
+   compact cards.
+2. A "filter, sort and search posts" bar — search input, category select, sort
+   select (newest/oldest).
+3. Three-column card grid; its cards carry date, title and `CATEGORY · READ TIME`,
+   with no image (only the lead story has one).
+4. Numbered pagination, then a subscribe band.
+
+Rebuilt in our own palette and poster type rather than copied: `/blog` is a
+compact header + lead story + Most Popular, then `BlogIndex` (client) with the
+filter bar, a three-up grid and pagination at 6 per page, then the subscribe band.
+No 100svh `PageHero` here — Litmus leads with content, and a full-screen hero
+would contradict the brief.
+
+**On the extracted content — two things the client should know:**
+
+- The source page's own intro says "Dummy posts written for this demo, not a live
+  editorial feed". All ten are placeholder copy awaiting real editorial.
+- Its post URLs 404, so there are no article bodies to extract. `src/data/blog.ts`
+  carries category, month, headline and standfirst — the whole of what exists.
+  Nothing was invented to fill the gaps, and where Litmus prints `READ TIME` ours
+  prints the month, because a read time for a post with no body would be a made-up
+  number.
+
+`/blog/[slug]` was added so the cards don't link into a 404: it renders the
+headline, standfirst and meta that do exist plus an explicit "Full article coming
+soon" note, and prerenders all ten via `generateStaticParams` (`params` is a
+Promise in this version — checked `node_modules/next/dist/docs`).
+
+The lead story reuses `public/images/thali-tomorrow.jpg`; there is no editorial
+photography in the project yet, only cut-out food stickers.
+
+The subscribe button links to `/contact` rather than posting an email field
+nowhere — it needs a real list provider before it can collect addresses.
+
+Verified: filters, sort, search, the empty state and pagination all exercised in
+the browser; 3 columns at 1440, single column at 390 with no overflow; build
+prerenders `/blog` plus all ten post routes.
+
 ## 2026-09-07 — Space between the stacked poster lines
 
 Matching the two lines' sizes stopped them colliding, but the upper line's shadow
