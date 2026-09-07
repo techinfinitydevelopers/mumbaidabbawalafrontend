@@ -23,6 +23,13 @@ export type BlogCategory =
   | "Milestones"
   | "Community";
 
+/** An article body, as blocks — enough structure for a real editorial layout. */
+export type BlogBlock =
+  | { kind: "p"; text: string }
+  | { kind: "h2"; text: string }
+  | { kind: "quote"; text: string }
+  | { kind: "list"; items: string[] };
+
 export type BlogPost = {
   slug: string;
   category: BlogCategory;
@@ -32,6 +39,23 @@ export type BlogPost = {
   sort: string;
   title: string;
   excerpt: string;
+  /** Present only where the article has actually been written. */
+  body?: BlogBlock[];
+};
+
+/**
+ * One still life per category, generated for this site (objects only — a real
+ * organisation's operations should not be illustrated with fabricated photographs
+ * of its people).
+ */
+export const CATEGORY_IMAGE: Record<BlogCategory, string> = {
+  Operations: "/images/blog/operations.jpg",
+  Talks: "/images/blog/talks.jpg",
+  Press: "/images/blog/press.jpg",
+  Product: "/images/blog/product.jpg",
+  Training: "/images/blog/training.jpg",
+  Milestones: "/images/blog/milestones.jpg",
+  Community: "/images/blog/community.jpg",
 };
 
 export const BLOG_POSTS: BlogPost[] = [
@@ -43,6 +67,55 @@ export const BLOG_POSTS: BlogPost[] = [
     title: "The code on every lid, decoded",
     excerpt:
       "Four characters get a tiffin across three train lines and into the right hands by lunchtime — no phone call, no app, no address written anywhere on the box.",
+    // SEEDED SAMPLE COPY — written to show the article layout, not client-approved.
+    // It stays at the level of what is publicly documented about the coding system and
+    // avoids specifics that vary between groups. Needs editorial sign-off before launch.
+    body: [
+      {
+        kind: "p",
+        text: "There is no address on a dabba. There is no name, no phone number, and nothing that would help a stranger work out where the box is going. What there is, painted or marked on the lid, is a short code — a few characters and a number or two — and that is the entire routing system.",
+      },
+      {
+        kind: "p",
+        text: "It has to be short, because the code is read at speed. A tiffin changes hands several times between a kitchen and a desk, and at each handover the person taking it has about a second to look at the lid and decide which pile it belongs in.",
+      },
+      { kind: "h2", text: "What the marks actually carry" },
+      {
+        kind: "p",
+        text: "Read together, the marks answer four questions, in roughly the order the box needs them answered:",
+      },
+      {
+        kind: "list",
+        items: [
+          "Where it was collected — the suburb or the station it entered the network at.",
+          "Which station it gets off at — the destination on the line.",
+          "Which building, once it is off the train.",
+          "Which floor, and which group of carriers is responsible for that stretch.",
+        ],
+      },
+      {
+        kind: "p",
+        text: "Nothing in that list is about the customer. The code describes a route, not a person, which is why it survives a change of tenant, a change of desk, and a carrier who has never met the household that packed the box.",
+      },
+      { kind: "h2", text: "Why the sorting is the clever part" },
+      {
+        kind: "p",
+        text: "The codes only work because of what happens between trains. Boxes arriving from dozens of suburbs are tipped out onto a platform, regrouped by destination station rather than by origin, and loaded again. A box that came in beside its neighbour from the same street leaves in a completely different crate.",
+      },
+      {
+        kind: "quote",
+        text: "The sorting is not a step in the delivery. The sorting is the delivery — everything before and after it is just carrying.",
+      },
+      {
+        kind: "p",
+        text: "That regrouping is also what keeps the system resilient. Nobody in the chain holds the whole route in their head. Each person only has to get a box to the next pile correctly, and the code tells them which pile that is.",
+      },
+      { kind: "h2", text: "What it means for Perth" },
+      {
+        kind: "p",
+        text: "Perth is not Mumbai, and the delivery here runs on vans rather than local trains. What carries over is the discipline underneath the code: decide the route before the food moves, keep the label readable by anyone in the chain, and never make a handover depend on a conversation.",
+      },
+    ],
   },
   {
     slug: "a-seminar-in-a-college-hall",

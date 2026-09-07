@@ -1,15 +1,16 @@
+import Image from "next/image";
 import Link from "next/link";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import Reveal from "@/components/Reveal";
-import { BLOG_POSTS, POSTS_BY_DATE, postBySlug } from "@/data/blog";
+import { BLOG_POSTS, CATEGORY_IMAGE, POSTS_BY_DATE, postBySlug } from "@/data/blog";
 
 /**
  * A post's own page.
  *
- * The extracted source has no article bodies — its post URLs 404 — so this renders
- * the headline, standfirst and meta that do exist and says plainly that the copy is
- * still to come, rather than padding it out with invented text.
+ * The extracted source has no article bodies — its post URLs 404 — so a post without
+ * a `body` renders the headline, standfirst and meta that do exist and says plainly
+ * that the copy is still to come, rather than padding it out with invented text.
  */
 
 export function generateStaticParams() {
@@ -65,19 +66,78 @@ export default async function BlogPostPage({
           </h1>
           <p className="mt-5 text-base leading-relaxed text-ink/75 sm:text-lg">{post.excerpt}</p>
 
-          <p className="mt-8 rounded-[24px] border border-brand-red/15 bg-paper p-6 text-sm leading-relaxed text-ink/70">
-            <span className="block font-bold uppercase tracking-[0.14em] text-brand-red">
-              Full article coming soon
-            </span>
-            <span className="mt-2 block">
-              The headline and summary above are in place; the body copy is still being
-              written. In the meantime, the{" "}
-              <Link href="/regional-food-stories" className="font-bold text-brand-red underline">
-                regional food stories
-              </Link>{" "}
-              cover the cuisines behind the rotation.
-            </span>
-          </p>
+          <div className="relative mt-8 aspect-[2/1] overflow-hidden rounded-[28px] bg-ink shadow-[0_14px_40px_-26px_rgba(42,24,16,0.5)]">
+            <Image
+              src={CATEGORY_IMAGE[post.category]}
+              alt=""
+              width={1024}
+              height={576}
+              priority
+              sizes="(min-width: 768px) 768px, 92vw"
+              className="absolute inset-0 h-full w-full object-cover"
+            />
+          </div>
+
+          {post.body ? (
+            <div className="mt-10">
+              {post.body.map((block, i) => {
+                if (block.kind === "h2") {
+                  return (
+                    <h2
+                      key={i}
+                      className="mt-9 font-display text-xl font-bold leading-tight text-ink sm:text-2xl"
+                    >
+                      {block.text}
+                    </h2>
+                  );
+                }
+                if (block.kind === "quote") {
+                  return (
+                    <blockquote
+                      key={i}
+                      className="my-8 border-l-4 border-brand-orange bg-paper py-5 pl-6 pr-5 font-script text-xl leading-snug text-brand-red sm:text-2xl"
+                    >
+                      {block.text}
+                    </blockquote>
+                  );
+                }
+                if (block.kind === "list") {
+                  return (
+                    <ul key={i} className="mt-5 space-y-2.5">
+                      {block.items.map((item) => (
+                        <li key={item} className="flex gap-3 text-[15px] leading-relaxed text-ink/75">
+                          <span
+                            aria-hidden="true"
+                            className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-brand-orange"
+                          />
+                          <span>{item}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  );
+                }
+                return (
+                  <p key={i} className="mt-5 text-[15px] leading-relaxed text-ink/75 sm:text-base">
+                    {block.text}
+                  </p>
+                );
+              })}
+            </div>
+          ) : (
+            <p className="mt-8 rounded-[24px] border border-brand-red/15 bg-paper p-6 text-sm leading-relaxed text-ink/70">
+              <span className="block font-bold uppercase tracking-[0.14em] text-brand-red">
+                Full article coming soon
+              </span>
+              <span className="mt-2 block">
+                The headline and summary above are in place; the body copy is still being
+                written. In the meantime, the{" "}
+                <Link href="/regional-food-stories" className="font-bold text-brand-red underline">
+                  regional food stories
+                </Link>{" "}
+                cover the cuisines behind the rotation.
+              </span>
+            </p>
+          )}
         </Reveal>
       </article>
 

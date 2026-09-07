@@ -3,7 +3,7 @@ import Link from "next/link";
 import type { Metadata } from "next";
 import Reveal from "@/components/Reveal";
 import BlogIndex from "@/components/blog/BlogIndex";
-import { FEATURED_POST, MOST_POPULAR } from "@/data/blog";
+import { CATEGORY_IMAGE, FEATURED_POST, MOST_POPULAR } from "@/data/blog";
 
 export const metadata: Metadata = {
   title: "Notes from the Relay — Mumbai Dabbawala",
@@ -39,16 +39,16 @@ export default function BlogPage() {
             </p>
           </Reveal>
 
-          <div className="mt-12 grid gap-8 lg:grid-cols-[1.55fr_1fr] lg:gap-10">
+          <div className="mt-12 grid gap-8 lg:grid-cols-[1.3fr_1fr] lg:gap-10">
             {/* Lead story */}
             <Reveal>
               <Link href={`/blog/${FEATURED_POST.slug}`} className="group block">
-                <div className="relative aspect-[16/10] overflow-hidden rounded-[32px] bg-ink shadow-[0_14px_40px_-26px_rgba(42,24,16,0.5)]">
+                <div className="relative aspect-[2/1] overflow-hidden rounded-[32px] bg-ink shadow-[0_14px_40px_-26px_rgba(42,24,16,0.5)]">
                   <Image
-                    src="/images/thali-tomorrow.jpg"
+                    src={CATEGORY_IMAGE[FEATURED_POST.category]}
                     alt=""
-                    width={768}
-                    height={1024}
+                    width={1024}
+                    height={576}
                     priority
                     sizes="(min-width: 1024px) 60vw, 92vw"
                     className="absolute inset-0 h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
@@ -89,8 +89,8 @@ export default function BlogPage() {
             </Reveal>
 
             {/* Most popular */}
-            <Reveal delay={120}>
-              <div className="h-full rounded-[32px] border border-brand-red/12 bg-paper p-6 shadow-[0_8px_26px_-20px_rgba(42,24,16,0.28)] sm:p-7">
+            <Reveal delay={120} className="self-start">
+              <div className="rounded-[32px] border border-brand-red/12 bg-paper p-6 shadow-[0_8px_26px_-20px_rgba(42,24,16,0.28)] sm:p-7">
                 <p className="text-[11px] font-bold uppercase tracking-[0.22em] text-brand-green-dark">
                   Most popular
                 </p>

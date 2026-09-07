@@ -1,9 +1,10 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { useMemo, useState } from "react";
 import Reveal from "@/components/Reveal";
-import { BLOG_CATEGORIES, LISTED_POSTS, type BlogCategory } from "@/data/blog";
+import { BLOG_CATEGORIES, CATEGORY_IMAGE, LISTED_POSTS, type BlogCategory } from "@/data/blog";
 
 const PER_PAGE = 6;
 
@@ -110,33 +111,46 @@ export default function BlogIndex() {
             <Reveal key={post.slug} delay={i * 60}>
               <Link
                 href={`/blog/${post.slug}`}
-                className="group flex h-full flex-col rounded-[28px] border border-brand-red/12 bg-paper p-6 shadow-[0_8px_26px_-20px_rgba(42,24,16,0.28)] transition-all duration-500 hover:-translate-y-1.5 hover:border-brand-green hover:shadow-[0_12px_30px_-20px_rgba(44,73,15,0.34)]"
+                className="group flex h-full flex-col overflow-hidden rounded-[28px] border border-brand-red/12 bg-paper shadow-[0_8px_26px_-20px_rgba(42,24,16,0.28)] transition-all duration-500 hover:-translate-y-1.5 hover:border-brand-green hover:shadow-[0_12px_30px_-20px_rgba(44,73,15,0.34)]"
               >
-                <span className="text-[10px] font-bold uppercase tracking-[0.18em] text-ink/45">
-                  {post.month}
-                </span>
-                <h3 className="mt-2 font-display text-lg font-bold leading-tight text-ink">
-                  {post.title}
-                </h3>
-                <p className="mt-2.5 text-[13px] leading-relaxed text-ink/65">{post.excerpt}</p>
-                <span className="mt-auto flex items-center gap-2 pt-5 text-[10px] font-bold uppercase tracking-[0.16em] text-brand-red">
-                  {post.category}
-                  <svg
-                    width="12"
-                    height="12"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    aria-hidden="true"
-                    className="transition-transform duration-500 group-hover:translate-x-1"
-                  >
-                    <path
-                      d="M5 12h14M13 6l6 6-6 6"
-                      stroke="currentColor"
-                      strokeWidth="2.6"
-                      strokeLinecap="round"
-                    />
-                  </svg>
-                </span>
+                <div className="relative aspect-[16/9] overflow-hidden bg-brand-cream">
+                  <Image
+                    src={CATEGORY_IMAGE[post.category]}
+                    alt=""
+                    width={1024}
+                    height={576}
+                    sizes="(min-width: 1024px) 30vw, (min-width: 640px) 45vw, 90vw"
+                    className="absolute inset-0 h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
+                  />
+                </div>
+
+                <div className="flex flex-1 flex-col p-6">
+                  <span className="text-[10px] font-bold uppercase tracking-[0.18em] text-ink/45">
+                    {post.month}
+                  </span>
+                  <h3 className="mt-2 font-display text-lg font-bold leading-tight text-ink">
+                    {post.title}
+                  </h3>
+                  <p className="mt-2.5 text-[13px] leading-relaxed text-ink/65">{post.excerpt}</p>
+                  <span className="mt-auto flex items-center gap-2 pt-5 text-[10px] font-bold uppercase tracking-[0.16em] text-brand-red">
+                    {post.category}
+                    <svg
+                      width="12"
+                      height="12"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      aria-hidden="true"
+                      className="transition-transform duration-500 group-hover:translate-x-1"
+                    >
+                      <path
+                        d="M5 12h14M13 6l6 6-6 6"
+                        stroke="currentColor"
+                        strokeWidth="2.6"
+                        strokeLinecap="round"
+                      />
+                    </svg>
+                  </span>
+                </div>
               </Link>
             </Reveal>
           ))}

@@ -1,3 +1,42 @@
+## 2026-09-07 — Blog: smaller lead photo, images on the cards, one article seeded
+
+Four changes from client feedback on `/blog`:
+
+**Lead photo smaller.** `aspect-[16/10]` -> `aspect-[2/1]` and the column split
+`1.55fr` -> `1.3fr`. Measured 830x519 before, 729x364 after.
+
+**Most Popular sizes to its content.** It carried `h-full`, so the grid stretched
+it to the lead story's height and left dead space under the third card. Dropped
+`h-full` and put `self-start` on its grid item.
+
+**Images on the archive cards.** Generated seven editorial still lifes with fal.ai
+`flux/dev`, one per category, saved to `public/images/blog/` and mapped in
+`CATEGORY_IMAGE`. One shared recipe — "editorial still life, no people, warm
+natural side light from a window, shallow depth of field, muted warm palette, worn
+wooden surface" — so the set reads as a single commission. Recompressed with
+Pillow at 1440px/q78: 2.9MB -> 0.4MB.
+
+Objects, deliberately not people: these sit on a real organisation's site as
+editorial imagery, and fabricated documentary photographs of its staff would
+misrepresent it. The lead story and the post pages now use the same map, so
+`thali-tomorrow.jpg` is no longer borrowed for the blog.
+
+**One article seeded** so the reading layout can be reviewed —
+"The code on every lid, decoded" now has a `body` of typed blocks (`p`, `h2`,
+`quote`, `list`), rendered on `/blog/[slug]`: 3 subheads, 9 paragraphs, a
+pull-quote in the script face, a four-item list. The other nine still show the
+"full article coming soon" note.
+
+**This copy needs sign-off before launch.** It is marked `SEEDED SAMPLE COPY` in
+`src/data/blog.ts`. It stays at the level of what is publicly documented about the
+coding system — collection point, destination station, building, floor and carrier
+group — and avoids specifics that vary between groups, but nobody at the client
+has checked it.
+
+Verified: 6 cards in 3 columns at 430x467, all with images, 0 broken; lead photo
+and Most Popular measured as above; article renders all four block kinds; build
+prerenders `/blog` and all ten posts.
+
 ## 2026-09-07 — Blog page, on the Litmus layout
 
 Client asked for `/blog` to follow https://www.litmus.com/blog, with the posts
