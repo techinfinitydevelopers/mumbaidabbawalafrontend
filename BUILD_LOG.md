@@ -1,3 +1,34 @@
+## 2026-09-07 — Chef deck: glitch-free grow, slower rotation
+
+Client: the glide stutters, and the rotation is too fast. Three separate causes for
+the stutter, all fixed.
+
+**1. The promoted image had to be downloaded mid-animation.** Thumbnails carried
+`sizes="140px"` while the big card carried `sizes="…400px"`, so the two resolved to
+different srcset candidates. Promoting a card meant fetching and decoding a source
+the browser had never seen — right in the middle of a 520ms grow. Thumbnails now
+use the big card's `sizes`, so every dish resolves to one candidate and the swap is
+a cache hit. Verified: each of the deck's images now reports exactly one width
+(`w=640`) across both roles, where it used to report two.
+
+**2. `transition-all duration-500` on the big card was interpolating `transform`
+at the same time the FLIP animated it** — two engines writing the same property.
+Narrowed to `transition-[box-shadow]`; computed style now reads
+`box-shadow / 0.5s`. The copy column's `transition-all` went to nothing for the
+same reason: it only ever needed the opacity fade it already has.
+
+**3. Hover-panning ran during the grow.** Moving the pointer across the deck lerps
+the scroll container every frame, so the track was gliding sideways while the card
+scaled. The rAF loop now holds off for 560ms after a grow starts (`flipUntil`),
+which is the animation's 520ms plus a frame.
+
+**Rotation 3000ms -> 6500ms.** Measured the real period across three ticks:
+6494ms, 6552ms, mean 6523ms.
+
+While measuring, autoplay refused to tick for 16s — which turned out to be
+pause-on-hover working correctly, since an earlier synthetic `mouseover` was still
+in effect. Worth knowing before treating a stopped deck as a bug.
+
 ## 2026-09-07 — Right column of the 135+ section is a photograph now
 
 The boarding pass went the same way as the plain box before it, and for the same

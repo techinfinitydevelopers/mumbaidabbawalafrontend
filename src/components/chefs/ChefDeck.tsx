@@ -35,6 +35,8 @@ export default function ChefDeck() {
   const activeCardRef = useRef<HTMLDivElement>(null);
   /** autoplay stops while the pointer is in the deck, so it can't move the card being aimed at */
   const autoplayPaused = useRef(false);
+  /** timestamp until which the grow owns the motion; hover-panning holds off till then */
+  const flipUntil = useRef(0);
 
   const activeRef = useRef(active);
   useEffect(() => {
@@ -53,7 +55,7 @@ export default function ChefDeck() {
 
   // Auto-slide through the chefs from left to right continuously on a timer
   useEffect(() => {
-    const AUTOPLAY_MS = 3000;
+    const AUTOPLAY_MS = 6500;
     const interval = setInterval(() => {
       if (isDragging.current || autoplayPaused.current) return;
       setActive((prev) => {
@@ -117,6 +119,7 @@ export default function ChefDeck() {
 
     // a fast run of clicks would otherwise stack transforms on the same node
     node.getAnimations().forEach((a) => a.cancel());
+    flipUntil.current = performance.now() + 560;
 
     node.animate(
       [
@@ -200,6 +203,10 @@ export default function ChefDeck() {
     if (!track) return;
 
     const animate = () => {
+      if (performance.now() < flipUntil.current) {
+        rafId.current = requestAnimationFrame(animate);
+        return;
+      }
       if (isHoverPanning.current && !isDragging.current && track) {
         const diff = targetScrollLeft.current - track.scrollLeft;
         if (Math.abs(diff) > 0.4) {
@@ -284,7 +291,7 @@ export default function ChefDeck() {
                       src={chef.image}
                       alt={chef.title}
                       fill
-                      sizes="140px"
+                      sizes="(min-width: 1024px) 400px, (min-width: 768px) 370px, 270px"
                       className="object-cover transition-transform duration-700 ease-out group-hover:scale-108"
                       draggable={false}
                     />
@@ -297,7 +304,7 @@ export default function ChefDeck() {
             {/* 2. Active Enlarged Main Card */}
             <div
               ref={activeCardRef}
-              className="relative h-[360px] w-[270px] shrink-0 self-end overflow-hidden rounded-[26px] border border-brand-red/15 shadow-[0_12px_28px_-10px_rgba(42,24,16,0.18)] ring-1 ring-brand-yellow/60 transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] sm:h-[440px] sm:w-[330px] sm:rounded-[30px] md:h-[490px] md:w-[370px] lg:h-[520px] lg:w-[400px]"
+              className="relative h-[360px] w-[270px] shrink-0 self-end overflow-hidden rounded-[26px] border border-brand-red/15 shadow-[0_12px_28px_-10px_rgba(42,24,16,0.18)] ring-1 ring-brand-yellow/60 transition-[box-shadow] duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] sm:h-[440px] sm:w-[330px] sm:rounded-[30px] md:h-[490px] md:w-[370px] lg:h-[520px] lg:w-[400px]"
             >
               <div className="relative h-full w-full overflow-hidden">
                 <Image
@@ -317,7 +324,7 @@ export default function ChefDeck() {
 
             {/* 3. Right Area: Testimonial/Quote on Top + Right Small Cards on Bottom */}
             <div
-              className="flex shrink-0 flex-col justify-between self-end transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)]"
+              className="flex shrink-0 flex-col justify-between self-end"
               style={{ minHeight: "clamp(360px, 46vw, 520px)" }}
             >
               {/* Active Chef Details & Quote with smooth crossfade */}
@@ -369,7 +376,7 @@ export default function ChefDeck() {
                           src={chef.image}
                           alt={chef.title}
                           fill
-                          sizes="140px"
+                          sizes="(min-width: 1024px) 400px, (min-width: 768px) 370px, 270px"
                           className="object-cover transition-transform duration-700 ease-out group-hover:scale-108"
                           draggable={false}
                         />
