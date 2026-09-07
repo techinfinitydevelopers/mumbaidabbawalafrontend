@@ -29,7 +29,8 @@ export default function ChefDeck() {
   const isHoverPanning = useRef(false);
   const rafId = useRef<number>(0);
 
-  // FLIP: the rect of the thumbnail that was clicked, measured before the re-render
+  const hoverTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  // FLIP: the rect of the thumbnail being picked, measured before the re-render
   const flipFrom = useRef<DOMRect | null>(null);
   const activeCardRef = useRef<HTMLDivElement>(null);
   /** autoplay stops while the pointer is in the deck, so it can't move the card being aimed at */
@@ -67,10 +68,28 @@ export default function ChefDeck() {
     return () => clearInterval(interval);
   }, []);
 
-  /*
-   * Selecting on hover meant a single sweep across the rail fired six selections and
-   * the deck changed under the cursor. Hover is now only a visual cue; a click picks.
+  /**
+   * Hover picks the card, and so does a click.
+   *
+   * The settle delay is 180ms rather than the original 40ms for a reason: the grow
+   * runs for 520ms, and at 40ms a sweep across the rail re-selected every thumbnail
+   * it passed, cancelling each animation before a frame of it was visible. 180ms is
+   * long enough that a deliberate hover plays the whole grow, and short enough that
+   * it still feels like hover rather than a click.
    */
+  const handleCardHover = (event: React.MouseEvent<HTMLButtonElement>, idx: number) => {
+    if (isDragging.current || idx === activeRef.current) return;
+    const rect = event.currentTarget.getBoundingClientRect();
+    if (hoverTimeoutRef.current) clearTimeout(hoverTimeoutRef.current);
+    hoverTimeoutRef.current = setTimeout(() => {
+      flipFrom.current = rect;
+      go(idx);
+    }, 180);
+  };
+
+  const handleCardLeave = () => {
+    if (hoverTimeoutRef.current) clearTimeout(hoverTimeoutRef.current);
+  };
 
   /**
    * Grows the clicked thumbnail into the big slot.
@@ -81,6 +100,7 @@ export default function ChefDeck() {
    */
   const pick = (event: React.MouseEvent<HTMLButtonElement>, idx: number) => {
     if (hasDragged.current) return;
+    if (hoverTimeoutRef.current) clearTimeout(hoverTimeoutRef.current);
     flipFrom.current = event.currentTarget.getBoundingClientRect();
     go(idx);
   };
@@ -169,6 +189,7 @@ export default function ChefDeck() {
   };
 
   const onContainerMouseLeave = () => {
+    handleCardLeave();
     autoplayPaused.current = false;
     isHoverPanning.current = false;
   };
@@ -219,7 +240,7 @@ export default function ChefDeck() {
             </span>
           </h2>
           <p className="mx-auto mt-3 max-w-lg text-sm text-ink/75 sm:text-base">
-            Pick any dish to bring it forward and read what the kitchen does with it.
+            Hover any dish to bring it forward and read what the kitchen does with it.
           </p>
         </div>
 
@@ -252,6 +273,8 @@ export default function ChefDeck() {
                 <button
                   key={`left-${chef.title}-${idx}-${pos}`}
                   type="button"
+                  onMouseEnter={(e) => handleCardHover(e, idx)}
+                  onMouseLeave={handleCardLeave}
                   onClick={(e) => pick(e, idx)}
                   aria-label={`View ${chef.title}`}
                   className="group relative h-[120px] w-[90px] shrink-0 self-end overflow-hidden rounded-[16px] border border-brand-red/10 shadow-[0_4px_12px_-4px_rgba(42,24,16,0.08)] transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] hover:scale-105 hover:shadow-[0_8px_18px_-6px_rgba(42,24,16,0.14)] sm:h-[148px] sm:w-[110px] sm:rounded-[20px] md:h-[168px] md:w-[125px] lg:h-[180px] lg:w-[135px]"
@@ -335,7 +358,9 @@ export default function ChefDeck() {
                     <button
                       key={`right-${chef.title}-${idx}-${pos}`}
                       type="button"
-                      onClick={(e) => pick(e, idx)}
+                      onMouseEnter={(e) => handleCardHover(e, idx)}
+                  onMouseLeave={handleCardLeave}
+                  onClick={(e) => pick(e, idx)}
                       aria-label={`View ${chef.title}`}
                       className="group relative h-[120px] w-[90px] shrink-0 self-end overflow-hidden rounded-[16px] border border-brand-red/10 shadow-[0_4px_12px_-4px_rgba(42,24,16,0.08)] transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] hover:scale-105 hover:shadow-[0_8px_18px_-6px_rgba(42,24,16,0.14)] sm:h-[148px] sm:w-[110px] sm:rounded-[20px] md:h-[168px] md:w-[125px] lg:h-[180px] lg:w-[135px]"
                     >

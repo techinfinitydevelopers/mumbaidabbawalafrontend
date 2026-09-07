@@ -1,3 +1,24 @@
+## 2026-09-07 — Hover picks the card again, now with the grow visible
+
+Client wants hover selection back, and wants to see the card enlarge while it
+happens. Both are in: `handleCardHover` records the thumbnail's rect on
+`mouseenter` and hands it to the same FLIP that the click path uses, so the card
+grows from the hovered thumbnail instead of appearing at full size.
+
+**The settle delay is 180ms, not the original 40ms.** That is what makes the ask
+possible rather than a preference: the grow runs 520ms, and at 40ms a sweep across
+the rail re-selected every thumbnail it passed, cancelling each animation before a
+frame of it was visible. Measured with a 50ms-per-thumbnail sweep across four
+thumbnails — nothing fires mid-sweep, and it settles once on the thumbnail the
+pointer stopped on. A deliberate hover selects after 180ms and plays the whole
+grow: keyframes `translate(420px, 340px) scale(0.3375, 0.346154)` -> `none` against
+a 135x180 thumbnail and a 400x520 card.
+
+Click still picks immediately and cancels any pending hover pick; leaving the deck
+drops it too. Autoplay stays paused while the pointer is inside, which hover
+selection depends on — otherwise the timer moves the card out from under the
+cursor mid-grow.
+
 ## 2026-09-07 — Chef deck: the card now visibly grows, and autoplay stops under the cursor
 
 **Why the enlarge never animated.** The active card carried
