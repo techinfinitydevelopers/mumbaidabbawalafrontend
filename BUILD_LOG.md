@@ -1,3 +1,31 @@
+## 2026-09-07 — "What We Stand For" rebuilt as poster tiles
+
+Six identical squat white pills carrying a number and a word, in a six-across row,
+with a wide gap above them. Nothing in it was doing any work.
+
+Rebuilt as six colour-blocked tiles, 3-up on desktop and 2-up on mobile, each
+196px tall (168 on mobile) instead of a 90px pill:
+
+- The **word is the subject**, set in poster type with the offset shadow, at the
+  bottom of the tile. The number drops to a faint `font-poster` mark top-right.
+- Grounds cycle **red / cream / orange / cream / red / orange** — primary palette
+  only. The brand sheet reserves the secondary greens and yellow for icons and
+  minimal accents, so those appear on the glyphs and the poster shadow and never as
+  a ground.
+- Each tile gets a drawn glyph in the secondary palette: sprout, stamp, price tag,
+  clock, shield-and-tick, hands.
+
+Still no invented one-liner under each word — the doc gives the six words and
+nothing else, so colour, scale and an icon carry the tile instead of made-up copy.
+
+Also closed the gap: `mt-phi-5` -> `mt-phi-4` above the grid and below it, so the
+block reads as one unit (lead to grid now 34px, grid to the closing script line
+66px).
+
+Word sizes are stepped `22 / 30 / 38px`: "Affordable" and "Convenient" are ten
+characters and overran a 2-up tile at 390px at the first size. Measured after —
+all six words fit with 0px overflow at both 390 and 1440.
+
 ## 2026-09-07 — Gallery bento now tiles with no holes
 
 The mosaic left two empty cells in its last row. It is arithmetic, not styling:
