@@ -33,7 +33,7 @@ const PILLARS = [
  */
 export default function FoodFirst() {
   return (
-    <section className="relative bg-paper pb-16 pt-14 sm:pb-20 sm:pt-16">
+    <section className="relative bg-paper pb-phi-5 pt-phi-5 sm:pb-phi-6 sm:pt-phi-5">
       <div className="mx-auto max-w-[1720px] px-5 sm:px-8 lg:px-12">
         <Reveal className="max-w-3xl">
           <p className="font-script text-3xl text-brand-orange">Why the food comes first</p>
@@ -63,7 +63,7 @@ export default function FoodFirst() {
                 <dt className="mt-2 font-display text-lg font-bold leading-tight text-ink">
                   {pillar.name}
                 </dt>
-                <dd className="mt-1.5 text-[13px] leading-relaxed text-ink/65">{pillar.copy}</dd>
+                <dd className="mt-1.5 text-phi-1 leading-relaxed text-ink/65">{pillar.copy}</dd>
               </div>
             </Reveal>
           ))}

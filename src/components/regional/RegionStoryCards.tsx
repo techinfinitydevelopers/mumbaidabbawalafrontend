@@ -23,7 +23,7 @@ export default function RegionStoryCards({ className = "" }: { className?: strin
               >
                 {region.name}
               </h3>
-              <p className="mt-3 text-[13px] leading-relaxed text-ink/70">
+              <p className="mt-3 text-phi-1 leading-relaxed text-ink/70">
                 {region.description}
               </p>
               <div className="mt-4 flex flex-wrap gap-1.5">

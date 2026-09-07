@@ -39,7 +39,7 @@ export default function WhatsCookingTomorrowPage() {
       />
 
       {/* ───── Tomorrow's thali, in full ───── */}
-      <section className="relative flex min-h-[100svh] flex-col justify-center bg-paper pb-16 pt-10 sm:pb-20">
+      <section className="relative flex min-h-[100svh] flex-col justify-center bg-paper pb-phi-5 pt-phi-3 sm:pb-phi-6">
         <div className="mx-auto max-w-[1720px] px-5 sm:px-8 lg:px-12">
           <Reveal className="flex flex-wrap items-end justify-between gap-4">
             <div>
@@ -76,11 +76,11 @@ export default function WhatsCookingTomorrowPage() {
                     <p className="font-display text-xl font-bold leading-tight text-ink sm:text-2xl">
                       {DEFAULT_DAY.cuisine} Thali
                     </p>
-                    <p className="mt-1 text-[13px] text-ink/65">
+                    <p className="mt-1 text-phi-1 text-ink/65">
                       {DEFAULT_DAY.grid.veg} · {DEFAULT_DAY.grid.bread}
                     </p>
                   </div>
-                  <span className="flex shrink-0 items-center gap-2 rounded-full bg-brand-green/20 px-3.5 py-2 text-[10px] font-bold uppercase tracking-[0.16em] text-brand-green-dark">
+                  <span className="flex shrink-0 items-center gap-2 rounded-full bg-brand-green/20 px-3.5 py-2 text-phi-0 font-bold uppercase tracking-[0.16em] text-brand-green-dark">
                     Veg or non-veg
                   </span>
                 </figcaption>
@@ -161,7 +161,7 @@ export default function WhatsCookingTomorrowPage() {
       </section>
 
       {/* ───── Add-ons ───── */}
-      <section className="grain graph-paper relative overflow-hidden bg-brand-cream pb-24 pt-20 sm:pb-28">
+      <section className="grain graph-paper relative overflow-hidden bg-brand-cream pb-phi-6 pt-phi-6 sm:pb-phi-6">
         <div className="mx-auto max-w-[1720px] px-5 sm:px-8 lg:px-12">
           <Reveal>
             <p className="text-[11px] font-bold uppercase tracking-[0.22em] text-brand-red">
@@ -170,7 +170,7 @@ export default function WhatsCookingTomorrowPage() {
             <h2 className="poster mt-2 text-[34px] text-brand-red [--po:4px] sm:text-[54px] sm:[--po:5px]">
               Add-ons
             </h2>
-            <p className="mt-3 max-w-xl text-sm leading-relaxed text-ink/70 sm:text-base">
+            <p className="mt-3 max-w-xl text-sm leading-relaxed text-ink/70 sm:text-phi-3">
               Top up any day&rsquo;s thali with a real extra — priced individually, on top of
               your plan.
             </p>
@@ -201,7 +201,7 @@ export default function WhatsCookingTomorrowPage() {
       </section>
 
       {/* ───── From the kitchen ───── */}
-      <section className="grain graph-paper-light relative overflow-hidden bg-brand-red pb-20 pt-24 sm:pb-24">
+      <section className="grain graph-paper-light relative overflow-hidden bg-brand-red pb-phi-6 pt-phi-6 sm:pb-phi-6">
         <WaveDivider tone="bg-brand-cream" />
 
         <Reveal className="relative z-20 mx-auto max-w-3xl px-5 text-center sm:px-8">

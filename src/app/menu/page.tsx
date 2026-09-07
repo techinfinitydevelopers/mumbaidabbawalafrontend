@@ -35,7 +35,7 @@ export default function MenuPage() {
       <FoodFirst />
 
       {/* ───── The rotation, day by day ───── */}
-      <section id="rotation" className="relative bg-paper pb-24 pt-12 sm:pb-32">
+      <section id="rotation" className="relative bg-paper pb-phi-6 pt-phi-4 sm:pb-phi-7">
         <div className="mx-auto max-w-[1720px] px-5 sm:px-8 lg:px-12">
           <Reveal className="flex flex-wrap items-end justify-between gap-4">
             <div>
@@ -43,7 +43,7 @@ export default function MenuPage() {
               <h2 className="poster mt-1 text-[34px] text-brand-red [--po:4px] sm:text-[54px] sm:[--po:5px]">
                 The Rotation
               </h2>
-              <p className="mt-2 max-w-xl text-sm text-ink/70 sm:text-base">
+              <p className="mt-2 max-w-measure text-phi-2 text-ink/70 sm:text-phi-3">
                 Sixteen weekday menus on rotation. Tomorrow&rsquo;s is first — tap it to see
                 the full dabba.
               </p>
@@ -64,7 +64,7 @@ export default function MenuPage() {
       {/* ───── The cuisines behind the rotation ───── */}
       <section
         id="cuisines"
-        className="grain graph-paper relative overflow-hidden bg-brand-cream pb-24 pt-20 sm:pb-28"
+        className="grain graph-paper relative overflow-hidden bg-brand-cream pb-phi-6 pt-phi-6 sm:pb-phi-6"
       >
         <Reveal className="mx-auto max-w-7xl px-5 text-center sm:px-8">
           <p className="font-script text-3xl text-brand-orange">What&rsquo;s on rotation</p>
@@ -82,7 +82,7 @@ export default function MenuPage() {
               Cuisines
             </span>
           </h2>
-          <p className="mx-auto mt-5 max-w-xl text-sm leading-relaxed text-ink/70 sm:text-base">
+          <p className="mx-auto mt-5 max-w-measure text-phi-2 leading-relaxed text-ink/70 sm:text-phi-3">
             The regions with a story worth telling — and what each one brings to your dabba.
           </p>
         </Reveal>

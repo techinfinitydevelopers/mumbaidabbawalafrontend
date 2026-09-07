@@ -7,7 +7,7 @@ import { HERO_CLUSTER } from "@/data/regions";
 export default function Home() {
   return (
     <div className="overflow-x-hidden">
-      <section className="grain graph-paper relative bg-brand-cream pb-24 pt-28 sm:pb-36 sm:pt-32">
+      <section className="grain graph-paper relative bg-brand-cream pb-phi-6 pt-phi-6 sm:pb-phi-7 sm:pt-phi-7">
 
         <div className="relative z-10 mx-auto grid max-w-7xl items-center gap-4 px-5 sm:px-8 lg:grid-cols-[1.05fr_1fr]">
           <div className="relative">
@@ -38,7 +38,7 @@ export default function Home() {
           </div>
 
           <div>
-            <span className="inline-block rounded-full bg-brand-green-dark px-4 py-1.5 text-[10px] font-bold uppercase tracking-[0.22em] text-brand-cream">
+            <span className="inline-block rounded-full bg-brand-green-dark px-4 py-1.5 text-phi-0 font-bold uppercase tracking-[0.22em] text-brand-cream">
               Mumbai since 1890
             </span>
 
@@ -105,7 +105,7 @@ export default function Home() {
         </svg>
       </section>
 
-      <section className="mx-auto max-w-4xl px-5 pb-24 pt-6 text-center sm:px-8">
+      <section className="mx-auto max-w-4xl px-5 pb-phi-6 pt-phi-2 text-center sm:px-8">
         <p className="font-script text-3xl text-brand-orange">More of the site is on the way</p>
         <h2 className="mx-auto mt-3 [--po:4px]">
           <span
@@ -115,7 +115,7 @@ export default function Home() {
             Start with the Stories
           </span>
         </h2>
-        <p className="mx-auto mt-4 max-w-xl text-sm text-ink/70 sm:text-base">
+        <p className="mx-auto mt-4 max-w-measure text-phi-2 text-ink/70 sm:text-base">
           Five cuisines, five stories — Gujarati, Punjabi, Marathi, Rajasthani and South
           Indian, each behind the 15-day rotating menu.
         </p>

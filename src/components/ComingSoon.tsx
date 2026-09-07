@@ -10,7 +10,7 @@ export default function ComingSoon({
   description: string;
 }) {
   return (
-    <section className="mx-auto max-w-3xl px-5 py-28 text-center sm:py-36">
+    <section className="mx-auto max-w-3xl px-5 py-phi-6 text-center sm:py-phi-7">
       <span className="mx-auto w-fit rounded-full bg-brand-cream px-4 py-1.5 text-xs font-bold uppercase tracking-[0.2em] text-brand-red">
         {eyebrow}
       </span>

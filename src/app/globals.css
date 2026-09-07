@@ -18,6 +18,36 @@
   --font-body: var(--font-dm-sans), system-ui, -apple-system, "Segoe UI", sans-serif;
   --font-script: var(--font-caveat), "Segoe Script", cursive;
   --font-poster: var(--font-anton), "Arial Narrow", Impact, sans-serif;
+
+  /* ── Golden ratio ──────────────────────────────────────────────────────────
+     One ratio behind the type, the rhythm and the column splits.
+
+     Type steps by phi (1.618) with a sqrt(phi) = 1.272 half-step between, because a
+     straight phi ramp from 16px jumps 16 -> 26 -> 42 and leaves nothing usable in
+     between. Rounded to whole pixels: browsers subpixel-render text, but round
+     numbers keep the ramp legible in devtools and in the markup.
+
+     Spacing and measures use the Fibonacci integers, which converge on phi and land
+     on whole pixels: 8, 13, 21, 34, 55, 89, 144. */
+  --phi: 1.618;
+
+  --text-phi-0: 0.625rem;   /* 10px  — micro caps, labels */
+  --text-phi-1: 0.8125rem;  /* 13px  — small print, card copy */
+  --text-phi-2: 1rem;       /* 16px  — body */
+  --text-phi-3: 1.25rem;    /* 20px  — lead paragraph */
+  --text-phi-4: 1.625rem;   /* 26px  — h3 */
+  --text-phi-5: 2.0625rem;  /* 33px  — h2, small */
+  --text-phi-6: 2.625rem;   /* 42px  — h2 */
+  --text-phi-7: 3.3125rem;  /* 53px  — h1 */
+  --text-phi-8: 4.25rem;    /* 68px  — display */
+
+  --space-phi-1: 0.5rem;    /* 8px  */
+  --space-phi-2: 0.8125rem; /* 13px */
+  --space-phi-3: 1.3125rem; /* 21px */
+  --space-phi-4: 2.125rem;  /* 34px */
+  --space-phi-5: 3.4375rem; /* 55px */
+  --space-phi-6: 5.5625rem; /* 89px */
+  --space-phi-7: 9rem;      /* 144px */
 }
 
 @theme inline {
@@ -33,6 +63,31 @@
   --font-body: var(--font-body);
   --font-script: var(--font-script);
   --font-poster: var(--font-poster);
+
+  /* text-phi-* utilities */
+  --text-phi-0: var(--text-phi-0);
+  --text-phi-1: var(--text-phi-1);
+  --text-phi-2: var(--text-phi-2);
+  --text-phi-3: var(--text-phi-3);
+  --text-phi-4: var(--text-phi-4);
+  --text-phi-5: var(--text-phi-5);
+  --text-phi-6: var(--text-phi-6);
+  --text-phi-7: var(--text-phi-7);
+  --text-phi-8: var(--text-phi-8);
+
+  /* p-phi-*, mt-phi-*, gap-phi-* … */
+  --spacing-phi-1: var(--space-phi-1);
+  --spacing-phi-2: var(--space-phi-2);
+  --spacing-phi-3: var(--space-phi-3);
+  --spacing-phi-4: var(--space-phi-4);
+  --spacing-phi-5: var(--space-phi-5);
+  --spacing-phi-6: var(--space-phi-6);
+  --spacing-phi-7: var(--space-phi-7);
+
+  /* max-w-measure / max-w-measure-* — reading widths on the same integers */
+  --container-measure: 34rem;
+  --container-measure-wide: 55rem;
+  --container-measure-full: 89rem;
 }
 
 body {

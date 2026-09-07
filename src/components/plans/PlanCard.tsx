@@ -32,7 +32,7 @@ export default function PlanCard({ plan }: { plan: Plan }) {
         {plan.name}
       </h3>
       <p
-        className={`mt-1 text-[10px] font-bold uppercase tracking-[0.18em] ${
+        className={`mt-1 text-phi-0 font-bold uppercase tracking-[0.18em] ${
           featured ? "text-brand-yellow" : "text-brand-orange"
         }`}
       >
@@ -48,7 +48,7 @@ export default function PlanCard({ plan }: { plan: Plan }) {
           {plan.price}
         </span>
         <span
-          className={`text-[13px] font-semibold ${
+          className={`text-phi-1 font-semibold ${
             featured ? "text-brand-cream/80" : "text-ink/60"
           }`}
         >
@@ -58,7 +58,7 @@ export default function PlanCard({ plan }: { plan: Plan }) {
       {plan.priceIsPlaceholder ? (
         // the content doc still has $XX.XX here; saying so beats inventing a number
         <p
-          className={`mt-2 text-[10px] font-bold uppercase tracking-[0.14em] ${
+          className={`mt-2 text-phi-0 font-bold uppercase tracking-[0.14em] ${
             featured ? "text-brand-cream/60" : "text-ink/40"
           }`}
         >
@@ -66,7 +66,7 @@ export default function PlanCard({ plan }: { plan: Plan }) {
         </p>
       ) : (
         <p
-          className={`mt-2 text-[10px] font-bold uppercase tracking-[0.14em] ${
+          className={`mt-2 text-phi-0 font-bold uppercase tracking-[0.14em] ${
             featured ? "text-brand-cream/60" : "text-ink/40"
           }`}
         >
@@ -108,7 +108,7 @@ export default function PlanCard({ plan }: { plan: Plan }) {
               />
             </svg>
             <span
-              className={`text-[13px] leading-relaxed ${
+              className={`text-phi-1 leading-relaxed ${
                 featured ? "text-brand-cream/85" : "text-ink/75"
               }`}
             >

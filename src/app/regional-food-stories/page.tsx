@@ -35,7 +35,7 @@ export default function RegionalFoodStoriesPage() {
       />
 
       {/* ───── Auto-scrolling region rail ───── */}
-      <section className="relative bg-paper pb-24 pt-2 sm:pb-32">
+      <section className="relative bg-paper pb-phi-6 pt-2 sm:pb-phi-7">
         <Reveal className="mx-auto max-w-7xl px-5 text-center sm:px-8">
           <p className="font-script text-3xl text-brand-orange">Five cuisines, all on rotation</p>
           <h2 className="poster-stack mx-auto mt-3 max-w-4xl [--po:4px] sm:[--po:6px]">
@@ -52,7 +52,7 @@ export default function RegionalFoodStoriesPage() {
               Like Something
             </span>
           </h2>
-          <p className="mx-auto mt-5 max-w-xl text-sm leading-relaxed text-ink/70 sm:text-base">
+          <p className="mx-auto mt-5 max-w-measure text-phi-2 leading-relaxed text-ink/70 sm:text-phi-3">
             A dabba isn&rsquo;t a delivery. It&rsquo;s a mother&rsquo;s recipe, carried state
             by state, kitchen by kitchen — five distinct cuisines across the 15-day menu.
           </p>
@@ -65,7 +65,7 @@ export default function RegionalFoodStoriesPage() {
       </section>
 
       {/* ───── Closing CTA, styled after the "SOME TRADITIONS TRAVEL WELL" poster ───── */}
-      <section className="grain graph-paper-light relative overflow-hidden bg-brand-red pb-14 pt-28 sm:pb-16">
+      <section className="grain graph-paper-light relative overflow-hidden bg-brand-red pb-phi-5 pt-phi-6 sm:pb-phi-5">
         <WaveDivider tone="bg-paper" />
 
         <Reveal className="relative z-20 mx-auto max-w-3xl px-5 text-center sm:px-8">
@@ -104,7 +104,7 @@ export default function RegionalFoodStoriesPage() {
             </h2>
           </div>
 
-          <p className="mx-auto mt-5 max-w-xl text-sm leading-relaxed text-brand-cream/85 sm:text-base">
+          <p className="mx-auto mt-5 max-w-measure text-phi-2 leading-relaxed text-brand-cream/85 sm:text-phi-3">
             Rotating dishes across the 15-day menu — real variety, never the same thing twice
             in a row.
           </p>

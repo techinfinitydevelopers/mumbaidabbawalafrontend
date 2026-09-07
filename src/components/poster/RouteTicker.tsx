@@ -19,7 +19,7 @@ export default function RouteTicker({
   return (
     <div className={className} style={style}>
       <div className="flex items-center gap-3">
-        <span className="shrink-0 text-[10px] font-bold uppercase tracking-[0.24em]">{from}</span>
+        <span className="shrink-0 text-phi-0 font-bold uppercase tracking-[0.24em]">{from}</span>
 
         <span className="relative flex min-w-0 flex-1 items-center">
           <span className="ticker-rule" aria-hidden="true" />
@@ -33,7 +33,7 @@ export default function RouteTicker({
           />
         </span>
 
-        <span className="shrink-0 text-[10px] font-bold uppercase tracking-[0.24em]">{to}</span>
+        <span className="shrink-0 text-phi-0 font-bold uppercase tracking-[0.24em]">{to}</span>
       </div>
     </div>
   );

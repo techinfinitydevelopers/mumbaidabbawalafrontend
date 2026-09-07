@@ -36,7 +36,7 @@ export default function Footer() {
   return (
     <footer className="grain graph-paper-light relative bg-brand-red text-brand-cream">
       <div className="relative z-10 mx-auto max-w-7xl px-5 py-14 sm:px-8">
-        <div className="grid gap-10 lg:grid-cols-[1.4fr_1fr_1fr_1fr]">
+        <div className="grid gap-10 lg:grid-cols-[1.618fr_1fr_1fr_1fr]">
           <div>
             {/* the supplied mark is dark-on-light, so on the red it sits on its own cream chip */}
             <span className="inline-flex rounded-2xl bg-brand-cream px-4 py-3 shadow-[0_10px_28px_-18px_rgba(0,0,0,0.55)]">

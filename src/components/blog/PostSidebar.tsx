@@ -55,7 +55,7 @@ export default function PostSidebar({ title }: { title: string }) {
   return (
     <div className="flex flex-col gap-8">
       <div>
-        <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-ink/45">Share</p>
+        <p className="text-phi-0 font-bold uppercase tracking-[0.2em] text-ink/45">Share</p>
         <div className="mt-3 flex flex-wrap gap-2">
           {shares.map((s) => (
             <a

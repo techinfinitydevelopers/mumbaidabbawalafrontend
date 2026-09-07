@@ -79,7 +79,7 @@ export default function RegionCard({
         <p className={`mt-1.5 font-script text-xl leading-tight ${tone.kicker}`}>
           {region.tagline}
         </p>
-        <p className={`mt-4 text-[13px] leading-relaxed ${tone.body}`}>{region.description}</p>
+        <p className={`mt-4 text-phi-1 leading-relaxed ${tone.body}`}>{region.description}</p>
 
         <div className="mt-6 flex justify-end">
           <Link

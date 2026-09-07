@@ -37,7 +37,7 @@ export default function PageHero({
   tins?: Piece[];
 }) {
   return (
-    <section className="grain graph-paper relative flex min-h-[100svh] flex-col justify-center overflow-hidden bg-brand-cream pb-12 pt-20 sm:pb-24 sm:pt-24">
+    <section className="grain graph-paper relative flex min-h-[100svh] flex-col justify-center overflow-hidden bg-brand-cream pb-phi-4 pt-phi-6 sm:pb-phi-6 sm:pt-phi-6">
       <div className="relative z-10 mx-auto grid w-full max-w-[1720px] items-center gap-4 px-5 sm:px-8 lg:grid-cols-[1.02fr_1fr] lg:gap-10 lg:px-12 2xl:px-16">
         {/* Food group */}
         <div className="relative">
@@ -116,7 +116,7 @@ export default function PageHero({
               className="slide-in-right mt-5 hidden max-w-lg rounded-[24px] bg-paper p-5 shadow-[0_20px_40px_-22px_rgba(42,24,16,0.45)] sm:block 2xl:p-6"
               style={{ animationDelay: "0.24s" }}
             >
-              <p className="text-[13px] font-bold uppercase tracking-[0.14em] text-ink">
+              <p className="text-phi-1 font-bold uppercase tracking-[0.14em] text-ink">
                 {quote.name}
               </p>
               <p className="mt-2 text-sm leading-relaxed text-ink/75">{quote.text}</p>

@@ -125,14 +125,14 @@ export default function BlogIndex() {
                 </div>
 
                 <div className="flex flex-1 flex-col p-6">
-                  <span className="text-[10px] font-bold uppercase tracking-[0.18em] text-ink/45">
+                  <span className="text-phi-0 font-bold uppercase tracking-[0.18em] text-ink/45">
                     {post.month}
                   </span>
                   <h3 className="mt-2 font-display text-lg font-bold leading-tight text-ink">
                     {post.title}
                   </h3>
-                  <p className="mt-2.5 text-[13px] leading-relaxed text-ink/65">{post.excerpt}</p>
-                  <span className="mt-auto flex items-center gap-2 pt-5 text-[10px] font-bold uppercase tracking-[0.16em] text-brand-red">
+                  <p className="mt-2.5 text-phi-1 leading-relaxed text-ink/65">{post.excerpt}</p>
+                  <span className="mt-auto flex items-center gap-2 pt-5 text-phi-0 font-bold uppercase tracking-[0.16em] text-brand-red">
                     {post.category}
                     <svg
                       width="12"

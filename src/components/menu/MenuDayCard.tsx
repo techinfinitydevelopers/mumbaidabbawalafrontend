@@ -88,7 +88,7 @@ export default function MenuDayCard({
         }`}
       >
         <h3
-          className={`flex items-start gap-1.5 font-display text-[13px] font-bold leading-tight sm:text-[15px] ${
+          className={`flex items-start gap-1.5 font-display text-phi-1 font-bold leading-tight sm:text-[15px] ${
             featured ? "text-brand-cream" : "text-ink"
           }`}
         >
@@ -110,7 +110,7 @@ export default function MenuDayCard({
         </p>
 
         {featured && (
-          <p className="mt-2.5 inline-flex items-center gap-1.5 text-[9px] font-bold uppercase tracking-[0.12em] text-brand-yellow sm:mt-3 sm:text-[10px] sm:tracking-[0.16em]">
+          <p className="mt-2.5 inline-flex items-center gap-1.5 text-[9px] font-bold uppercase tracking-[0.12em] text-brand-yellow sm:mt-3 sm:text-phi-0 sm:tracking-[0.16em]">
             See tomorrow&rsquo;s dabba
             <svg width="12" height="12" viewBox="0 0 24 24" fill="none" aria-hidden="true">
               <path

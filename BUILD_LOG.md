@@ -1,3 +1,50 @@
+## 2026-09-07 — Golden ratio put through the content layer
+
+One ratio now drives the type ramp, the vertical rhythm, the reading measures and
+the content column splits. Tokens live in `globals.css` and are mirrored into
+`@theme inline`, so they exist as ordinary utilities (`text-phi-*`, `p-phi-*`,
+`max-w-measure`).
+
+**Type** steps by phi with a sqrt(phi) = 1.272 half-step between, because a straight
+phi ramp from 16px goes 16 -> 26 -> 42 and leaves nothing usable in between:
+
+| Step | px | Used for |
+| --- | --- | --- |
+| `text-phi-0` | 10 | micro caps, labels |
+| `text-phi-1` | 13 | card copy, small print |
+| `text-phi-2` | 16 | body |
+| `text-phi-3` | 20 | lead paragraph |
+| `text-phi-4` | 26 | h3 |
+| `text-phi-5` | 33 | h2, small |
+| `text-phi-6` | 42 | h2 |
+| `text-phi-7` | 53 | h1 |
+| `text-phi-8` | 68 | display |
+
+**Spacing and measures** use the Fibonacci integers, which converge on phi and land
+on whole pixels: 8, 13, 21, 34, 55, 89, 144. Every section's vertical padding was
+mapped to its nearest step, so the page rhythm now reads 34 / 55 / 89 / 144
+throughout instead of the previous ad-hoc 48 / 56 / 64 / 96 / 112. Reading widths
+are 34rem (`max-w-measure`), 55rem and 89rem.
+
+**Column splits** that are genuinely content go to `1.618fr 1fr` — the blog's lead
+story against its Most Popular rail (measured 800:495 = 1.618) and the footer's
+first column against the three link columns.
+
+**Deliberately not changed**, and worth stating because a later "why did this
+move?" is otherwise likely:
+
+- The `.poster` display sizes. Those were art-directed line by line — the 68px CTA,
+  the equal-size fix, the `--po-gap` work — and a blanket re-typeset would undo it.
+- `PageHero`'s `1.02fr` split and What's Cooking Tomorrow's `1.05fr` split. Both
+  came from explicit feedback; the second exists so the two panels are the same
+  height and fit one screen, which phi would break. Verified still equal (501/501).
+- The 11px CTA labels. The ramp has no 11px step and 13px is too heavy for them.
+
+Verified: hero still exactly one screen on three pages (900/900), no horizontal
+overflow on any page at 1440 or 390, 20 day cards and 10 rail cards intact, blog
+rail still sticky, build and tsc clean. `scratchpad/apply_phi.py` holds the
+mapping that was run.
+
 ## 2026-09-07 — The red line above the Plans wave
 
 Two things were drawing a red hairline near that boundary, and both are gone:

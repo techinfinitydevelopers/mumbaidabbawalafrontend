@@ -80,7 +80,7 @@ const OFFERINGS: {
 
 export default function DabbaOfferings() {
   return (
-    <section className="relative bg-paper pb-24 pt-20 sm:pb-28">
+    <section className="relative bg-paper pb-phi-6 pt-phi-6 sm:pb-phi-6">
       <div className="mx-auto max-w-[1720px] px-5 sm:px-8 lg:px-12">
         <Reveal className="mx-auto max-w-3xl text-center">
           <p className="font-script text-3xl text-brand-orange">Pick your routine</p>
@@ -125,8 +125,8 @@ export default function DabbaOfferings() {
                 <h3 className="mt-5 font-display text-lg font-bold leading-tight text-ink">
                   {item.name}
                 </h3>
-                <p className="mt-2 text-[13px] leading-relaxed text-ink/65">{item.copy}</p>
-                <span className="mt-4 inline-flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-[0.16em] text-brand-red">
+                <p className="mt-2 text-phi-1 leading-relaxed text-ink/65">{item.copy}</p>
+                <span className="mt-4 inline-flex items-center gap-1.5 text-phi-0 font-bold uppercase tracking-[0.16em] text-brand-red">
                   Learn more
                   <svg
                     width="12"

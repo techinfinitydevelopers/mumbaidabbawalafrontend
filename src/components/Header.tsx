@@ -37,7 +37,7 @@ export default function Header() {
             className="h-8 w-auto sm:h-9"
           />
           {/* the mark carries "Since 1890"; Perth is the part this launch adds */}
-          <span className="hidden border-l border-brand-red/15 pl-2.5 font-body text-[10px] font-bold tracking-[0.2em] text-ink/55 sm:block">
+          <span className="hidden border-l border-brand-red/15 pl-2.5 font-body text-phi-0 font-bold tracking-[0.2em] text-ink/55 sm:block">
             PERTH
           </span>
         </Link>

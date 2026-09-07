@@ -42,11 +42,11 @@ export default async function BlogPostPage({
 
   return (
     <div>
-      <article className="grain graph-paper relative bg-brand-cream pb-16 pt-28 sm:pb-20 sm:pt-32">
+      <article className="grain graph-paper relative bg-brand-cream pb-phi-5 pt-phi-6 sm:pb-phi-6 sm:pt-phi-7">
         <div className="mx-auto max-w-6xl px-5 sm:px-8">
           <Link
             href="/blog"
-            className="inline-flex items-center gap-2 text-[10px] font-bold uppercase tracking-[0.18em] text-brand-red hover:text-brand-orange"
+            className="inline-flex items-center gap-2 text-phi-0 font-bold uppercase tracking-[0.18em] text-brand-red hover:text-brand-orange"
           >
             <svg width="12" height="12" viewBox="0 0 24 24" fill="none" aria-hidden="true">
               <path
@@ -66,7 +66,7 @@ export default async function BlogPostPage({
             </aside>
 
             <Reveal className="order-1 min-w-0 lg:order-2">
-          <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-ink/45">
+          <p className="text-phi-0 font-bold uppercase tracking-[0.18em] text-ink/45">
             {post.category} · {post.month}
           </p>
           <h1 className="mt-3 font-display text-3xl font-bold leading-tight text-ink sm:text-[42px]">
@@ -151,7 +151,7 @@ export default async function BlogPostPage({
         </div>
       </article>
 
-      <section className="relative bg-paper pb-24 pt-14 sm:pb-28">
+      <section className="relative bg-paper pb-phi-6 pt-phi-5 sm:pb-phi-6">
         <div className="mx-auto max-w-5xl px-5 sm:px-8">
           <h2 className="poster text-[26px] text-brand-red [--po:4px] sm:text-[36px]">
             More From the Relay
@@ -164,13 +164,13 @@ export default async function BlogPostPage({
                   href={`/blog/${p.slug}`}
                   className="group flex h-full flex-col rounded-[28px] border border-brand-red/12 bg-brand-cream/60 p-6 transition-all duration-500 hover:-translate-y-1.5 hover:border-brand-green"
                 >
-                  <span className="text-[10px] font-bold uppercase tracking-[0.18em] text-ink/45">
+                  <span className="text-phi-0 font-bold uppercase tracking-[0.18em] text-ink/45">
                     {p.month}
                   </span>
                   <span className="mt-2 font-display text-base font-bold leading-snug text-ink">
                     {p.title}
                   </span>
-                  <span className="mt-auto pt-4 text-[10px] font-bold uppercase tracking-[0.16em] text-brand-red">
+                  <span className="mt-auto pt-4 text-phi-0 font-bold uppercase tracking-[0.16em] text-brand-red">
                     {p.category}
                   </span>
                 </Link>

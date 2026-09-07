@@ -31,7 +31,7 @@ export default function PlansPage() {
       />
 
       {/* ───── The four plans ───── */}
-      <section id="plans" className="relative bg-paper pb-24 pt-14 sm:pb-28 sm:pt-16">
+      <section id="plans" className="relative bg-paper pb-phi-6 pt-phi-5 sm:pb-phi-6 sm:pt-phi-5">
         <div className="mx-auto max-w-[1720px] px-5 sm:px-8 lg:px-12">
           <Reveal className="max-w-3xl">
             <p className="font-script text-3xl text-brand-orange">Pick your rhythm</p>
@@ -49,7 +49,7 @@ export default function PlansPage() {
                 Looks Like.
               </span>
             </h2>
-            <p className="mt-5 max-w-xl text-sm leading-relaxed text-ink/70 sm:text-base">
+            <p className="mt-5 max-w-measure text-phi-2 leading-relaxed text-ink/70 sm:text-phi-3">
               Start with three meals, settle into a work week, or set the whole month and
               forget about lunch. Every plan runs on the same 15-day rotation and the same
               free delivery.
@@ -70,7 +70,7 @@ export default function PlansPage() {
             delay={120}
             className="mt-10 flex flex-col gap-4 rounded-[28px] bg-brand-cream/60 p-6 sm:flex-row sm:items-center sm:justify-between sm:p-7"
           >
-            <p className="max-w-2xl text-[13px] leading-relaxed text-ink/70">{PLAN_TERMS_NOTE}</p>
+            <p className="max-w-2xl text-phi-1 leading-relaxed text-ink/70">{PLAN_TERMS_NOTE}</p>
             <Link
               href="/contact"
               className="shrink-0 rounded-full border-2 border-brand-red/25 px-6 py-3 text-center text-[11px] font-bold uppercase tracking-[0.16em] text-brand-red transition-colors duration-300 hover:border-brand-red hover:bg-brand-red hover:text-brand-cream"
@@ -82,7 +82,7 @@ export default function PlansPage() {
       </section>
 
       {/* ───── Closing CTA ───── */}
-      <section className="grain graph-paper-light relative overflow-hidden bg-brand-red pb-16 pt-28 sm:pb-20">
+      <section className="grain graph-paper-light relative overflow-hidden bg-brand-red pb-phi-5 pt-phi-6 sm:pb-phi-6">
         <WaveDivider tone="bg-paper" textured={false} />
 
         <Reveal className="relative z-20 mx-auto max-w-3xl px-5 text-center sm:px-8">
@@ -101,7 +101,7 @@ export default function PlansPage() {
               Meals.
             </span>
           </h2>
-          <p className="mx-auto mt-5 max-w-xl text-sm leading-relaxed text-brand-cream/85 sm:text-base">
+          <p className="mx-auto mt-5 max-w-measure text-phi-2 leading-relaxed text-brand-cream/85 sm:text-phi-3">
             The 3-day taster is the whole idea in miniature — one cuisine, no commitment,
             and the same food everyone else is eating that week.
           </p>
