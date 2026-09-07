@@ -1,3 +1,22 @@
+## 2026-09-07 — Void under the values marquee closed
+
+`pb-phi-6 sm:pb-phi-7` left 144px of empty cream under a single line of script,
+which read as a hole rather than as breathing room. The 100svh forcing that had
+justified that much padding is gone, so it went to `pb-phi-4 sm:pb-phi-5`
+(34 / 55).
+
+| | Before | After |
+| --- | --- | --- |
+| Padding bottom (desktop) | 144px | 55px |
+| Space under the script line | 144px | 23px |
+| Script line to the next section's kicker | ~199px | 110px |
+| Section height | 733px | 644px |
+
+110px between the tail of one section and the kicker of the next is the separation
+the rest of the site runs, and the following section already brings its own 55px of
+top padding — which is what made 144px here excessive. At 390 the bottom is 34px
+and the section is 589px.
+
 ## 2026-09-07 — The six values become a single-line marquee
 
 The 3x2 grid is now one continuous line, reusing the site's existing rail rather

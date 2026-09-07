@@ -217,7 +217,7 @@ export default function AboutPage() {
       </section>
 
       {/* ───── What We Stand For ───── */}
-      <section className="grain graph-paper relative overflow-hidden bg-brand-cream pb-phi-6 pt-phi-5 sm:pb-phi-7">
+      <section className="grain graph-paper relative overflow-hidden bg-brand-cream pb-phi-4 pt-phi-5 sm:pb-phi-5">
         <div className="mx-auto max-w-[1720px] px-5 sm:px-8 lg:px-12">
           <Reveal className="mx-auto max-w-3xl text-center">
             <p className="font-script text-3xl text-brand-orange">What we stand for</p>
