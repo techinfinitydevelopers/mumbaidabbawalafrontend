@@ -13,6 +13,24 @@ export const metadata: Metadata = {
     "Six generations of dabbawalas carried lunch across Mumbai. Now the same tiffin crosses an ocean to Perth. 135+ years, from 1890 to 2026.",
 };
 
+/**
+ * The gallery's tiling. Five columns, so the spans must sum to a multiple of five:
+ * 4 + 2 + 1 + 1 + 2 + (5 x 1) = 15, i.e. three full rows for ten frames.
+ * Declared in placement order — plain row flow packs it with no holes.
+ */
+const GALLERY = [
+  { n: "01", span: "lg:col-span-2 lg:row-span-2" },
+  { n: "02", span: "lg:col-span-2" },
+  { n: "03", span: "" },
+  { n: "04", span: "" },
+  { n: "05", span: "lg:col-span-2" },
+  { n: "06", span: "" },
+  { n: "07", span: "" },
+  { n: "08", span: "" },
+  { n: "09", span: "" },
+  { n: "10", span: "" },
+];
+
 /** The six words the content doc names, in its order. */
 const VALUES = ["Fresh", "Authentic", "Affordable", "Convenient", "Reliable", "Personal"];
 
@@ -177,32 +195,32 @@ export default function AboutPage() {
             </p>
           </Reveal>
 
+          {/* Bento that actually tiles. Five columns give 5 cells a row, so the spans
+              have to sum to a multiple of 5 or the last row ends in holes — which is
+              what a 2x2 lead plus nine singles did (area 13, needing 15). One 2x2,
+              two 2x1 and seven 1x1 is area 15 exactly: three full rows, no gaps.
+              Below lg every frame is 1x1 in two columns, which tiles on its own. */}
           <div
             id="dabbawala-gallery"
-            className="mt-phi-5 grid grid-cols-2 gap-3 sm:mt-phi-6 sm:grid-cols-3 sm:gap-4 lg:grid-cols-5"
+            className="mt-phi-5 grid grid-cols-2 gap-3 sm:mt-phi-6 sm:gap-4 lg:grid-cols-5"
           >
-            {Array.from({ length: 10 }, (_, i) => {
-              const n = String(i + 1).padStart(2, "0");
-              // the first frame runs two-up so the mosaic has somewhere to settle
-              const lead = i === 0;
-              return (
-                <Reveal key={n} delay={i * 50} className={lead ? "col-span-2 row-span-2" : ""}>
-                  <div
-                    className={`relative h-full overflow-hidden rounded-[24px] shadow-[0_10px_30px_-20px_rgba(42,24,16,0.45)] ${
-                      lead ? "aspect-square sm:aspect-[3/4]" : "aspect-[3/4]"
-                    }`}
-                  >
-                    <Image
-                      src={`/images/about/net-${n}.jpg`}
-                      alt="A Mumbai dabbawala at work"
-                      fill
-                      sizes="(min-width: 1024px) 20vw, (min-width: 640px) 33vw, 50vw"
-                      className="object-cover transition-transform duration-700 hover:scale-105"
-                    />
-                  </div>
-                </Reveal>
-              );
-            })}
+            {GALLERY.map(({ n, span }, i) => (
+              <Reveal key={n} delay={i * 50} className={span}>
+                <div
+                  className={`relative h-full overflow-hidden rounded-[24px] shadow-[0_10px_30px_-20px_rgba(42,24,16,0.45)] ${
+                    span ? "aspect-[3/4] lg:aspect-auto" : "aspect-[3/4] lg:aspect-square"
+                  }`}
+                >
+                  <Image
+                    src={`/images/about/net-${n}.jpg`}
+                    alt="A Mumbai dabbawala at work"
+                    fill
+                    sizes="(min-width: 1024px) 20vw, 50vw"
+                    className="object-cover transition-transform duration-700 hover:scale-105"
+                  />
+                </div>
+              </Reveal>
+            ))}
           </div>
         </div>
       </section>

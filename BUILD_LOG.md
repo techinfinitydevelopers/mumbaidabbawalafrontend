@@ -1,3 +1,32 @@
+## 2026-09-07 — Gallery bento now tiles with no holes
+
+The mosaic left two empty cells in its last row. It is arithmetic, not styling:
+five columns means every row holds 5 cells, so the spans have to sum to a multiple
+of 5. A 2x2 lead plus nine 1x1 frames is area 4 + 9 = **13**, and three rows need
+**15** — hence two holes.
+
+Recomposed to area 15 with the same ten frames: one 2x2, two 2x1, seven 1x1
+(4 + 2 + 1 + 1 + 2 + 5 = 15). Declared in placement order in a `GALLERY` array, so
+plain row flow packs it without needing `grid-auto-flow: dense`:
+
+| Row | Cells |
+| --- | --- |
+| 1 | lead 2x2, wide 2x1, single |
+| 2 | (lead continues), single, wide 2x1 |
+| 3 | five singles |
+
+Row height comes from the 1x1 frames, which carry `lg:aspect-square`; the spanning
+frames take `lg:aspect-auto` so they inherit that height rather than forcing their
+own.
+
+Below `lg` every frame is 1x1 in two columns — ten frames is exactly five rows, so
+that tiles on its own and needs no spans at all. The old version applied the 2x2
+at every width, which is where the mobile raggedness came from too.
+
+Measured at 1440: content right edge 1329 against a 1329 grid, rows at y 0 / 269 /
+538 with a 253px pitch, grid height 791 = 3x253 + 2x16 — three full rows, nothing
+empty. At 390: two columns, all ten cells identical width and height, no overflow.
+
 ## 2026-09-07 — About page rebuilt in the site's own language
 
 The page's own sections were written in a different visual language to the rest of
