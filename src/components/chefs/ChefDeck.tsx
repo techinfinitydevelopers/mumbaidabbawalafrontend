@@ -15,6 +15,9 @@ import { CHEFS } from "@/data/chefs";
 const MORPH_MS = 760;
 const MORPH_EASE = "cubic-bezier(0.4, 0, 0.2, 1)";
 
+/** Slideshow cadence: the morph plays, then the card holds for the remainder. */
+const AUTOPLAY_MS = 3200;
+
 const N = CHEFS.length;
 const mod = (i: number) => ((i % N) + N) % N;
 
@@ -68,19 +71,20 @@ export default function ChefDeck() {
     }, MORPH_MS);
   }, []);
 
-  // Auto-slide through the chefs from left to right continuously on a timer
+  /**
+   * Auto-slide, through the same path a hover or a click takes.
+   *
+   * It used to call `setActive` straight from the timer, which skipped both halves of
+   * the morph — so the card grew out of its thumbnail when you picked one, but simply
+   * swapped when the slideshow advanced. Measuring the incoming thumbnail and lifting
+   * the outgoing card here is what the timer was missing.
+   */
+  const advanceRef = useRef<() => void>(() => {});
+
   useEffect(() => {
-    const AUTOPLAY_MS = 3200;
     const interval = setInterval(() => {
       if (isDragging.current || autoplayPaused.current) return;
-      setActive((prev) => {
-        const next = mod(prev - 1);
-        setIsTransitioning(true);
-        setTimeout(() => {
-          setIsTransitioning(false);
-        }, MORPH_MS);
-        return next;
-      });
+      advanceRef.current();
     }, AUTOPLAY_MS);
     return () => clearInterval(interval);
   }, []);
@@ -104,6 +108,11 @@ export default function ChefDeck() {
     // never settles (a hidden tab pauses WAAPI, so `finished` never resolves) would
     // otherwise leave its clone behind and they would stack up
     document.querySelectorAll("[data-deck-ghost]").forEach((n) => n.remove());
+
+    // Same trap as on the grow side: the card's rect includes any transform still on
+    // it, so measuring mid-morph would size the clone to the card's scaled box and the
+    // shrink would come out as scale(1). Settle it first.
+    card.getAnimations().forEach((a) => a.cancel());
     const r = card.getBoundingClientRect();
     const ghost = card.cloneNode(true) as HTMLElement;
     ghost.setAttribute("aria-hidden", "true");
@@ -116,6 +125,29 @@ export default function ChefDeck() {
     outgoingGhost.current = ghost;
     outgoingTitle.current = CHEFS[activeRef.current].title;
   };
+
+  /**
+   * The slideshow's step: same measure-lift-go as a pointer pick.
+   *
+   * It steps **forward** (`active + 1`), which is what makes the direction read. The
+   * incoming dish is then the first of the right-hand thumbnails, so it grows in from
+   * the right; and the outgoing one lands as the last of the left pair, so its clone
+   * shrinks away to the left. Stepping backwards, as this did, ran the conveyor the
+   * other way — the card appeared from the left and the old one flew off right.
+   */
+  const autoAdvance = useCallback(() => {
+    const next = mod(activeRef.current + 1);
+    const slot = document.querySelector<HTMLElement>(
+      `[data-chef="${CSS.escape(CHEFS[next].title)}"]`,
+    );
+    if (slot) flipFrom.current = slot.getBoundingClientRect();
+    liftOutgoing();
+    go(next);
+  }, [go]);
+
+  useEffect(() => {
+    advanceRef.current = autoAdvance;
+  }, [autoAdvance]);
 
   const handleCardHover = (event: React.MouseEvent<HTMLButtonElement>, idx: number) => {
     if (isDragging.current || idx === activeRef.current) return;
@@ -154,11 +186,15 @@ export default function ChefDeck() {
     if (!from || !node) return;
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
 
+    // Cancel BEFORE measuring. getBoundingClientRect() includes transforms, so a
+    // still-running grow made `to` the card's scaled-down box instead of its layout
+    // box — which produced scale(1, 1) and a translate measured against the wrong
+    // origin. Cancelling first also stops a fast run of picks stacking transforms.
+    node.getAnimations().forEach((a) => a.cancel());
+
     const to = node.getBoundingClientRect();
     if (!to.width || !to.height) return;
 
-    // a fast run of clicks would otherwise stack transforms on the same node
-    node.getAnimations().forEach((a) => a.cancel());
     flipBusy.current = true;
     node.style.willChange = "transform";
 

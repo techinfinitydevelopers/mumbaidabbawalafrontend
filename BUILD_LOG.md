@@ -1,3 +1,38 @@
+## 2026-09-07 — Autoplay runs the morph, right to left
+
+Three things, all in the deck.
+
+**1. Autoplay skipped the morph entirely.** The timer called `setActive` directly,
+so a pick grew the card out of its thumbnail but a slideshow tick just swapped the
+image. It now goes through the same measure-lift-go path as a pointer pick, via an
+`advanceRef` so the interval stays on `[]` deps and isn't rebuilt each render.
+
+**2. The conveyor ran the wrong way.** It stepped `active - 1`, which takes the
+incoming dish from the *left* pair — so the card appeared from the left and the old
+one flew off right. Stepping `active + 1` makes the incoming dish the first of the
+right-hand thumbnails, and leaves the outgoing one as the last of the left pair.
+
+**3. Two measurement bugs, same root cause.** `getBoundingClientRect()` includes
+transforms, and both sides measured a card that could still be carrying one:
+
+- the grow measured `to` *before* cancelling the previous animation, so `to` was the
+  card's scaled-down box and the keyframe came out `scale(1, 1)` with a translate
+  against the wrong origin;
+- `liftOutgoing` cloned the card without settling it, so the clone inherited the
+  scaled box and the shrink also came out `scale(1)`.
+
+Both now cancel before they measure.
+
+Measured on an autoplay tick, the two halves are proper mirrors:
+
+| | Start | End |
+| --- | --- | --- |
+| Incoming card | `dx +420, dy +340, scale 0.338` | `none` |
+| Outgoing clone | `none` | `dx -155, dy +340, scale 0.338` |
+
+Same scale (135/400 = 0.338) and same `dy`, opposite horizontal directions — in
+from the right, out to the left. No clones accumulating across ticks.
+
 ## 2026-09-07 — Slideshow cadence on the chef deck
 
 Client asked for fast auto rotation, "like slideshow type". `AUTOPLAY_MS` 6500 ->
