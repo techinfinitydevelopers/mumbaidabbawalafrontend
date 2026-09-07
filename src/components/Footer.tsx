@@ -1,5 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
+import BrandIcon from "@/components/BrandIcon";
+import { EMAIL, PHONE, PHONE_DISPLAY, SOCIALS } from "@/data/contact";
 
 const COLUMNS = [
   {
@@ -30,14 +32,6 @@ const COLUMNS = [
   },
 ];
 
-const SOCIALS = [
-  { href: "https://www.instagram.com/mumbaidabbawalaau/", label: "Instagram" },
-  { href: "https://www.facebook.com/profile.php?id=61592772927793", label: "Facebook" },
-  { href: "https://www.youtube.com/@mumbaidabbawalaau", label: "YouTube" },
-  { href: "https://www.linkedin.com/company/mumbaidabbawalaau/", label: "LinkedIn" },
-  { href: "https://www.tiktok.com/@mumbaidabbawalaau", label: "TikTok" },
-];
-
 export default function Footer() {
   return (
     <footer className="grain graph-paper-light relative bg-brand-red text-brand-cream">
@@ -64,13 +58,13 @@ export default function Footer() {
               delivered more than meals — it&rsquo;s delivered trust, and a taste of home.
             </p>
             <p className="mt-5 text-sm font-semibold">
-              <a href="mailto:hello@mumbaidabbawala.com.au" className="hover:text-brand-yellow">
-                hello@mumbaidabbawala.com.au
+              <a href={`mailto:${EMAIL}`} className="hover:text-brand-yellow">
+                {EMAIL}
               </a>
             </p>
             <p className="text-sm font-semibold">
-              <a href="tel:+61469860839" className="hover:text-brand-yellow">
-                +61 469 860 839
+              <a href={`tel:${PHONE}`} className="hover:text-brand-yellow">
+                {PHONE_DISPLAY}
               </a>
             </p>
           </div>
@@ -100,16 +94,18 @@ export default function Footer() {
           <p className="text-xs text-brand-cream/70">
             Mumbai since 1890 · Perth from 14 September 2026
           </p>
-          <div className="flex flex-wrap gap-x-5 gap-y-2">
+          <div className="flex flex-wrap gap-2">
             {SOCIALS.map((s) => (
               <a
-                key={s.label}
+                key={s.key}
                 href={s.href}
                 target="_blank"
                 rel="noreferrer"
-                className="text-xs font-semibold text-brand-cream/80 hover:text-brand-yellow"
+                aria-label={s.label}
+                title={s.label}
+                className="grid h-9 w-9 place-items-center rounded-full border border-brand-cream/25 text-brand-cream/80 transition-colors duration-300 hover:border-brand-yellow hover:text-brand-yellow"
               >
-                {s.label}
+                <BrandIcon name={s.key} className="h-4 w-4" />
               </a>
             ))}
           </div>

@@ -1,3 +1,45 @@
+## 2026-09-07 — Sticky share/subscribe rail on post pages
+
+Client asked for the Litmus post-page rail, and supplied the brand's email, phone
+and five profile URLs.
+
+`src/data/contact.ts` is now the single source for those — the footer had them
+hard-coded and would have drifted from the new rail. The TikTok URL as supplied
+carried `?_r=1&_t=…`, a share-session tracking pair rather than part of the
+profile address, so it is stored clean.
+
+`src/components/BrandIcon.tsx` draws the platform glyphs once (Instagram,
+Facebook, YouTube, LinkedIn, TikTok, X, mail) for both the rail and the footer,
+whose social row is now icons rather than text labels.
+
+`src/components/blog/PostSidebar.tsx` is the rail: **Share** (Facebook sharer, X
+intent, LinkedIn share-offsite, `mailto:`), the **Subscribe to our newsletter**
+button, then **Follow** with the five profiles and the email and phone.
+
+Two things worth recording:
+
+- The share targets need an absolute URL, and no production domain is configured.
+  Rather than guess one, the origin comes from `useSyncExternalStore` — server
+  snapshot `""`, client snapshot `window.location.origin` — combined with
+  `usePathname()`. That keeps SSR and the first client render identical, so there
+  is no hydration mismatch, and the links are correct on whatever domain it ends
+  up on.
+- The page wrapper's `overflow-x-hidden` had to go. It makes that div the nearest
+  scrollport, which silently kills `position: sticky` on the rail. Nothing on a
+  post page overflows sideways, so it was only there by copy-paste.
+
+Layout: `lg:grid-cols-[220px_1fr]`, rail `lg:sticky lg:top-28`. 220px because five
+40px follow icons wrapped 4 + 1 in the first 196px attempt; they are 36px now and
+sit on one line. On mobile the rail is static and ordered after the article, so the
+read comes first.
+
+The subscribe button links to `/contact` — same caveat as the index band, it needs
+a real list provider before it can collect addresses.
+
+Verified: rail sticks at 112px after scrolling (176 -> 112), all four share hrefs
+build from the live URL, five profiles on one row, mobile has the rail below the
+article with no overflow, build prerenders all ten posts.
+
 ## 2026-09-07 — Blog: smaller lead photo, images on the cards, one article seeded
 
 Four changes from client feedback on `/blog`:

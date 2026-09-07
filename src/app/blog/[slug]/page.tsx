@@ -3,6 +3,7 @@ import Link from "next/link";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import Reveal from "@/components/Reveal";
+import PostSidebar from "@/components/blog/PostSidebar";
 import { BLOG_POSTS, CATEGORY_IMAGE, POSTS_BY_DATE, postBySlug } from "@/data/blog";
 
 /**
@@ -40,9 +41,9 @@ export default async function BlogPostPage({
   const more = POSTS_BY_DATE.filter((p) => p.slug !== post.slug).slice(0, 3);
 
   return (
-    <div className="overflow-x-hidden">
+    <div>
       <article className="grain graph-paper relative bg-brand-cream pb-16 pt-28 sm:pb-20 sm:pt-32">
-        <Reveal className="mx-auto max-w-3xl px-5 sm:px-8">
+        <div className="mx-auto max-w-6xl px-5 sm:px-8">
           <Link
             href="/blog"
             className="inline-flex items-center gap-2 text-[10px] font-bold uppercase tracking-[0.18em] text-brand-red hover:text-brand-orange"
@@ -58,7 +59,14 @@ export default async function BlogPostPage({
             All dispatches
           </Link>
 
-          <p className="mt-6 text-[10px] font-bold uppercase tracking-[0.18em] text-ink/45">
+          <div className="mt-6 grid gap-10 lg:grid-cols-[220px_1fr] lg:gap-14">
+            {/* Litmus keeps this rail on the left and sticky; on mobile it follows the read */}
+            <aside className="order-2 lg:sticky lg:top-28 lg:order-1 lg:self-start">
+              <PostSidebar title={post.title} />
+            </aside>
+
+            <Reveal className="order-1 min-w-0 lg:order-2">
+          <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-ink/45">
             {post.category} · {post.month}
           </p>
           <h1 className="mt-3 font-display text-3xl font-bold leading-tight text-ink sm:text-[42px]">
@@ -138,7 +146,9 @@ export default async function BlogPostPage({
               </span>
             </p>
           )}
-        </Reveal>
+            </Reveal>
+          </div>
+        </div>
       </article>
 
       <section className="relative bg-paper pb-24 pt-14 sm:pb-28">
