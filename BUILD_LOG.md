@@ -1,3 +1,33 @@
+## 2026-09-07 — Plans page built
+
+Section 3 of the content doc, "PLANS — A DABBA FOR EVERY ROUTINE", built out below
+the existing hero. `src/data/plans.ts` carries the four plans verbatim: Trial
+(3-Day Taster), Weekly (5-Day Work Week), Monthly (marked "Most Popular" in the
+doc, so it inverts into brand red like the featured day card) and Corporate (Bulk
+Workplace Delivery). Then the doc's closing terms line with its
+"Check My Delivery Zone" CTA, and a closing red band pushing the 3-day taster.
+
+**Prices are not filled in.** The doc still has `$XX.XX`, `$XX.XX` and `$XXX.XX`.
+They render exactly as written, with "Price to be confirmed · GST inclusive"
+underneath, and `priceIsPlaceholder` on the data marks each one. Inventing a
+number for a food subscription is the one thing on this page that would actually
+mislead a customer, so it stays visibly blank until the client supplies figures.
+Corporate is genuinely "Custom pricing — request a quote", so that one is real.
+
+**Two other gaps, both the client's to fill:**
+
+- The terms line says "as previously specified", referring to terms held outside
+  the content doc. The actual delivery zones and cut-off times are not in anything
+  supplied, so the line is reproduced as-is rather than paraphrased into specifics.
+- Every CTA points at `/contact`. There is no checkout, plan selection or quote
+  form yet — "Start Trial" and "Choose Monthly" can't do what they say until one
+  exists.
+
+Card detail: the CTA sits in an `mt-auto` wrapper so all four line up however long
+the feature lists run (measured: 4 cards, 1 distinct height, CTAs on one row).
+
+Verified at 1440 (4 columns) and 390 (1 column, no overflow); build clean.
+
 ## 2026-09-07 — Dropped the duplicate Follow block from the post rail
 
 Client: "ye 2 baar kyu hai?" — fair. Share and Follow do different jobs (send this
