@@ -10,6 +10,7 @@ const mod = (i: number) => ((i % N) + N) % N;
 export default function ChefDeck() {
   const [active, setActive] = useState(1);
   const [isTransitioning, setIsTransitioning] = useState(false);
+  const [slideDirection, setSlideDirection] = useState<"left" | "right">("right");
   const activeChef = CHEFS[active];
 
   const trackRef = useRef<HTMLDivElement>(null);
@@ -32,8 +33,9 @@ export default function ChefDeck() {
     activeRef.current = active;
   }, [active]);
 
-  const go = useCallback((index: number) => {
+  const go = useCallback((index: number, direction: "left" | "right" = "right") => {
     const nextIdx = mod(index);
+    setSlideDirection(direction);
     setIsTransitioning(true);
     setActive(nextIdx);
 
@@ -42,13 +44,13 @@ export default function ChefDeck() {
     }, 400);
   }, []);
 
-  // Auto-slide through the chefs on a timer, pausing whenever the user is
+  // Auto-slide through the chefs from left to right on a timer, pausing whenever the user is
   // hovering, dragging, or has a pointer down over the carousel.
   useEffect(() => {
     const AUTOPLAY_MS = 3500;
     const interval = setInterval(() => {
       if (isDragging.current || isHoverPanning.current) return;
-      go(activeRef.current + 1);
+      go(activeRef.current - 1, "right");
     }, AUTOPLAY_MS);
     return () => clearInterval(interval);
   }, [go]);
@@ -57,7 +59,7 @@ export default function ChefDeck() {
     if (isDragging.current) return;
     if (hoverTimeoutRef.current) clearTimeout(hoverTimeoutRef.current);
     hoverTimeoutRef.current = setTimeout(() => {
-      go(idx);
+      go(idx, idx > activeRef.current ? "left" : "right");
     }, 40);
   };
 
@@ -256,7 +258,11 @@ export default function ChefDeck() {
               <div
                 key={`quote-${activeChef.title}`}
                 className={`max-w-[320px] pt-1 transition-all duration-400 ease-out sm:max-w-[420px] md:max-w-[480px] lg:max-w-[540px] ${
-                  isTransitioning ? "translate-y-1 opacity-70" : "translate-y-0 opacity-100"
+                  isTransitioning
+                    ? slideDirection === "right"
+                      ? "-translate-x-3 opacity-60"
+                      : "translate-x-3 opacity-60"
+                    : "translate-x-0 opacity-100"
                 }`}
               >
                 {/* 5 Golden Stars */}
