@@ -412,10 +412,10 @@ export default function JourneyTimeline() {
             <g transform="rotate(-90)">
               <image
                 href="/images/plane.webp"
-                x={corridorWidth < 768 ? "-29" : "-50"}
-                y={corridorWidth < 768 ? "-29" : "-50"}
-                width={corridorWidth < 768 ? "58" : "100"}
-                height={corridorWidth < 768 ? "58" : "100"}
+                x={corridorWidth < 768 ? "-38" : "-66"}
+                y={corridorWidth < 768 ? "-38" : "-66"}
+                width={corridorWidth < 768 ? "76" : "132"}
+                height={corridorWidth < 768 ? "76" : "132"}
                 preserveAspectRatio="xMidYMid meet"
               />
             </g>

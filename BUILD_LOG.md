@@ -1,3 +1,19 @@
+## 2026-09-07 — Timeline plane enlarged
+
+Flight-path plane up **1.32x**: 100 -> 132 SVG units on desktop, 58 -> 76 below
+768, with `x`/`y` at `-size/2` so it stays centred on the path. The outer `#plane`
+group keeps the translate and the heading rotation, so only the image box changes.
+
+Measured: 132px at 1440 (viewBox `0 0 1040 2230` renders 1:1 there, so units are
+CSS px), 100px at 390 where the SVG scales up to fit. No overlap with any milestone
+card, and it is still positioned on the path.
+
+**A rebase note.** This landed on top of `a554f4b`, which rewrote
+`JourneyTimeline.tsx` and had already made the plane responsive (58/100) — my
+original commit bumped the old flat `84` and would have conflicted. Rather than
+resolve it, I reset onto their version and re-applied the same 1.32x to their two
+breakpoints, so their rewrite is untouched and the intent carries over.
+
 ## 2026-09-07 — Chef's Corner deck heading renamed
 
 "The People Behind / Every Dabba" -> **"Meet The Hands / Behind It"**, which also
