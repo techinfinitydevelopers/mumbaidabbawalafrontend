@@ -1,3 +1,43 @@
+## 2026-09-08 - For Customers and For Business revamped
+
+They were the same shape twice running - a numbered-card grid, then another numbered-card
+grid - on two paper grounds back to back. That is what made the middle of the page read
+flat. Both are now a different shape from each other, and the page has a loud band it was
+missing.
+
+### For Customers: four rows, not a 2x2
+
+"Pick the closest match" is a one-of-four decision, and a row you read across in one line
+resolves that faster than four boxes you scan around. Each row is a **lid tag** - the
+index in poster type on a coloured square, because the dabbawalas' own routing marks are
+painted codes and not icons - then the topic, "Email us", and an arrow that slides on
+hover. Hairlines between, and the row tints on hover.
+
+Tag grounds are primary palette only (red / orange / cream): the brand sheet keeps the
+greens and the yellow for glyphs and accents, not for full grounds.
+
+### For Business: on red
+
+Two jobs at once. The page ran cream -> paper -> paper -> cream, so it had no full-strength
+moment anywhere; and the customer routes and the business routes sat on the same ground,
+which read as one long list rather than two audiences. On red with a wave in, it is now the
+page's one loud band and an obvious break between the two.
+
+The four lines sit in a cream panel as a **divided list** - number, name in poster type,
+qualifier trailing - rather than as cards, so it is not the shape of the section above it
+either. CTA goes yellow, which is the variant that exists for red grounds.
+
+### Verified at 1440
+
+4 sections, grounds now **cream -> paper -> red -> cream**. For Customers: 4 rows, all
+98px, tags computing red / orange / cream / red, and each row's `mailto` still carrying
+its own subject (`Orders & Plans`, `Meal & Menu Questions`, `Corporate Meals`,
+`Partnerships & Franchise Enquiries`). For Business: on `rgb(175, 20, 17)`, wave present,
+4 rows at ~97px in a `rgb(252, 243, 205)` panel, CTA reads "Corporate & Partnership
+Enquiries". All four headings intact, no horizontal overflow.
+
+eslint + `tsc --noEmit` clean, production build passes.
+
 ## 2026-09-08 - Contact gets its own hero
 
 `/contact` no longer opens on the shared `PageHero`. It was the wrong hero for the page in

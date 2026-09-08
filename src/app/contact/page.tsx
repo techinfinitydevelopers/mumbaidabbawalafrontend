@@ -3,6 +3,7 @@ import Image from "next/image";
 import Button from "@/components/Button";
 import ContactHero from "@/components/contact/ContactHero";
 import Reveal from "@/components/Reveal";
+import WaveDivider from "@/components/poster/WaveDivider";
 import PhotoWall from "@/components/contact/PhotoWall";
 import SubscribeForm from "@/components/contact/SubscribeForm";
 import {
@@ -37,6 +38,17 @@ export const metadata: Metadata = {
  * note under the sign-up input, which says plainly what the form does — see
  * `SubscribeForm`, there is no list provider wired to this site yet.
  */
+/**
+ * Grounds for the four lid tags, primary palette only — the brand sheet keeps the greens
+ * and the yellow for glyphs and accents, not for full grounds.
+ */
+const TOPIC_TAG = [
+  "bg-brand-red text-brand-cream",
+  "bg-brand-orange text-ink",
+  "bg-brand-cream text-brand-red",
+  "bg-brand-red text-brand-cream",
+];
+
 export default function ContactPage() {
   const mailto = (subject: string) => `mailto:${EMAIL}?subject=${encodeURIComponent(subject)}`;
 
@@ -44,7 +56,11 @@ export default function ContactPage() {
     <div className="overflow-x-clip">
       <ContactHero />
 
-      {/* ───── For Customers ───── */}
+      {/* ───── For Customers ─────
+           Four wide rows rather than a 2x2 of cards. "Pick the closest match" is a
+           one-of-four decision, and a row you can read across in one line makes that
+           decision faster than four boxes you have to scan around. It also stops this
+           section and "For Business" below from being the same card grid twice running. */}
       <section className="relative bg-paper pb-phi-6 pt-phi-5">
         <div className="mx-auto max-w-[1720px] px-5 sm:px-8 lg:px-12">
           <div className="grid gap-phi-4 lg:grid-cols-[1fr_1.618fr] lg:gap-phi-5">
@@ -64,7 +80,6 @@ export default function ContactPage() {
                   By Topic.
                 </span>
               </h2>
-
               <p className="mt-phi-4 max-w-measure text-phi-2 leading-relaxed text-ink/70">
                 Pick the closest match and the mail opens with its subject already set, so
                 it reaches the right person without being sorted first.
@@ -72,39 +87,48 @@ export default function ContactPage() {
             </Reveal>
 
             <Reveal delay={90}>
-              {/* one card per route, each opening a mail with its own subject line, so a
-                  message arrives already sorted rather than everything landing unlabelled */}
-              <ul className="grid gap-4 sm:grid-cols-2">
+              <ul className="divide-y divide-brand-red/10 border-y border-brand-red/10">
                 {CUSTOMER_TOPICS.map((topic, i) => (
                   <li key={topic}>
                     <a
                       href={mailto(topic)}
-                      className="group flex h-full flex-col justify-between rounded-[28px] border border-brand-red/12 bg-brand-cream p-phi-3 shadow-[0_8px_26px_-20px_rgba(42,24,16,0.28)] transition-all duration-500 hover:-translate-y-1.5 hover:border-brand-green hover:shadow-[0_12px_30px_-20px_rgba(44,73,15,0.34)] sm:p-phi-4"
+                      className="group flex items-center gap-phi-3 py-phi-3 transition-colors duration-300 hover:bg-brand-cream/60"
                     >
-                      <span className="font-poster text-[22px] leading-none text-brand-red/25">
+                      {/* the lid tag: the dabbawalas' own routing marks are painted codes,
+                          so the index is set in poster type on a coloured square rather
+                          than dressed up as an icon */}
+                      <span
+                        aria-hidden="true"
+                        className={`grid h-12 w-12 shrink-0 place-items-center rounded-[15px] font-poster text-lg leading-none transition-transform duration-500 group-hover:-rotate-6 sm:h-14 sm:w-14 sm:text-xl ${TOPIC_TAG[i % TOPIC_TAG.length]}`}
+                      >
                         {String(i + 1).padStart(2, "0")}
                       </span>
-                      <span className="mt-phi-3 font-display text-phi-3 font-bold leading-tight text-ink">
-                        {topic}
+
+                      <span className="min-w-0 flex-1">
+                        <span className="block font-display text-phi-3 font-bold leading-snug text-ink sm:text-phi-4">
+                          {topic}
+                        </span>
+                        <span className="mt-0.5 block text-phi-0 font-bold uppercase tracking-[0.16em] text-brand-red">
+                          Email us
+                        </span>
                       </span>
-                      <span className="mt-phi-2 inline-flex items-center gap-1.5 text-phi-0 font-bold uppercase tracking-[0.16em] text-brand-red">
-                        Email us
-                        <svg
-                          width="12"
-                          height="12"
-                          viewBox="0 0 24 24"
-                          fill="none"
-                          aria-hidden="true"
-                          className="transition-transform duration-500 group-hover:translate-x-1"
-                        >
-                          <path
-                            d="M5 12h14M13 6l6 6-6 6"
-                            stroke="currentColor"
-                            strokeWidth="2.6"
-                            strokeLinecap="round"
-                          />
-                        </svg>
-                      </span>
+
+                      <svg
+                        width="22"
+                        height="22"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        aria-hidden="true"
+                        className="shrink-0 text-brand-red transition-transform duration-500 group-hover:translate-x-1.5"
+                      >
+                        <path
+                          d="M5 12h14M13 6l6 6-6 6"
+                          stroke="currentColor"
+                          strokeWidth="2.4"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        />
+                      </svg>
                     </a>
                   </li>
                 ))}
@@ -114,52 +138,75 @@ export default function ContactPage() {
         </div>
       </section>
 
-      {/* ───── For Business ───── */}
-      <section id="business" className="relative bg-paper pb-phi-6 pt-phi-6">
-        <div className="mx-auto max-w-[1720px] px-5 sm:px-8 lg:px-12">
+      {/* ───── For Business ─────
+           On red, which does two jobs: it gives the page the one loud band it was missing
+           (hero cream, then paper, then paper, then cream read flat), and it separates the
+           customer routes above from the business ones below so the two are not read as
+           one long list. The lines sit in a cream panel as a divided list rather than as
+           cards, again so this is not the same shape as the section above it. */}
+      <section
+        id="business"
+        className="grain graph-paper-light relative overflow-hidden bg-brand-red pb-phi-6 pt-phi-7 sm:pt-phi-8"
+      >
+        <WaveDivider tone="bg-paper" textured={false} />
+
+        <div className="relative z-20 mx-auto max-w-[1720px] px-5 sm:px-8 lg:px-12">
           <Reveal className="mx-auto max-w-3xl text-center">
-            <p className="font-script text-3xl text-brand-orange">For business</p>
-            <h2 className="poster-stack mx-auto mt-2 [--po:4px] [--po-gap:12px] sm:[--po:5px] sm:[--po-gap:18px]">
+            <p className="font-script text-3xl text-brand-yellow">For business</p>
+            <h2 className="poster-stack mx-auto mt-3 [--po:4px] [--po-gap:12px] sm:[--po:5px] sm:[--po-gap:18px]">
               <span
-                className="poster text-[26px] text-brand-red sm:text-[42px]"
-                style={{ ["--po-color" as string]: "var(--color-brand-yellow)" }}
+                className="poster text-[26px] text-brand-yellow sm:text-[44px]"
+                style={{ ["--po-color" as string]: "rgba(42,24,16,0.85)" }}
               >
                 Beyond The Dabba:
               </span>
               <span
-                className="poster text-[26px] text-brand-green-dark sm:text-[42px]"
-                style={{ ["--po-color" as string]: "var(--color-brand-yellow)" }}
+                className="poster text-[26px] text-brand-green sm:text-[44px]"
+                style={{ ["--po-color" as string]: "rgba(42,24,16,0.6)" }}
               >
                 Corporate & Global.
               </span>
             </h2>
-            <p className="mx-auto mt-5 max-w-measure-wide text-phi-2 leading-relaxed text-ink/70">
+            <p className="mx-auto mt-5 max-w-measure-wide text-phi-2 leading-relaxed text-brand-cream/85">
               For organisations interested in the operational model, franchise
               opportunities, training programs, or the Dabbawala system&rsquo;s global
               expansion — this is where that conversation lives.
             </p>
           </Reveal>
 
-          <div className="mt-phi-5 grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
-            {BUSINESS_TOPICS.map((item, i) => (
-              <Reveal key={item.name} delay={i * 70}>
-                <article className="flex h-full flex-col rounded-[28px] border border-brand-red/12 bg-brand-cream p-phi-3 shadow-[0_8px_26px_-20px_rgba(42,24,16,0.28)] sm:p-phi-4">
-                  <span className="font-poster text-[22px] leading-none text-brand-red/25">
+          <Reveal delay={90} className="mt-phi-5">
+            <ul className="mx-auto max-w-measure-full overflow-hidden rounded-[28px] bg-brand-cream shadow-[0_18px_44px_-26px_rgba(0,0,0,0.6)]">
+              {BUSINESS_TOPICS.map((item, i) => (
+                <li
+                  key={item.name}
+                  className={`flex flex-col gap-x-phi-3 gap-y-1 p-phi-3 sm:flex-row sm:items-baseline sm:p-phi-4 ${
+                    i > 0 ? "border-t border-brand-red/12" : ""
+                  }`}
+                >
+                  <span
+                    aria-hidden="true"
+                    className="shrink-0 font-poster text-[22px] leading-none text-brand-red/30 sm:w-12"
+                  >
                     {String(i + 1).padStart(2, "0")}
                   </span>
-                  <h3 className="mt-phi-3 font-display text-phi-3 font-bold leading-tight text-ink">
+                  <span
+                    className="poster shrink-0 text-[19px] leading-none text-brand-red [--po:2px] sm:text-[23px]"
+                    style={{ ["--po-color" as string]: "var(--color-brand-yellow)" }}
+                  >
                     {item.name}
-                  </h3>
-                  <p className="mt-phi-2 text-phi-1 leading-relaxed text-ink/65">{item.copy}</p>
-                </article>
-              </Reveal>
-            ))}
-          </div>
+                  </span>
+                  <span className="text-phi-1 leading-relaxed text-ink/65 sm:text-phi-2">
+                    {item.copy}
+                  </span>
+                </li>
+              ))}
+            </ul>
+          </Reveal>
 
           <Reveal delay={140} className="mt-phi-5 text-center">
             <Button
               href={mailto("Corporate & Partnership Enquiries")}
-              variant="red"
+              variant="yellow"
               size="lg"
             >
               Corporate & Partnership Enquiries
