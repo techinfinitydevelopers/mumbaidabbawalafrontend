@@ -1,3 +1,40 @@
+## 2026-09-08 - Contact gets its own hero
+
+`/contact` no longer opens on the shared `PageHero`. It was the wrong hero for the page in
+two ways: it leads with the dabba platter and three numbers - 135+ years, 5 regional
+cuisines, $0 delivery - which are the right opening for the pages that sell the food and
+decoration in front of what the reader came here for; and six pages already opened that
+way, so by the time you reached this one the platter carried no information at all.
+
+`ContactHero` puts **the routes** in the right-hand column instead of stats: the address
+and the number at a size you can actually hit, and the five profiles as icon buttons.
+Everything else is held in common with `PageHero` deliberately - cream printed ground,
+script kicker, stacked Anton headline, starburst seal, the wave handing down to paper - so
+it still reads as the same site rather than a page from somewhere else.
+
+**The routes moved rather than being copied.** "For Customers" below used to carry the
+same email, phone and socials block; it now carries only the four topics, with a line
+saying what the topic cards do. Verified: the email and the phone each appear **once** in
+the hero, and `forCustomersHasRoutes` is false.
+
+Also shorter than `PageHero`: `min-h-[86svh]` rather than a full screen. A contact page's
+job is to get you to a route, not to hold a screen.
+
+### Verified at 1440
+
+Hero 774px on a 900 viewport, cream printed ground, `h1` "Let's Talk / Dabba.", email
+link, phone link, 5 socials, 7 buttons, wave into paper, 4 sections, no horizontal
+overflow. No dabba platter, and none of the three old stats appear anywhere in the hero
+(`135+`, "regional cuisines", "delivery fee" all absent) - "years of" survives only in the
+footer, which is its own copy.
+
+A note on counting: `textContent` reported the email 13 times, which is Next's RSC payload
+`<script>` carrying every `mailto:` href on the page. Counting visible text nodes only -
+walking the tree and rejecting `SCRIPT`/`STYLE` - gives the real answer, 2 in `main`: the
+hero, and the note under the sign-up that names the address on purpose.
+
+eslint + `tsc --noEmit` clean, production build passes.
+
 ## 2026-09-08 - Contact: the band takes the doc's copy, and matches the cards' height
 
 Two corrections to the Contact page, both the client's.

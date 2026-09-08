@@ -1,9 +1,7 @@
 import type { Metadata } from "next";
 import Image from "next/image";
 import Button from "@/components/Button";
-import { IconButton } from "@/components/Button";
-import BrandIcon from "@/components/BrandIcon";
-import PageHero from "@/components/PageHero";
+import ContactHero from "@/components/contact/ContactHero";
 import Reveal from "@/components/Reveal";
 import PhotoWall from "@/components/contact/PhotoWall";
 import SubscribeForm from "@/components/contact/SubscribeForm";
@@ -12,9 +10,6 @@ import {
   CUSTOMER_TOPICS,
   EMAIL,
   LAUNCH_DATE,
-  PHONE,
-  PHONE_DISPLAY,
-  SOCIALS,
 } from "@/data/contact";
 
 export const metadata: Metadata = {
@@ -26,6 +21,10 @@ export const metadata: Metadata = {
 /**
  * Contact Us, from section 9 of the content doc: For Customers, For Business, and the
  * "Subscribe and Forget — Contact — Registration" close.
+ *
+ * The hero is `ContactHero`, not the shared `PageHero` — see the note there. The email,
+ * the phone and the socials live in it, so "For Customers" below carries only the four
+ * topics rather than repeating the routes.
  *
  * The close is laid out as the band the client pointed at on their live site — photo wall
  * on the left, sign-up and launch cards on the right — but the COPY is the doc's, not the
@@ -43,20 +42,7 @@ export default function ContactPage() {
 
   return (
     <div className="overflow-x-clip">
-      <PageHero
-        kicker="We treat every message like a dabba"
-        titleTop="Let's Talk"
-        titleBottom="Dabba."
-        facts={[
-          { value: "135+", label: "Years of\npractice" },
-          { value: "5", label: "Regional\ncuisines" },
-          { value: "$0", label: "Delivery\nfee, always" },
-        ]}
-        lead="Got a question about your plan, a meal, a delivery, or a corporate order? We're here — and we treat every message the way we treat every dabba: with care and without delay."
-        primary={{ href: mailto("Hello from the website"), label: "Send Us a Message" }}
-        secondary={{ href: "#business", label: "Corporate & Franchise" }}
-        seal={{ eyebrow: "Every", lines: ["Message", "Read"], script: "with care" }}
-      />
+      <ContactHero />
 
       {/* ───── For Customers ───── */}
       <section className="relative bg-paper pb-phi-6 pt-phi-5">
@@ -79,36 +65,10 @@ export default function ContactPage() {
                 </span>
               </h2>
 
-              <div className="mt-phi-4 space-y-phi-2">
-                <a
-                  href={`mailto:${EMAIL}`}
-                  className="block text-phi-2 font-semibold text-brand-red underline decoration-brand-red/30 underline-offset-4 transition-colors hover:decoration-brand-red"
-                >
-                  {EMAIL}
-                </a>
-                <a
-                  href={`tel:${PHONE}`}
-                  className="block text-phi-2 font-semibold text-ink/70 transition-colors hover:text-brand-red"
-                >
-                  {PHONE_DISPLAY}
-                </a>
-              </div>
-
-              <div className="mt-phi-3 flex flex-wrap gap-2.5">
-                {SOCIALS.map((s) => (
-                  <IconButton
-                    key={s.key}
-                    href={s.href}
-                    target="_blank"
-                    rel="noreferrer"
-                    aria-label={s.label}
-                    title={s.label}
-                    size={40}
-                  >
-                    <BrandIcon name={s.key} />
-                  </IconButton>
-                ))}
-              </div>
+              <p className="mt-phi-4 max-w-measure text-phi-2 leading-relaxed text-ink/70">
+                Pick the closest match and the mail opens with its subject already set, so
+                it reaches the right person without being sorted first.
+              </p>
             </Reveal>
 
             <Reveal delay={90}>
