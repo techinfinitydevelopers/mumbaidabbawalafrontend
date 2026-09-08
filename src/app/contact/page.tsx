@@ -5,9 +5,8 @@ import { IconButton } from "@/components/Button";
 import BrandIcon from "@/components/BrandIcon";
 import PageHero from "@/components/PageHero";
 import Reveal from "@/components/Reveal";
-import WaveDivider from "@/components/poster/WaveDivider";
 import PhotoWall from "@/components/contact/PhotoWall";
-import WaitlistForm from "@/components/contact/WaitlistForm";
+import SubscribeForm from "@/components/contact/SubscribeForm";
 import {
   BUSINESS_TOPICS,
   CUSTOMER_TOPICS,
@@ -26,12 +25,18 @@ export const metadata: Metadata = {
 
 /**
  * Contact Us, from section 9 of the content doc: For Customers, For Business, and the
- * "Subscribe and Forget" close — plus the waitlist band the client asked for, modelled on
- * the one on their live site (photo wall on the left, waitlist and launch cards right).
+ * "Subscribe and Forget — Contact — Registration" close.
  *
- * Every line of copy here is the doc's or the live site's. The one thing that is NOT
- * client copy is the note under the waitlist input, which says plainly what the form does
- * — see `WaitlistForm`, there is no list provider wired to this site yet.
+ * The close is laid out as the band the client pointed at on their live site — photo wall
+ * on the left, sign-up and launch cards on the right — but the COPY is the doc's, not the
+ * live site's. The live site fills that band with "The Waitlist / Don't Just Watch
+ * History"; the doc's own registration block is what belongs on this page, and it only
+ * appears once rather than being repeated in a separate closing section.
+ *
+ * Every line here is the doc's, with two exceptions, both of them true rather than
+ * marketing: the launch date, which the site already states in its hero seals, and the
+ * note under the sign-up input, which says plainly what the form does — see
+ * `SubscribeForm`, there is no list provider wired to this site yet.
  */
 export default function ContactPage() {
   const mailto = (subject: string) => `mailto:${EMAIL}?subject=${encodeURIComponent(subject)}`;
@@ -149,65 +154,6 @@ export default function ContactPage() {
         </div>
       </section>
 
-      {/* ───── The waitlist, on the client's live-site model ───── */}
-      <section className="grain graph-paper relative overflow-hidden bg-brand-cream pb-phi-6 pt-phi-6">
-        <div className="relative mx-auto max-w-[1720px] px-5 sm:px-8 lg:px-12">
-          <div className="grid gap-phi-4 lg:grid-cols-[1fr_1.3fr] lg:items-center lg:gap-phi-5">
-            <Reveal>
-              <PhotoWall />
-            </Reveal>
-
-            <Reveal delay={90} className="space-y-4">
-              <div className="rounded-[28px] bg-paper p-phi-4 shadow-[0_14px_34px_-24px_rgba(42,24,16,0.4)] sm:p-phi-5">
-                <p className="text-phi-0 font-bold uppercase tracking-[0.18em] text-brand-red">
-                  The Waitlist
-                </p>
-                <h2 className="poster-stack mt-3 [--po:4px] [--po-gap:12px] sm:[--po:5px] sm:[--po-gap:18px]">
-                  <span
-                    className="poster text-[26px] text-brand-red sm:text-[40px]"
-                    style={{ ["--po-color" as string]: "var(--color-brand-yellow)" }}
-                  >
-                    Don&rsquo;t Just Watch History.
-                  </span>
-                  <span
-                    className="poster text-[26px] text-brand-green-dark sm:text-[40px]"
-                    style={{ ["--po-color" as string]: "var(--color-brand-yellow)" }}
-                  >
-                    Be Part Of It.
-                  </span>
-                </h2>
-                <p className="mt-phi-3 max-w-measure text-phi-2 leading-relaxed text-ink/70">
-                  Join the waitlist and be first through the door when we launch.
-                </p>
-
-                <WaitlistForm />
-              </div>
-
-              <div className="flex items-center gap-phi-3 rounded-[28px] bg-paper p-phi-3 shadow-[0_14px_34px_-24px_rgba(42,24,16,0.4)] sm:p-phi-4">
-                <div className="min-w-0 flex-1">
-                  <p className="text-phi-0 font-bold uppercase tracking-[0.18em] text-brand-red">
-                    Launching Soon
-                  </p>
-                  <p className="mt-2 font-display text-phi-3 font-bold leading-snug text-ink">
-                    Perth&rsquo;s corridor opens {LAUNCH_DATE}.
-                  </p>
-                </div>
-                <div className="relative h-[72px] w-[72px] shrink-0 overflow-hidden rounded-[15px] sm:h-[84px] sm:w-[84px]">
-                  <Image
-                    src="/images/stickers/run-perth.png"
-                    alt=""
-                    aria-hidden="true"
-                    fill
-                    sizes="84px"
-                    className="object-contain p-2"
-                  />
-                </div>
-              </div>
-            </Reveal>
-          </div>
-        </div>
-      </section>
-
       {/* ───── For Business ───── */}
       <section id="business" className="relative bg-paper pb-phi-6 pt-phi-6">
         <div className="mx-auto max-w-[1720px] px-5 sm:px-8 lg:px-12">
@@ -262,48 +208,78 @@ export default function ContactPage() {
         </div>
       </section>
 
-      {/* ───── Subscribe and Forget ───── */}
-      <section className="grain graph-paper-light relative overflow-hidden bg-brand-red pb-phi-6 pt-phi-7 sm:pt-phi-8">
-        <WaveDivider tone="bg-paper" textured={false} />
+      {/* ───── Subscribe and Forget — the doc's registration close, in the band
+           layout the client pointed at ───── */}
+      <section className="grain graph-paper relative overflow-hidden bg-brand-cream pb-phi-6 pt-phi-6">
+        <div className="relative mx-auto max-w-[1720px] px-5 sm:px-8 lg:px-12">
+          {/* No `items-center`: the row stretches, so the wall can match the cards beside
+              it. The wall fills this item absolutely from `lg` up (see `PhotoWall`), which
+              is what lets the CARDS set the row's height - a wall in normal flow would
+              contribute its own ~2000px of photographs instead. Below `lg` the wall is back
+              in normal flow and its own height is this item's. */}
+          <div className="grid gap-phi-4 lg:grid-cols-[1fr_1.3fr] lg:gap-phi-5">
+            <Reveal className="relative">
+              <PhotoWall />
+            </Reveal>
 
-        <Reveal className="relative z-20 mx-auto max-w-3xl px-5 text-center sm:px-8">
-          <p className="font-script text-3xl text-brand-yellow">Subscribe and forget</p>
-          <h2 className="poster-stack mt-3 [--po:4px] [--po-gap:12px] sm:[--po:5px] sm:[--po-gap:18px]">
-            <span
-              className="poster text-[26px] text-brand-yellow sm:text-[44px]"
-              style={{ ["--po-color" as string]: "rgba(42,24,16,0.85)" }}
-            >
-              The Best Lunch Decision Is
-            </span>
-            <span
-              className="poster text-[26px] text-brand-green sm:text-[44px]"
-              style={{ ["--po-color" as string]: "rgba(42,24,16,0.6)" }}
-            >
-              The One You Only Make Once.
-            </span>
-          </h2>
-          <p className="mx-auto mt-5 max-w-measure text-phi-2 leading-relaxed text-brand-cream/85">
-            Set your plan, and let us handle the rest. No daily ordering. No
-            &ldquo;what&rsquo;s for lunch&rdquo; panic at 11:45. Just a dabba that shows
-            up, exactly when it&rsquo;s supposed to.
-          </p>
-          <p className="mx-auto mt-phi-3 font-poster text-base uppercase tracking-[0.04em] text-brand-yellow sm:text-2xl">
-            Fresh Food · Fair Price · Free Delivery
-          </p>
-          <p className="mx-auto mt-phi-2 max-w-measure text-phi-1 leading-relaxed text-brand-cream/70">
-            Every day, without you having to think about it twice.
-          </p>
+            <Reveal delay={90} className="space-y-4">
+              <div className="rounded-[28px] bg-paper p-phi-4 shadow-[0_14px_34px_-24px_rgba(42,24,16,0.4)] sm:p-phi-5">
+                <p className="font-script text-3xl text-brand-orange">Subscribe and forget</p>
+                <h2 className="poster-stack mt-3 [--po:4px] [--po-gap:12px] sm:[--po:5px] sm:[--po-gap:18px]">
+                  <span
+                    className="poster text-[26px] text-brand-red sm:text-[40px]"
+                    style={{ ["--po-color" as string]: "var(--color-brand-yellow)" }}
+                  >
+                    The Best Lunch Decision Is
+                  </span>
+                  <span
+                    className="poster text-[26px] text-brand-green-dark sm:text-[40px]"
+                    style={{ ["--po-color" as string]: "var(--color-brand-yellow)" }}
+                  >
+                    The One You Only Make Once.
+                  </span>
+                </h2>
+                <p className="mt-phi-3 max-w-measure-wide text-phi-2 leading-relaxed text-ink/70">
+                  Set your plan, and let us handle the rest. No daily ordering. No
+                  &ldquo;what&rsquo;s for lunch&rdquo; panic at 11:45. Just a dabba that
+                  shows up, exactly when it&rsquo;s supposed to.
+                </p>
 
-          <div className="mt-phi-4 flex flex-wrap justify-center gap-3">
-            <Button href="/plans" variant="yellow" size="lg">
-              Set It and Forget It
-            </Button>
-            <Button href="/menu" variant="outlineCream" size="lg">
-              See the Menu
-            </Button>
+                <SubscribeForm />
+
+                <p className="mt-phi-3 border-t border-brand-red/10 pt-phi-3 font-poster text-base uppercase tracking-[0.04em] text-brand-orange sm:text-xl">
+                  Fresh Food · Fair Price · Free Delivery
+                </p>
+                <p className="mt-1 text-phi-1 leading-relaxed text-ink/60">
+                  Every day, without you having to think about it twice.
+                </p>
+              </div>
+
+              <div className="flex items-center gap-phi-3 rounded-[28px] bg-paper p-phi-3 shadow-[0_14px_34px_-24px_rgba(42,24,16,0.4)] sm:p-phi-4">
+                <div className="min-w-0 flex-1">
+                  <p className="text-phi-0 font-bold uppercase tracking-[0.18em] text-brand-red">
+                    Launching Soon
+                  </p>
+                  <p className="mt-2 font-display text-phi-3 font-bold leading-snug text-ink">
+                    Perth&rsquo;s corridor opens {LAUNCH_DATE}.
+                  </p>
+                </div>
+                <div className="relative h-[72px] w-[72px] shrink-0 overflow-hidden rounded-[15px] sm:h-[84px] sm:w-[84px]">
+                  <Image
+                    src="/images/stickers/run-perth.png"
+                    alt=""
+                    aria-hidden="true"
+                    fill
+                    sizes="84px"
+                    className="object-contain p-2"
+                  />
+                </div>
+              </div>
+            </Reveal>
           </div>
-        </Reveal>
+        </div>
       </section>
+
     </div>
   );
 }

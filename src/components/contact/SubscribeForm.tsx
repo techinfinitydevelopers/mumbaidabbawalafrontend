@@ -4,7 +4,9 @@ import { useState } from "react";
 import { EMAIL } from "@/data/contact";
 
 /**
- * The waitlist sign-up.
+ * The sign-up for the content doc's "Subscribe and Forget — Contact — Registration"
+ * block, which is what this band carries. Its CTA is the doc's own, "Set It and Forget
+ * It".
  *
  * There is no list provider wired to this site, so the form does the one thing that
  * genuinely works without a backend: it hands the address to the brand's own inbox as a
@@ -14,14 +16,14 @@ import { EMAIL } from "@/data/contact";
  * >>> Replace with a real provider (Klaviyo, Mailchimp, a route handler) before launch.
  * The submit handler is the only thing that has to change; the markup can stay. <<<
  */
-export default function WaitlistForm() {
+export default function SubscribeForm() {
   const [email, setEmail] = useState("");
   const [handedOff, setHandedOff] = useState(false);
 
   function onSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
 
-    const subject = encodeURIComponent("Waitlist — Perth launch");
+    const subject = encodeURIComponent("Set it and forget it — Perth launch");
     const body = encodeURIComponent(
       `Please add me to the Mumbai Dabbawala Perth waitlist.\n\nEmail: ${email}\n`,
     );
@@ -54,10 +56,10 @@ export default function WaitlistForm() {
         <button
           type="submit"
           className="btn btn-red shrink-0"
-          aria-label="Join the waitlist"
+          aria-label="Set it and forget it"
         >
           <span className="px-7 py-3.5 text-[11px] font-bold uppercase leading-none tracking-[0.18em]">
-            Join The Waitlist
+            Set It and Forget It
             <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
               <path
                 d="M5 12h14M13 6l6 6-6 6"

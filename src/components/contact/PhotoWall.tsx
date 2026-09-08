@@ -65,7 +65,12 @@ export default function PhotoWall() {
     // crop reading as a hard cut
     <div
       aria-hidden="true"
-      className="wall relative h-[clamp(320px,58svh,560px)] overflow-hidden rounded-[24px] bg-brand-cream/50 p-3 sm:p-4"
+      // Stacked below `lg` it sits in normal flow and its own height is the item's.
+      // From `lg` it fills the item absolutely instead, so it takes whatever height the
+      // cards beside it come to and adds nothing to the row. It must NOT be absolute
+      // below `lg`: with an explicit `height` the `bottom: 0` of `inset-0` is ignored,
+      // so it overflowed its item and rode over the cards underneath.
+      className="wall relative h-[clamp(320px,58svh,560px)] overflow-hidden rounded-[24px] bg-brand-cream/50 p-3 sm:p-4 lg:absolute lg:inset-0 lg:h-auto"
       style={{
         maskImage:
           "linear-gradient(to bottom, transparent 0%, #000 7%, #000 93%, transparent 100%)",

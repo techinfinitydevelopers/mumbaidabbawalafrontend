@@ -1,3 +1,61 @@
+## 2026-09-08 - Contact: the band takes the doc's copy, and matches the cards' height
+
+Two corrections to the Contact page, both the client's.
+
+### The copy is the word file's, not the live site's
+
+The band was carrying the live site's "THE WAITLIST / Don't Just Watch History. Be Part of
+It." The client wanted the **layout** from that band, not its words.
+
+The doc's own equivalent block is section 9's **"Subscribe and Forget - Contact -
+Registration"**, so that is what the band carries now: the "Subscribe and forget" kicker,
+"The Best Lunch Decision Is / The One You Only Make Once.", the "no daily ordering, no
+'what's for lunch' panic at 11:45" paragraph, the "Fresh Food - Fair Price - Free
+Delivery / Every day, without you having to think about it twice." strip, and the doc's
+CTA, "Set It and Forget It".
+
+That copy was already the page's separate red closing section, so **the duplicate is
+gone** - it now appears once, in the band, and the band closes the page. Four sections
+instead of five: hero, For Customers, For Business, Subscribe and Forget.
+
+`WaitlistForm` -> `SubscribeForm`, with the doc's CTA on the submit and a mail subject to
+match.
+
+Kept from the live-site band, and only these: the photo wall, and the "Launching Soon -
+Perth's corridor opens 14 September 2026" card. The date is not marketing copy, it is the
+same fact the hero seals already state.
+
+### The wall matches the cards beside it
+
+It was a fixed `clamp(320px, 58svh, 560px)` against a content-height column, so it sat
+short and centred.
+
+`h-full` will not do it: with an indefinite parent that resolves to `auto`, which is the
+wall's own ~2000px of photographs, and the row blows up. So from `lg` the wall **fills its
+grid item absolutely** - it takes whatever height the cards come to and contributes
+nothing back.
+
+It must NOT be absolute below `lg`. With an explicit `height` set, the `bottom: 0` of
+`inset-0` is ignored, so on the stacked layout the wall overflowed its own item by ~170px
+and rode over the cards underneath. Caught by measuring; `lg:absolute` only.
+
+### Verified
+
+Wall height equals the right-hand column exactly, with tops aligned, at **1920, 1440 and
+1024** (547 / 547 / 627). At **1000 and 390**, where the layout stacks, the wall is back
+in flow, overflows its item by **0**, and does not overlap the column below it. No
+horizontal overflow at 390.
+
+Every line of the doc's block is on the page (checked case-insensitively - `.poster` and
+the button are `text-transform: uppercase`, and `innerText` applies that, which is why a
+case-sensitive check reported three false negatives). All three live-site strings are
+gone. "The Best Lunch Decision Is" appears exactly once in the visible DOM - a second
+`textContent` hit is Next's RSC payload `<script>`, not rendered copy.
+
+15 buttons, all at 15px.
+
+eslint + `tsc --noEmit` clean, production build passes.
+
 ## 2026-09-08 - Contact Us built. All nine pages are now real.
 
 Section 9 of the content doc, in its own order, plus the waitlist band the client asked
