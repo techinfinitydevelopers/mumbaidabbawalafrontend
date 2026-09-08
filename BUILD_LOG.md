@@ -1,3 +1,75 @@
+## 2026-09-08 — Statement band back to a horizontal scroll pan, on a pin that works
+
+The client wanted the horizontal band all along. It failed the first time because of the
+sticky bug, not because horizontal was the wrong idea — so with the pin now genuinely
+holding, the pan is back, plus the two things it was missing.
+
+### The holds
+
+The pan no longer runs the full length of the track. `HEAD = 0.06`, `TAIL = 0.15`, so it
+starts a moment after the band pins and **finishes at 85% of the track**:
+
+- the head hold leaves the opening words still before anything moves;
+- the tail hold is the point of the exercise — it keeps "...and delivered to Perth." on
+  screen after the pan completes, so the end of the line can be read. Without it the pan
+  and the pin end together and the last words arrive exactly as the band lets go. That
+  was "the line never finishes".
+
+### Two measurement bugs, both the same shape
+
+`travel` was measured as `row.scrollWidth - row.clientWidth`, and it came back **short
+twice**, each time stopping the pan early and leaving "Perth." inside the right-hand
+fade at the exact moment it was supposed to be readable:
+
+1. With `px-[14vw]` on the row: `scrollWidth` **does not count the trailing padding** of
+   overflowing content. Measured 3283 where 3494 was needed.
+2. Replacing the padding with a trailing flex spacer did not fix it either — 3296, only
+   13px better. `scrollWidth` on the row was not picking up the overflowing flex child.
+
+Fixed by measuring the thing itself: `w-max` on the line, and `travel =
+line.offsetWidth - row.clientWidth`. The line's own box **is** the content width,
+spacers included, and nothing has to be inferred. 3507 at 1440, and "Perth." now lands
+at 933–1210 against a fade that starts at 1325.
+
+Both lead-in and lead-out are real flex children rather than padding, since that is what
+survives measurement, and 14vw against an 8% fade is what clears the mask at both holds.
+
+### Verified at 1440x900
+
+`travel` 3507, section 3120 (~3.5 viewports). **Sticky pinned at `top: 0` at all eight
+progress points.** Pan tracks to within 1px of `-travel x panned` throughout:
+
+| progress | panX | expected | bar |
+|---|---|---|---|
+| 0 | 0 | 0 | 0 |
+| 0.06 | 0 | 0 | 0 |
+| 0.25 | −844 | −843 | 0.24 |
+| 0.45 | −1732 | −1731 | 0.49 |
+| 0.65 | −2620 | −2619 | 0.75 |
+| 0.85 | **−3507** | −3507 | 1.00 |
+| 0.93 | −3507 | −3507 | 1.00 |
+| 1 | −3507 | −3507 | 1.00 |
+
+"More" sits at x 214 at the head hold, clear of the 115px left fade. "Perth." ends at
+1210 at the tail hold, clear of the 1325px right fade. Page horizontal overflow 0.
+
+At 390x844: 22px type, travel 1885, section 2037 (2.4 viewports), pin holding, both ends
+clear of their fades, pan completes, no page overflow.
+
+### A note on verifying this
+
+`window.scrollTo()` in the hidden preview pane **does not reliably emit a scroll event**,
+so a programmatic sweep reads stale transforms and the pan looks broken when it is not —
+the first sweep showed `panX` stuck at 0 through 65% of the track. Dispatching
+`new Event("scroll")` after each jump gives correct readings. Worth remembering: two
+separate "bugs" this session were the harness, not the code (this, and reading a stale
+`offsetTop` while images settled above the band).
+
+**Not verified:** the reduced-motion branch, which renders the wrapped, unpanned form.
+The pane cannot emulate the preference.
+
+eslint + `tsc --noEmit` clean, production build passes.
+
 ## 2026-09-08 — The statement line now emerges on scroll, and sticky actually sticks
 
 The client asked for the line to emerge **on scroll**, not on a timer. The reveal is now

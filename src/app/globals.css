@@ -530,32 +530,17 @@ h1, h2, h3, h4 {
 }
 
 /* ── "More than a meal" statement band ────────────────────────────────────
-   The sentence emerges word by word as you scroll through the section, then holds. The
-   section is a tall scroll track with a sticky child, so the band stays put while the
-   reveal plays out and the line is complete before it lets go.
+   The sentence pans sideways as you scroll through the section, on a sticky pin.
 
-   `opacity` and `transform` on the tokens are written by JS from scroll progress, so
-   there is deliberately NO transition on them here — a transition would lag behind the
-   scrub and smear the reveal. What CSS owns is the rest state and the promise to the
-   compositor.
+   The `translateX` is written by JS from scroll progress, so there is deliberately NO
+   transition on the row here — a transition would lag behind the scrub and rubber-band
+   the pan. All CSS owns is the promise to the compositor.
 
-   Tokens are visible by default and JS takes them away on mount. That direction matters:
-   with no JS, or with reduced motion, the sentence is simply there. */
-.statement-token {
-  will-change: opacity, transform;
-}
-
+   The pan is off by default and JS turns it on, so with no JS the sentence is simply
+   there, wrapped. Under `prefers-reduced-motion: reduce` the component renders the
+   wrapped form instead and never pans at all. */
 .statement-row {
-  transform-origin: center;
   will-change: transform;
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .statement-row,
-  .statement-token {
-    opacity: 1 !important;
-    transform: none !important;
-  }
 }
 
 @media (prefers-reduced-motion: reduce) {
