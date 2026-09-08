@@ -74,10 +74,17 @@ export default function RegionalFoodStoriesPage() {
         <WaveDivider tone="bg-paper" textured={false} />
 
         <Reveal className="relative z-20 mx-auto max-w-3xl px-5 text-center sm:px-8">
-          {/* the seal sits just above the word "Taste", not floating centred over the block */}
-          <div className="relative pt-[92px] sm:pt-[106px]">
+          {/* The seal tucks in BEHIND the word "Taste" at a tilt, rather than sitting clear
+              above the block.
+              Two things make that work: `z-0` here against `z-10` on the `h2`, so the
+              letters cross over the seal's lower edge; and a `pt` sized so only that lower
+              third is covered — the seal's own "1890 → 2026" stays readable above the
+              letters. `poster-stack` gives its own children z-indexes (4/3/2), which order
+              them against each other and not against anything outside, so the `h2` needs
+              its own. */}
+          <div className="relative pt-[74px] sm:pt-[84px]">
             <Starburst
-              className="absolute left-[28%] top-0 z-30 h-[84px] w-[84px] -translate-x-1/2 sm:left-[34%] sm:h-[96px] sm:w-[96px]"
+              className="absolute left-[26%] top-[18px] z-0 h-[92px] w-[92px] -translate-x-1/2 -rotate-12 sm:left-[31%] sm:top-[20px] sm:h-[108px] sm:w-[108px]"
               fill="var(--color-brand-orange)"
             >
               <div>
@@ -93,7 +100,7 @@ export default function RegionalFoodStoriesPage() {
               </div>
             </Starburst>
 
-            <h2 className="poster-stack [--po:4px] sm:[--po:6px]">
+            <h2 className="poster-stack relative z-10 [--po:4px] sm:[--po:6px]">
               <span
                 className="poster text-[46px] text-brand-yellow sm:text-[68px]"
                 style={{ ["--po-color" as string]: "rgba(42,24,16,0.85)" }}

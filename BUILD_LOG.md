@@ -1,3 +1,34 @@
+## 2026-09-08 - The "1890 → 2026" seal tucks in behind "Taste All Five"
+
+On Regional Food Stories the seal sat clear above the heading at `z-30`, in front of
+everything. It now overlaps the first line at a **-12deg tilt**, with the letters crossing
+over its lower edge.
+
+Two things make that work:
+
+- `z-0` on the seal against `relative z-10` on the `h2`. The `h2` needed its own stacking
+  position: `poster-stack` gives its children z-indexes (4/3/2), but those order the lines
+  against *each other*, not against anything outside the stack.
+- A `pt` sized so only the seal's lower third is covered - 74px of it stays clear above the
+  letters, so its own "1890 → 2026" is still readable.
+
+### Verified
+
+Seal `z-index: 0` against the `h2`'s `10`; overlap measures **54px vertically and 128px
+horizontally**, with 74px of seal clear above the cap line.
+
+Confirmed by hit-testing rather than by trusting the z-index: `elementFromPoint` at four
+places across the crossing returns the heading's `SPAN.poster` every time, so the letters
+really are painted over the seal.
+
+One measuring note worth keeping: `getComputedStyle(el).transform` read **`none`** here and
+the tilt looked like it had failed. Tailwind v4 emits `rotate` and `translate` as their own
+CSS properties rather than composing a `transform`, so the values are on
+`getComputedStyle(el).rotate` (`-12deg`) and `.translate` (`-50%`). Checking `transform` on
+a v4 utility will mislead you.
+
+eslint + `tsc --noEmit` clean, production build passes.
+
 ## 2026-09-08 - "PERTH" comes off the header
 
 The rule-and-label beside the logo is gone, along with the flex `gap` that only existed to
