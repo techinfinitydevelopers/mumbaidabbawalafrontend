@@ -1,3 +1,79 @@
+## 2026-09-08 — Statement band rebuilt: the line completes, and the motion is techinfinity’s
+
+Replaces the scroll-panned version committed earlier the same day. Two things were
+wrong with it, and the client was right about both.
+
+### The line never finished
+
+The pan and the pin ended at the same instant, so the last words of the sentence arrived
+exactly as the sticky released and the section scrolled away. You could never read the
+end of the line.
+
+### It was the wrong animation entirely
+
+The techinfinity band is **not** a scroll scrub. It is a Framer Motion `whileInView`
+stagger that plays once and settles — sampling its transform across 1200px of further
+scroll returns identical values. What it actually does:
+
+| | reference | ours |
+|---|---|---|
+| entrance | chips `translateY(-500px)` → 0, staggered | chips `-3.1em` → 0, plain words `-0.7em` → 0 |
+| stagger | ~0.12s over ~6 chips | 38ms over 25 tokens |
+| easing | `back.out(1.4)` | `cubic-bezier(0.34, 1.56, 0.64, 1)` |
+| row | perspective-scales to rest | `scale(1.08)` → `scale(1)`, 1s `power3.out` |
+| chips | 16px radius, 24px padding, gradient grounds, individually rotated | `0.28em` radius, `0.34em` padding, gradient grounds, per-chip tilt |
+| after | holds | holds |
+
+So: **no track, no pin, no pan.** The sentence wraps and sits still, complete and
+readable, and the whole thing is a one-shot entrance.
+
+### Built with no dependency
+
+All of the motion is in `globals.css` under `.statement`, keyed off a single
+`data-shown` attribute. The stagger is per-token `transition-delay`; the two travel
+distances arrive as `--drop`. The only JS is the IntersectionObserver that sets the
+attribute, with `Reveal`’s 2500ms failsafe so the sentence can never stay hidden.
+
+Only `opacity` and `transform` animate, so the cost does not grow with the length of the
+sentence — which matters at 25 tokens. GSAP was not added; the reference is a
+ScrollTrigger recreation of a Framer effect, and this is ~45 lines of CSS.
+
+### Measure
+
+Chips take gradient grounds now rather than flat fills, mapped onto the brand — the
+client’s artwork uses pastel pink and lavender, so those two become brand-red → orange
+and green-dark → green. Six gradients, all primary palette plus the two accent greens.
+
+The type and the measure are set **together**: `max-w-[86rem]` with
+`text-[clamp(19px,2.5vw,36px)]`. The first cut used `max-w-[64rem]` at up to 44px and
+broke the sentence over **six** lines, which reads as a paragraph. It is now four at
+1440. The client’s artwork sets it over two, but two would need ~2500px of line at this
+weight — not available at any real viewport.
+
+### Stickers on a dark ground
+
+Two were sized and shadowed for a light ground and sank into the ink: the steel tiffin
+(1.45em → **1.95em**) and the Perth Bell Tower (1.5em → **2.2em**). The dark
+`drop-shadow` did nothing on ink either, so image stickers now carry a **light halo**,
+`drop-shadow-[0_0_0.26em_rgba(252,243,205,0.4)]`.
+
+### Verified at 1440x900
+
+Section exactly **900** — one screen. **4** visual lines, no horizontal clipping
+(`scrollWidth === clientWidth`), last token "Perth." fully inside the section and the
+viewport, so **the line finishes**. 25 tokens, 11 gradient chips, 6 image stickers all
+loaded, `data-shown="true"`, row transform settled to identity and both the first and
+last token at `opacity: 1`.
+
+**Not verified:** the staggered entrance as motion. The preview pane is hidden, which
+pauses animation; what is confirmed is the rest state and that the transitions complete.
+The stagger, the overshoot and the row settle want a look in a real browser.
+
+**Also still not verified:** the `prefers-reduced-motion: reduce` branch, which lands
+everything at rest with `transition: none`. The pane cannot emulate the preference.
+
+eslint + `tsc --noEmit` clean, production build passes.
+
 ## 2026-09-08 — "More than a meal" statement band, scroll-panned
 
 A new section on the home page, `DabbaCarries`, for the client’s line:

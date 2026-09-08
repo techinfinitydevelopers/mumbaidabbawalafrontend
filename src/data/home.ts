@@ -189,7 +189,7 @@ export const DABBA_CARRIES: CarriesToken[] = [
   {
     word: "dabba",
     chip: "cream",
-    art: { kind: "image", src: "/images/items/tiffin-dabba.png", tilt: 6, h: "h-[1.45em]" },
+    art: { kind: "image", src: "/images/items/tiffin-dabba.png", tilt: 6, h: "h-[1.95em]" },
   },
   { word: "carries" },
   {
@@ -223,6 +223,6 @@ export const DABBA_CARRIES: CarriesToken[] = [
   {
     word: "Perth.",
     chip: "red",
-    art: { kind: "image", src: "/images/stickers/run-perth.png", alt: "", tilt: 4, h: "h-[1.5em]" },
+    art: { kind: "image", src: "/images/stickers/run-perth.png", alt: "", tilt: 4, h: "h-[2.2em]" },
   },
 ];

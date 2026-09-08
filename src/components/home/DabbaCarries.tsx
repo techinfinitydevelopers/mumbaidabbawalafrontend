@@ -1,51 +1,51 @@
 "use client";
 
 import Image from "next/image";
-import { useCallback, useEffect, useRef, useState, useSyncExternalStore } from "react";
+import { useEffect, useRef, useState } from "react";
 import { DABBA_CARRIES, type CarriesToken, type ChipTone } from "@/data/home";
 
 /**
- * "More than a meal…" — the client's statement line as one very wide row that pans left
- * as you scroll past it, in the manner of the techinfinity band they sent.
+ * "More than a meal…" — the client's statement line, built to the two references they
+ * sent: the composition comes from their own artwork (chips and stickers inline in the
+ * sentence, on a dark ground) and the motion comes from the techinfinity band.
  *
- * How the scrub works, and why it is built this way:
+ * That band turned out **not** to be a scroll scrub. It is a Framer Motion
+ * `whileInView` stagger: the pieces drop in from above, the row settles out of a slight
+ * over-scale, and it then holds — sampling its transform across 1200px of further scroll
+ * gives identical values. An earlier version of this section scrubbed the sentence
+ * sideways with scroll, which is why the line never appeared to finish: the pan and the
+ * pin ended together, so the last words arrived exactly as the section let go.
  *
- *  - The section is a tall **scroll track**; the visible band is a `position: sticky`
- *    child one viewport high. Sticky does the pinning, so no JS holds an element in
- *    place, there is nothing to fight the browser's scroll anchoring, and no layout is
- *    written per frame.
- *  - The only things JS writes on scroll are one `translate3d` on the row and one
- *    `scaleX` on the progress rule. Both are compositor properties, so the pan never
- *    triggers layout or paint.
- *  - The track's height is **derived from the row**, not guessed: however wide the
- *    sentence sets at the current type size, the section is exactly tall enough to pan
- *    all of it at `PAN_PER_PX`. Change the copy or the type and the pacing holds.
- *  - No `requestAnimationFrame` loop. Scroll events already fire at frame rate, and a
- *    rAF loop would keep spinning while the band is nowhere near the viewport.
+ * So there is no track, no pin and no pan. The whole sentence **wraps and sits still**,
+ * complete and readable, and the animation is a one-shot entrance:
  *
- * The edge mask is what makes it read as a *reveal* rather than a slide: words fade up
- * as they arrive from the right and fade out again at the left, so the row has no hard
- * ends. The row's `px-[16vw]` leading and trailing space is sized to clear that fade, so
- * the first word is fully lit at rest and the last one still is when the pan finishes.
+ *  - chips fall `-3.1em`, plain words only `-0.7em`, both with the reference's `back.out`
+ *    overshoot, so the highlights read as the event and the rest as supporting text;
+ *  - the row settles from `scale(1.08)` to rest over 1s;
+ *  - the stagger is per-token `transition-delay`, 38ms apart.
  *
- * Under `prefers-reduced-motion: reduce` there is no track, no sticky and no scrub — the
- * sentence simply wraps and sits still, chips and stickers intact. Note that the wrapped
- * row measures no overflow, so `scrubbing` keys off the motion preference and NOT off
- * `travel`; deciding it from `travel` would leave the row wrapped, measure 0, and the
- * scrub could never switch itself on.
+ * All of that lives in `globals.css` under `.statement`, keyed off one `data-shown`
+ * attribute, so the only JS here is the observer that sets it. Only `opacity` and
+ * `transform` animate, so the cost does not grow with the length of the sentence, and
+ * `prefers-reduced-motion: reduce` lands everything at rest with no transition.
+ *
+ * Chips take the reference's proportions — a 0.28em radius and generous padding against
+ * the type — and its gradient grounds, mapped onto the brand: the pastel pink and
+ * lavender in the client's artwork are not brand colours, so those two become
+ * brand-red → orange and green-dark → green.
  */
 
-/** Row pixels panned per pixel scrolled. Higher = a shorter section, a faster pan. */
-const PAN_PER_PX = 1.6;
-
-/** Chip grounds, primary palette only — see the note on `DABBA_CARRIES`. */
-const CHIP: Record<ChipTone, string> = {
-  orange: "bg-brand-orange text-ink",
-  green: "bg-brand-green text-ink",
-  cream: "bg-brand-cream text-ink",
-  red: "bg-brand-red text-brand-cream",
-  yellow: "bg-brand-yellow text-ink",
-  forest: "bg-brand-green-dark text-brand-cream",
+/** Gradient grounds, primary palette plus the two accent greens, as `[from, to]`. */
+const CHIP: Record<ChipTone, { grad: string; text: string }> = {
+  orange: { grad: "var(--color-brand-orange), var(--color-brand-yellow)", text: "text-ink" },
+  green: { grad: "var(--color-brand-green), var(--color-brand-cream)", text: "text-ink" },
+  cream: { grad: "var(--color-brand-cream), var(--color-paper)", text: "text-ink" },
+  red: { grad: "var(--color-brand-red), var(--color-brand-orange)", text: "text-brand-cream" },
+  yellow: { grad: "var(--color-brand-yellow), var(--color-brand-cream)", text: "text-ink" },
+  forest: {
+    grad: "var(--color-brand-green-dark), var(--color-brand-green)",
+    text: "text-brand-cream",
+  },
 };
 
 const GLYPHS = {
@@ -54,16 +54,8 @@ const GLYPHS = {
   parcel: "M3.5 8.2 12 4.2l8.5 4V16L12 20l-8.5-4V8.2ZM12 20V9.4M3.5 8.2 12 12l8.5-3.8",
 } as const;
 
-const MASK =
-  "linear-gradient(to right, transparent 0%, #000 10%, #000 90%, transparent 100%)";
-
-const REDUCED = "(prefers-reduced-motion: reduce)";
-
-function subscribe(onChange: () => void) {
-  const mq = window.matchMedia(REDUCED);
-  mq.addEventListener("change", onChange);
-  return () => mq.removeEventListener("change", onChange);
-}
+/** Per-token tilt, so the chips look placed by hand rather than generated. */
+const TILTS = [-2.2, 1.6, -1.2, 2.4, -1.8, 1.2, -2.6, 1.9, -1.4, 2.1, -2];
 
 /** One sticker. Kept `aria-hidden` — the sentence already says everything. */
 function Art({ art }: { art: NonNullable<CarriesToken["art"]> }) {
@@ -85,15 +77,15 @@ function Art({ art }: { art: NonNullable<CarriesToken["art"]> }) {
   }
 
   if (art.kind === "photo") {
-    // the reference drops a snapshot into the line; the pale border and the tilt are what
-    // make it read as a photo pinned to the sentence rather than as an inline image
+    // the client's artwork drops a snapshot into the line; the pale border and the tilt
+    // are what make it read as a photo pinned to the sentence rather than an inline image
     return (
       <span
         aria-hidden="true"
-        className="relative block h-[1.5em] w-[2em] shrink-0 overflow-hidden rounded-[3px] border-[0.09em] border-paper bg-ink shadow-[0_0.14em_0.34em_-0.2em_rgba(0,0,0,0.7)]"
+        className="relative block h-[1.5em] w-[2em] shrink-0 overflow-hidden rounded-[4px] border-[0.09em] border-paper bg-ink shadow-[0_0.14em_0.34em_-0.2em_rgba(0,0,0,0.7)]"
         style={{ rotate: `${art.tilt}deg` }}
       >
-        <Image src={art.src} alt="" fill sizes="140px" className="object-cover grayscale" />
+        <Image src={art.src} alt="" fill sizes="160px" className="object-cover grayscale" />
       </span>
     );
   }
@@ -105,115 +97,85 @@ function Art({ art }: { art: NonNullable<CarriesToken["art"]> }) {
       aria-hidden="true"
       width={220}
       height={220}
-      className={`w-auto shrink-0 drop-shadow-[0_0.16em_0.2em_rgba(0,0,0,0.55)] ${art.h}`}
+      // a light halo, not a drop shadow: the ground is ink, so a dark shadow does
+      // nothing and the steel dabba and the Bell Tower would sink into it
+      className={`w-auto shrink-0 drop-shadow-[0_0_0.26em_rgba(252,243,205,0.4)] ${art.h}`}
       style={{ rotate: `${art.tilt}deg` }}
     />
   );
 }
 
 export default function DabbaCarries() {
-  const trackRef = useRef<HTMLDivElement>(null);
-  const rowRef = useRef<HTMLDivElement>(null);
-  const barRef = useRef<HTMLSpanElement>(null);
-
-  /** How far the row has to travel: its own content width minus what fits on screen. */
-  const [travel, setTravel] = useState(0);
-
-  const reduced = useSyncExternalStore(
-    subscribe,
-    () => window.matchMedia(REDUCED).matches,
-    () => false,
-  );
-
-  const scrubbing = !reduced;
-
-  const measure = useCallback(() => {
-    const row = rowRef.current;
-    if (!row) return;
-    setTravel(Math.max(0, row.scrollWidth - row.clientWidth));
-  }, []);
+  const ref = useRef<HTMLElement>(null);
+  const [shown, setShown] = useState(false);
 
   useEffect(() => {
-    const row = rowRef.current;
-    if (!scrubbing || !row) {
-      setTravel(0);
-      return;
-    }
+    const el = ref.current;
+    if (!el) return;
 
-    measure();
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setShown(true);
+          observer.disconnect();
+        }
+      },
+      { threshold: 0.2 },
+    );
 
-    // the row's width tracks the viewport (the type is set in vw), and jumps again when
-    // the display webfont lands and the metrics change under it
-    const observer = new ResizeObserver(measure);
-    observer.observe(row);
-    document.fonts?.ready.then(measure).catch(() => {});
+    observer.observe(el);
 
-    return () => observer.disconnect();
-  }, [measure, scrubbing]);
-
-  useEffect(() => {
-    if (!scrubbing || travel <= 0) return;
-
-    const onScroll = () => {
-      const track = trackRef.current;
-      const row = rowRef.current;
-      if (!track || !row) return;
-
-      // how far through the sticky span we are: 0 at the top, 1 when it lets go
-      const span = track.offsetHeight - window.innerHeight;
-      const raw = span <= 0 ? 0 : -track.getBoundingClientRect().top / span;
-      const progress = Math.min(1, Math.max(0, raw));
-
-      row.style.transform = `translate3d(${(-travel * progress).toFixed(2)}px, 0, 0)`;
-      if (barRef.current) barRef.current.style.transform = `scaleX(${progress.toFixed(4)})`;
-    };
-
-    onScroll();
-    window.addEventListener("scroll", onScroll, { passive: true });
-    window.addEventListener("resize", onScroll);
+    // the sentence must never stay hidden if the observer never fires — a background
+    // tab, a context with no scrolling. Same failsafe as `Reveal`.
+    const failsafe = window.setTimeout(() => setShown(true), 2500);
 
     return () => {
-      window.removeEventListener("scroll", onScroll);
-      window.removeEventListener("resize", onScroll);
+      observer.disconnect();
+      window.clearTimeout(failsafe);
     };
-  }, [travel, scrubbing]);
+  }, []);
+
+  let chipIndex = 0;
 
   return (
     <section
-      ref={trackRef}
-      className="grain relative overflow-hidden bg-ink"
-      // tall enough to pan the whole row, and no taller
-      style={
-        scrubbing && travel > 0
-          ? { height: `calc(100svh + ${Math.round(travel / PAN_PER_PX)}px)` }
-          : undefined
-      }
+      ref={ref}
+      data-shown={shown}
+      className="statement grain relative flex min-h-[100svh] flex-col justify-center overflow-hidden bg-ink py-phi-7"
     >
-      <div
-        className={`flex flex-col justify-center ${
-          scrubbing ? "sticky top-0 h-[100svh]" : "py-phi-6"
-        }`}
-      >
-        <p className="mb-phi-4 px-5 text-center font-script text-[min(30px,3.4svh)] text-brand-orange sm:px-8">
+      <div className="mx-auto w-full max-w-[1720px] px-5 sm:px-8 lg:px-12">
+        <p className="text-center font-script text-[min(30px,3.4svh)] text-brand-orange">
           What a dabba carries
         </p>
 
-        <div
-          className={scrubbing ? "overflow-hidden" : "px-5 sm:px-8 lg:px-12"}
-          style={scrubbing ? { maskImage: MASK, WebkitMaskImage: MASK } : undefined}
-        >
-          <div ref={rowRef} className={`will-change-transform ${scrubbing ? "px-[16vw]" : ""}`}>
-            <p
-              className={`flex items-center gap-x-[0.3em] gap-y-[0.35em] font-display text-[clamp(24px,4.4vw,56px)] font-bold leading-[1.25] text-brand-cream ${
-                scrubbing ? "flex-nowrap whitespace-nowrap" : "flex-wrap justify-center"
-              }`}
-            >
-              {DABBA_CARRIES.map((token, i) => (
+        <div className="statement-row mt-phi-4 origin-center">
+          {/* The measure and the type are set together so the sentence breaks into three
+                lines at desktop rather than six. The client's artwork sets it over two, but
+                two would need ~2500px of line at this weight; three keeps it a statement
+                rather than a paragraph, and it still holds one screen. */}
+          <p className="mx-auto flex max-w-[86rem] flex-wrap items-center justify-center gap-x-[0.28em] gap-y-[0.44em] font-display text-[clamp(19px,2.5vw,36px)] font-bold leading-[1.32] text-brand-cream">
+            {DABBA_CARRIES.map((token, i) => {
+              const tilt = token.chip ? TILTS[chipIndex++ % TILTS.length] : 0;
+
+              return (
                 // index keys: the array is static and never reorders
-                <span key={i} className="flex shrink-0 items-center gap-x-[0.3em]">
+                <span
+                  key={i}
+                  className="statement-token flex shrink-0 items-center gap-x-[0.28em]"
+                  style={{
+                    // chips fall further than plain words, and the stagger runs
+                    // left-to-right through the sentence
+                    ["--drop" as string]: token.chip ? "-3.1em" : "-0.7em",
+                    transitionDelay: `${i * 38}ms`,
+                  }}
+                >
                   {token.chip ? (
                     <span
-                      className={`rounded-[0.34em] px-[0.3em] pb-[0.1em] pt-[0.04em] ${CHIP[token.chip]}`}
+                      className={`rounded-[0.28em] px-[0.34em] pb-[0.12em] pt-[0.05em] shadow-[0_0.12em_0.3em_-0.14em_rgba(0,0,0,0.6)] ${CHIP[token.chip].text}`}
+                      style={{
+                        backgroundImage: `linear-gradient(86deg, ${CHIP[token.chip].grad})`,
+                        rotate: `${tilt}deg`,
+                      }}
                     >
                       {token.word}
                     </span>
@@ -222,24 +184,10 @@ export default function DabbaCarries() {
                   )}
                   {token.art && <Art art={token.art} />}
                 </span>
-              ))}
-            </p>
-          </div>
+              );
+            })}
+          </p>
         </div>
-
-        {scrubbing && (
-          <div className="mt-phi-5 px-5 sm:px-8 lg:px-12">
-            <span
-              aria-hidden="true"
-              className="mx-auto block h-px w-full max-w-measure bg-brand-cream/15"
-            >
-              <span
-                ref={barRef}
-                className="block h-px w-full origin-left scale-x-0 bg-brand-yellow"
-              />
-            </span>
-          </div>
-        )}
       </div>
     </section>
   );
