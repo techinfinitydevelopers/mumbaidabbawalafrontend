@@ -1,3 +1,21 @@
+## 2026-09-08 - Exit dropped lower on the postcard
+
+`EXIT_CARD_FRACTION` 0.38 -> **0.58**, on the client's note to take the line a bit lower.
+The exit y moves 1819 -> **1874** at desktop, so it leaves the card's right edge just past
+its middle rather than in the upper third.
+
+Note on the two fractions: the component measures the card from `offsetTop`/`offsetHeight`,
+which is its UNROTATED box, while a `getBoundingClientRect` check sees the rotated one -
+the postcard is tilted. So a target of 0.58 lands at 0.45 of the visual card. Same
+geometry, two different boxes; worth knowing before chasing the difference.
+
+Verified at 1920 / 1440 / 390: still gets past the card's right edge (1032, 365 and 1035
+respectively), still exits the drawable edge, boxes still agree, and it stays inside the
+card vertically and clear of the "Aus Perth" mark at every width - 1874 against a mark at
+2033 on desktop, 1791 against 1887 on mobile.
+
+eslint clean, production build passes.
+
 ## 2026-09-08 - The flight leaves through the postcard's right-hand side
 
 Third attempt at this, and the first that does what was asked. The client marked a

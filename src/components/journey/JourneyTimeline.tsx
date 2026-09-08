@@ -20,7 +20,7 @@ const PERTH_NODE_HEIGHT = 404;
 /**
  * Where the exit crosses the Perth postcard, as a fraction of the card's own height.
  *
- * The flight leaves through the card's RIGHT-HAND side, at about its upper third - it
+ * The flight leaves through the card's RIGHT-HAND side, just past its middle - it
  * passes behind the postcard (the line is z-index 1, the cards are 3 and 5) and comes out
  * at its right edge to carry on into the gutter and off the frame.
  *
@@ -28,7 +28,7 @@ const PERTH_NODE_HEIGHT = 404;
  * crossed the card diagonally and surfaced over the caption, and clearing it entirely
  * above `cardTop` never reached the right-hand side at all.
  */
-const EXIT_CARD_FRACTION = 0.38;
+const EXIT_CARD_FRACTION = 0.58;
 
 /** How far past the drawable edge the path runs, so the plane leaves the frame. */
 const EXIT_OVERSHOOT = 40;
