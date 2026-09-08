@@ -1,3 +1,90 @@
+## 2026-09-08 — "More than a meal" statement band, scroll-panned
+
+A new section on the home page, `DabbaCarries`, for the client’s line:
+
+> "More than a meal, every dabba carries tradition, care, familiar flavours, and the
+> feeling of home — freshly prepared, carefully packed, and delivered to Perth."
+
+It sets as **one very wide row that pans left as you scroll past it**, following the
+techinfinity band the client linked. Sits between `StandFor` and `NeverJustLunch`, on
+ink, so the page runs ink → cream → ink → paper → paper → red → paper → cream and no two
+adjacent sections share a ground.
+
+### How the scrub is built
+
+- The section is a tall **scroll track**; the visible band is a `position: sticky` child
+  one viewport high. **Sticky does the pinning** — no JS holds an element in place,
+  nothing fights the browser’s scroll anchoring, no layout is written per frame.
+- Per scroll, JS writes exactly two things: one `translate3d` on the row and one
+  `scaleX` on the progress rule. Both are compositor properties.
+- **No rAF loop.** Scroll events already fire at frame rate, and a rAF loop would keep
+  spinning while the band is nowhere near the viewport.
+- **No GSAP.** The reference is a GSAP/ScrollTrigger pattern, but it is ~70 lines of
+  sticky + one transform here, and the repo has no animation dependency to justify.
+- The track height is **derived from the row**, never guessed:
+  `height: calc(100svh + travel/1.6 px)`, where `travel = row.scrollWidth -
+  row.clientWidth`. Change the copy or the type and the pacing holds. Measured at 1440:
+  travel 4210 → section 3531 (900 + 2631). At 390: travel 1989 → section 2087.
+
+The **edge mask** is what makes it a *reveal* rather than a slide — words fade up as
+they arrive from the right and fade out at the left, so the row has no hard ends. The
+row’s `px-[16vw]` lead-in and lead-out is sized to clear that 10% fade, so the first
+word is fully lit at rest and the last one still is when the pan finishes.
+
+### A bug worth recording
+
+The first cut keyed `scrubbing` off `travel > 0`. That cannot work: with `travel` at its
+initial `0` the row renders **wrapped**, a wrapped row has no horizontal overflow, so
+`scrollWidth - clientWidth` measures `0` and the scrub could never switch itself on.
+`scrubbing` now keys off the motion preference alone, so the row is always laid out
+`nowrap` when it is going to be panned, and `travel` measures something real.
+
+### Chips and stickers
+
+11 highlighted words, 9 stickers, tokenised in `DABBA_CARRIES` in `src/data/home.ts`.
+The client’s reference used pastel **pink and lavender**, neither of which is a brand
+colour; those two map onto **brand-red** and **brand-green-dark**, so the six chip
+grounds are all primary palette. Stickers reuse existing assets — the butter chicken
+bowl, the tiffin dabba, a grayscaled `net-05` snapshot in a pale border for the
+reference’s photo tile, chilli and curry-leaf cut-outs, the Perth landmark — plus three
+drawn glyphs (heart, house, parcel) in brand-yellow. No new artwork was generated.
+
+### Verified
+
+Pan tracks scroll **to the pixel**, at both widths, reading the row’s computed matrix at
+five scroll positions:
+
+| progress | 1440 panX / expected | 390 panX / expected |
+|---|---|---|
+| 0 | 0 / 0 | 0 / 0 |
+| 0.25 | −1052 / −1052 | −497 / −497 |
+| 0.5 | −2105 / −2105 | −995 / −994 |
+| 0.75 | −3157 / −3157 | −1492 / −1492 |
+| 1 | −4209 / −4210 | −1989 / −1989 |
+
+Progress rule tracks 0 → 0.33 → 0.66 → 1. Mask applied to the pan window. 8 sections,
+band ground `rgb(42, 24, 16)`, sticky child exactly 900 at 900, 11 chips, 9 stickers,
+all words present in order, no page-level horizontal overflow at 390.
+
+**A note on that verification.** The first mobile run appeared to fail — progress 0.5
+read as 0.767 — but the fault was in the test, not the component: it computed all five
+scroll targets from one `offsetTop` read up front, and images settling above the band
+moved the section underneath it. The component reads `getBoundingClientRect()` live on
+every scroll, so it is immune; re-reading the position per iteration gave exact numbers.
+
+**Not verified:** the `prefers-reduced-motion: reduce` fallback (no track, no sticky, no
+scrub — the sentence just wraps). The preview pane cannot emulate the preference. The
+branch is a single boolean and was code-reviewed, but it wants a look in a real browser
+with the OS setting on.
+
+### One for the client
+
+"freshly prepared, carefully packed" now appears twice on the home page — here, and as
+the third beat of the "It’s Never Just Lunch" ladder further down, which is the content
+doc’s own wording. Worth deciding which one keeps it.
+
+eslint + `tsc --noEmit` clean.
+
 ## 2026-09-08 — Placeholder reviews for previewing the deck, and click-to-centre
 
 ### Four invented reviews, behind a flag
