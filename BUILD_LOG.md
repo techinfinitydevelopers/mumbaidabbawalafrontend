@@ -1,3 +1,27 @@
+## 2026-09-08 - For Business comes off the red, and the headings go up a step
+
+The client did not want the red ground. `/contact` now has no red section at all
+(`anyRedSection: false`): For Business is back on paper, the wave is gone, its heading and
+copy are back on the light-ground palette (red -> green-dark on a yellow shadow, ink/70
+body), and its CTA is red again rather than the yellow variant that only exists for red
+grounds. The cream panel stays - on paper that is what lifts the list off the page.
+
+**The trade, stated:** the page runs cream -> paper -> paper -> cream again, so For Customers
+and For Business share a ground. What keeps them from reading as one long list is their
+SHAPE, which is the part of the revamp that stays: rows you scan down up there, a divided
+panel of poster-type lines down here.
+
+Headings up a step, as asked: the two section headings go **42px -> 50px** (30px from
+26px on mobile), and the sign-up band's, which sits inside a card and should stay a touch
+smaller, **40px -> 44px** (28px mobile).
+
+Verified at 1440 - all four grounds as above, no red anywhere, no wave in the business
+section, panel `rgb(252, 243, 205)`, CTA resting on `rgb(175, 20, 17)`, poster sizes
+50/50/50/50/44/44. At 390 the larger type still fits: sizes 30 and 28, **no poster wider
+than the viewport**, no horizontal overflow, all four customer rows intact.
+
+eslint + `tsc --noEmit` clean, production build passes.
+
 ## 2026-09-08 - For Customers and For Business revamped
 
 They were the same shape twice running - a numbered-card grid, then another numbered-card

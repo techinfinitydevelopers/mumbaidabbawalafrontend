@@ -3,7 +3,6 @@ import Image from "next/image";
 import Button from "@/components/Button";
 import ContactHero from "@/components/contact/ContactHero";
 import Reveal from "@/components/Reveal";
-import WaveDivider from "@/components/poster/WaveDivider";
 import PhotoWall from "@/components/contact/PhotoWall";
 import SubscribeForm from "@/components/contact/SubscribeForm";
 import {
@@ -68,13 +67,13 @@ export default function ContactPage() {
               <p className="font-script text-3xl text-brand-orange">For customers</p>
               <h2 className="poster-stack mt-2 [--po:4px] [--po-gap:12px] sm:[--po:5px] sm:[--po-gap:18px]">
                 <span
-                  className="poster text-[26px] text-brand-red sm:text-[42px]"
+                  className="poster text-[30px] text-brand-red sm:text-[50px]"
                   style={{ ["--po-color" as string]: "var(--color-brand-yellow)" }}
                 >
                   Get In Touch
                 </span>
                 <span
-                  className="poster text-[26px] text-brand-green-dark sm:text-[42px]"
+                  className="poster text-[30px] text-brand-green-dark sm:text-[50px]"
                   style={{ ["--po-color" as string]: "var(--color-brand-yellow)" }}
                 >
                   By Topic.
@@ -139,35 +138,29 @@ export default function ContactPage() {
       </section>
 
       {/* ───── For Business ─────
-           On red, which does two jobs: it gives the page the one loud band it was missing
-           (hero cream, then paper, then paper, then cream read flat), and it separates the
-           customer routes above from the business ones below so the two are not read as
-           one long list. The lines sit in a cream panel as a divided list rather than as
-           cards, again so this is not the same shape as the section above it. */}
-      <section
-        id="business"
-        className="grain graph-paper-light relative overflow-hidden bg-brand-red pb-phi-6 pt-phi-7 sm:pt-phi-8"
-      >
-        <WaveDivider tone="bg-paper" textured={false} />
-
-        <div className="relative z-20 mx-auto max-w-[1720px] px-5 sm:px-8 lg:px-12">
+           Light ground, like the section above it. What keeps the two from reading as one
+           long list is their SHAPE, not their colour: rows you scan down on the left up
+           there, a divided panel of poster-type lines down here. The cream panel is what
+           lifts this off the paper. */}
+      <section id="business" className="relative bg-paper pb-phi-6 pt-phi-6">
+        <div className="mx-auto max-w-[1720px] px-5 sm:px-8 lg:px-12">
           <Reveal className="mx-auto max-w-3xl text-center">
-            <p className="font-script text-3xl text-brand-yellow">For business</p>
+            <p className="font-script text-3xl text-brand-orange">For business</p>
             <h2 className="poster-stack mx-auto mt-3 [--po:4px] [--po-gap:12px] sm:[--po:5px] sm:[--po-gap:18px]">
               <span
-                className="poster text-[26px] text-brand-yellow sm:text-[44px]"
-                style={{ ["--po-color" as string]: "rgba(42,24,16,0.85)" }}
+                className="poster text-[30px] text-brand-red sm:text-[50px]"
+                style={{ ["--po-color" as string]: "var(--color-brand-yellow)" }}
               >
                 Beyond The Dabba:
               </span>
               <span
-                className="poster text-[26px] text-brand-green sm:text-[44px]"
-                style={{ ["--po-color" as string]: "rgba(42,24,16,0.6)" }}
+                className="poster text-[30px] text-brand-green-dark sm:text-[50px]"
+                style={{ ["--po-color" as string]: "var(--color-brand-yellow)" }}
               >
                 Corporate & Global.
               </span>
             </h2>
-            <p className="mx-auto mt-5 max-w-measure-wide text-phi-2 leading-relaxed text-brand-cream/85">
+            <p className="mx-auto mt-5 max-w-measure-wide text-phi-2 leading-relaxed text-ink/70">
               For organisations interested in the operational model, franchise
               opportunities, training programs, or the Dabbawala system&rsquo;s global
               expansion — this is where that conversation lives.
@@ -175,7 +168,7 @@ export default function ContactPage() {
           </Reveal>
 
           <Reveal delay={90} className="mt-phi-5">
-            <ul className="mx-auto max-w-measure-full overflow-hidden rounded-[28px] bg-brand-cream shadow-[0_18px_44px_-26px_rgba(0,0,0,0.6)]">
+            <ul className="mx-auto max-w-measure-full overflow-hidden rounded-[28px] bg-brand-cream shadow-[0_14px_34px_-24px_rgba(42,24,16,0.4)]">
               {BUSINESS_TOPICS.map((item, i) => (
                 <li
                   key={item.name}
@@ -206,7 +199,7 @@ export default function ContactPage() {
           <Reveal delay={140} className="mt-phi-5 text-center">
             <Button
               href={mailto("Corporate & Partnership Enquiries")}
-              variant="yellow"
+              variant="red"
               size="lg"
             >
               Corporate & Partnership Enquiries
@@ -234,13 +227,13 @@ export default function ContactPage() {
                 <p className="font-script text-3xl text-brand-orange">Subscribe and forget</p>
                 <h2 className="poster-stack mt-3 [--po:4px] [--po-gap:12px] sm:[--po:5px] sm:[--po-gap:18px]">
                   <span
-                    className="poster text-[26px] text-brand-red sm:text-[40px]"
+                    className="poster text-[28px] text-brand-red sm:text-[44px]"
                     style={{ ["--po-color" as string]: "var(--color-brand-yellow)" }}
                   >
                     The Best Lunch Decision Is
                   </span>
                   <span
-                    className="poster text-[26px] text-brand-green-dark sm:text-[40px]"
+                    className="poster text-[28px] text-brand-green-dark sm:text-[44px]"
                     style={{ ["--po-color" as string]: "var(--color-brand-yellow)" }}
                   >
                     The One You Only Make Once.
