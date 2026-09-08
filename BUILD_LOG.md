@@ -1,3 +1,75 @@
+## 2026-09-08 — Home page built, with the film in the hero
+
+Seven sections, in the content doc's own order for section 1 (Home Page):
+
+1. **Hero** — the film full-bleed, `HomeHero` + `HeroVideo`
+2. **What We Stand For** — the six-word marquee, now shared with `/about`
+3. **It's Never Just Lunch** — "EVERY DABBA, EVERY DAY"
+4. **However You Eat...** — the existing `DabbaOfferings`, reused
+5. **Why The Dabba?** — Trust / Discipline / People / Home on red
+6. **Perth — Where The Legacy Lands** — the four audiences + "Check If We Deliver"
+7. **What Our Customers Say** — the three quotes + "Share Your Dabba Story"
+
+Grounds run ink -> cream -> paper -> paper -> red -> paper -> cream, so the two
+printed bands sit at the middle and the end instead of stacking.
+
+### The hero
+
+`/videos/hero.mp4` (1920x1080, 46s, H.264, no audio track, 11.4MB), downloaded from
+the Dropbox link. `HeroVideo` always renders the poster still server-side and eager,
+then layers the `<video>` over it only when
+`(min-width: 768px) and (prefers-reduced-motion: no-preference)` matches, read
+through `useSyncExternalStore` so the server snapshot is `false` and there is no
+hydration mismatch. Verified: the video element mounts at 1440 and does **not** at
+390, so no phone pays 11MB for decoration.
+
+The poster still is the file's own first frame, written out through a throwaway
+route handler and then deleted (`public/images/hero-video-poster.jpg`, 1600x900).
+
+Over film the type has to be the bright thing, so the headline runs
+cream -> yellow -> green on an ink scrim rather than the usual red -> green on cream.
+The scrim is two **mutually exclusive** halves — a full veil below `lg`, a
+left-weighted one from `lg`. They were stacking at first, which compounded to ~0.59
+opacity on the right and greyed the whole film out.
+
+### One thing that has to change before this ships
+
+The film is a corporate animation for **Emons**, a Dutch freight company, and their
+wordmark is painted across the trailers and the depot wall — large and legible right
+behind the headline, at both 1440 and 390. It cannot ship on Mumbai Dabbawala's home
+page. Swapping it is one line: `HERO_VIDEO.src` in `src/data/home.ts` (and the
+poster still alongside it).
+
+### Content notes
+
+- The doc's "Verified Customer" tick under each testimonial is **not** printed. It
+  asserts the reviews have been verified, which is the same class of claim the
+  accuracy statistics are held back for, and the Perth launch it sits above hasn't
+  happened. Quotes, star ratings (5/5/4) and attributions are the doc's, verbatim.
+  The three suburbs the doc gives — Parramatta, Melbourne CBD, Box Hill — are in
+  Sydney and Melbourne, not Perth.
+- `WHAT_WE_STAND_FOR` was lifted out of `about/page.tsx` into
+  `src/components/StandFor.tsx` and is now used by both pages — a pure move, no
+  markup change. `/about` re-verified: 6 sections, all four headings, 12 marquee
+  tiles in the right order.
+- Photos use the site's existing generic alt, "A Mumbai dabbawala at work", rather
+  than invented descriptions. Frames were matched to source aspect so `object-cover`
+  crops nothing: net-08 (600x900) in `aspect-[2/3]`, net-03 (900x900) in
+  `aspect-square`.
+- Emoji bullets from the doc are redrawn as line glyphs in the palette, as elsewhere.
+
+### Verified
+
+eslint + `tsc --noEmit` clean, production build passes (22 static pages). At 1440:
+7 sections with the intended grounds, all 16 headings present, no broken images,
+`scrollWidth == clientWidth`. Card rows measure equal-height and bottom-aligned
+(Why The Dabba 4x284px, Testimonials 3x286px). The two φ splits measure 787/487 =
+1.616. At 390: no overflow, hero at 100svh, seal clear of the route ticker.
+Star ratings render 5/5/4 filled.
+
+Console clean on a fresh load — the hydration and `sizes` warnings seen mid-session
+were artefacts of the DOM mutations used to force the hidden preview pane to paint.
+
 ## 2026-09-07 — Timeline plane enlarged
 
 Flight-path plane up **1.32x**: 100 -> 132 SVG units on desktop, 58 -> 76 below
