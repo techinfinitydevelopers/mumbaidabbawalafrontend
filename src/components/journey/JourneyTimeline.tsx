@@ -17,8 +17,18 @@ const PERTH_ARRIVAL_Y = 1674;
 /** Height of the Perth arrival node, used only until it has been measured. */
 const PERTH_NODE_HEIGHT = 404;
 
-/** How far below the Perth node the path sweeps out of frame. */
-const EXIT_DROP = 62;
+/**
+ * How far below the arrival pin the path sweeps out of frame, and the gap it keeps above
+ * the Perth postcard.
+ *
+ * The exit leaves ABOVE the postcard, not under it. Going under meant crossing the card
+ * diagonally - the card spans x 581..1031 of a 1040-wide corridor, so any descent on the
+ * right-hand side runs straight through it, and the plane came out over the caption.
+ * There is no route down its right-hand side either: its right edge sits ~9px from the
+ * corridor's own edge.
+ */
+const EXIT_DROP = 60;
+const EXIT_CARD_GAP = 14;
 
 /** Air below the point where the flight path leaves the frame. */
 const CORRIDOR_TAIL = 40;
@@ -38,7 +48,7 @@ const PIN_OFFSET = 154;
  * mismatch here (pin on one side, card on the other) is what made the plane
  * and the cards look disconnected from the line.
  */
-function getFlightGeometry(W: number, perthBottom: number) {
+function getFlightGeometry(W: number, perthBottom: number, perthCardTop: number) {
   const isMobile = W < 768;
   const cardWidth = isMobile ? Math.min(168, Math.round(W * 0.44)) : clamp(Math.round(W * 0.26), 65, 300);
   const xL = cardWidth;
@@ -74,7 +84,11 @@ function getFlightGeometry(W: number, perthBottom: number) {
    */
   const arrival = { x: xR, y: PERTH_ARRIVAL_Y };
   const runOut = last.x === xR ? [{ x: xL, y: last.y + 155 }, arrival] : [arrival];
-  const exit = { x: W + 190, y: perthBottom + EXIT_DROP };
+  // as far down as the drop allows, but never into the postcard
+  const exit = {
+    x: W + 190,
+    y: Math.min(arrival.y + EXIT_DROP, perthCardTop - EXIT_CARD_GAP),
+  };
   const points = [{ x: xM, y: startY }, ...stops, ...runOut];
 
   let path = `M ${points[0].x} ${points[0].y}`;
@@ -136,8 +150,11 @@ function getFlightGeometry(W: number, perthBottom: number) {
  * copy went stale the moment the desktop value moved. It is now set inline from this, so
  * they cannot drift.
  */
-function corridorHeightFor(W: number, perthBottom: number) {
-  return getFlightGeometry(W, perthBottom).endY + CORRIDOR_TAIL;
+function corridorHeightFor(W: number, perthBottom: number, perthCardTop: number) {
+  // whichever runs deeper: the flight's exit, or the Perth node itself. The exit sits
+  // above the postcard now, so it is the node that sets the height.
+  const endY = getFlightGeometry(W, perthBottom, perthCardTop).endY;
+  return Math.max(endY, perthBottom) + CORRIDOR_TAIL;
 }
 
 function MilestonePlate({ plate, side }: { plate: Milestone["plate"]; side: "left" | "right" }) {
@@ -227,6 +244,8 @@ export default function JourneyTimeline() {
   const [corridorWidth, setCorridorWidth] = useState(1000);
   /** Bottom of the Perth arrival node, in corridor pixels. */
   const [perthBottom, setPerthBottom] = useState(PERTH_ARRIVAL_Y + PERTH_NODE_HEIGHT);
+  /** Top of the Perth postcard, which the flight has to clear on its way out. */
+  const [perthCardTop, setPerthCardTop] = useState(PERTH_ARRIVAL_Y + 73);
 
   useEffect(() => {
     const corridor = corridorRef.current;
@@ -245,6 +264,14 @@ export default function JourneyTimeline() {
       if (perth) {
         const bottom = perth.offsetTop + perth.offsetHeight;
         if (bottom > 0) setPerthBottom(bottom);
+
+        // the postcard, so the exit can be kept above it at every breakpoint - its
+        // offset inside the node moves with the badge's wrapped height
+        const card = perth.querySelector<HTMLElement>(".tl-sticker");
+        if (card) {
+          const cardTop = perth.offsetTop + card.offsetTop;
+          if (cardTop > 0) setPerthCardTop(cardTop);
+        }
       }
     }
 
@@ -261,7 +288,7 @@ export default function JourneyTimeline() {
     };
   }, []);
 
-  const flightGeometry = getFlightGeometry(corridorWidth, perthBottom);
+  const flightGeometry = getFlightGeometry(corridorWidth, perthBottom, perthCardTop);
 
   useEffect(() => {
     const corridor = corridorRef.current;
@@ -358,7 +385,7 @@ export default function JourneyTimeline() {
       // one SVG unit == one corridor pixel, so the scrolled-to y in corridor
       // space is simply p * height — the plane then always sits level with
       // whichever card is currently on screen.
-      const currentDist = lengthAtY(p * corridorHeightFor(corridorWidth, perthBottom));
+      const currentDist = lengthAtY(p * corridorHeightFor(corridorWidth, perthBottom, perthCardTop));
       routeProgress!.style.strokeDashoffset = `${routeLen - currentDist}`;
 
       if (routeGhostRef.current) {
@@ -413,9 +440,9 @@ export default function JourneyTimeline() {
       window.removeEventListener("resize", onResize);
       cancelAnimationFrame(raf);
     };
-  }, [corridorWidth, perthBottom]);
+  }, [corridorWidth, perthBottom, perthCardTop]);
 
-  const corridorHeight = corridorHeightFor(corridorWidth, perthBottom);
+  const corridorHeight = corridorHeightFor(corridorWidth, perthBottom, perthCardTop);
 
   return (
     <section id="journey" className="journey-flow">

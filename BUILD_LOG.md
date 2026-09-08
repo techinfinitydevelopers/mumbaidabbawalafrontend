@@ -1,3 +1,44 @@
+## 2026-09-08 - The flight leaves above the Perth postcard, not through it
+
+The exit was crossing the postcard. It swept from the touchdown pin down to the
+right-hand edge, and the card spans **x 581..1031 of a 1040-wide corridor**, so a descent
+on that side runs diagonally straight through it - the plane came out over the "Aus
+Perth" mark and the caption, which is what the client saw.
+
+Going down the card's right-hand side is not available: its right edge sits **~9px** from
+the corridor's own edge. So the flight leaves **above** it instead - it reaches the
+touchdown pin, sweeps right, and is off the frame before the card's top edge.
+
+`EXIT_DROP` is now clamped against the card:
+`y = min(arrival + 60, cardTop - 14)`, and the card's top is **measured** (its offset
+inside the node moves with how the badge wraps), same as the node's bottom already was.
+The corridor takes `max(exitY, perthBottom)` - with the exit above the card it is the node
+that sets the height now, not the flight.
+
+### Verified, five widths
+
+Sampled **401 points along the whole path** and tested each against the postcard's box:
+
+| width | corridor | postcard box | path end | exits right | points inside the card |
+|---|---|---|---|---|---|
+| 1920 | 2137 | 581..1031 x 1747..2032 | (1230, 1699) | yes | **0** |
+| 1440 | 2137 | 581..1031 x 1747..2032 | (1230, 1699) | yes | **0** |
+| 1024 | 2137 | 526..975 x 1747..2032 | (1175, 1699) | yes | **0** |
+| 820 | 2137 | 322..771 x 1747..2032 | (971, 1699) | yes | **0** |
+| 390 | 1982 | 202..365 x 1749..1885 | (556, 1698) | yes | **0** |
+
+viewBox and both boxes agree at every width. The exit clears the card by 48px at desktop.
+
+Plane travel at 1440: 220 -> 738 -> **1230**, past the 1040 edge by 75% of the track, and
+gone for the rest of it - which is the Perth postcard's reading time.
+
+The section is now **2260** at desktop, from 2463 before any of this.
+
+Still measured rather than seen: the preview pane serves no rAF frames and the plane's
+position is smoothed through a rAF tick, so the sweep itself wants a real browser.
+
+eslint + `tsc --noEmit` clean, production build passes.
+
 ## 2026-09-08 - The flight path exits the frame, and the tail padding comes off
 
 Two things asked for on the journey timeline: the line should carry on to the right after
