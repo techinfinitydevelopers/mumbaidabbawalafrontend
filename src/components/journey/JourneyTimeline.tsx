@@ -7,10 +7,22 @@ function clamp(v: number, a: number, b: number) {
   return Math.max(a, Math.min(b, v));
 }
 
-/** Must stay equal to `.flight-corridor { min-height }` and `.flight-svg
- *  { height }` in globals.css — the SVG viewBox uses it so one SVG unit is
- *  one corridor pixel, which is what keeps the path glued to the cards. */
-const CORRIDOR_HEIGHT = 2230;
+/**
+ * Where the flight path's last pin lands. Must equal `.corridor-node--perth { top }` in
+ * globals.css - in BOTH the base rule and the `max-width: 768px` override - because that
+ * node is the Perth arrival and the pin is what anchors it to the line.
+ */
+const PERTH_ARRIVAL_Y = 1674;
+
+/** Height of the Perth arrival node, used only until it has been measured. */
+const PERTH_NODE_HEIGHT = 404;
+
+/** How far below the Perth node the path sweeps out of frame. */
+const EXIT_DROP = 62;
+
+/** Air below the point where the flight path leaves the frame. */
+const CORRIDOR_TAIL = 40;
+
 
 /** Fraction of the viewport height the flight path is pinned to. A card's
  *  "hero" moment — plane level with its pin — happens here. */
@@ -26,7 +38,7 @@ const PIN_OFFSET = 154;
  * mismatch here (pin on one side, card on the other) is what made the plane
  * and the cards look disconnected from the line.
  */
-function getFlightGeometry(W: number) {
+function getFlightGeometry(W: number, perthBottom: number) {
   const isMobile = W < 768;
   const cardWidth = isMobile ? Math.min(168, Math.round(W * 0.44)) : clamp(Math.round(W * 0.26), 65, 300);
   const xL = cardWidth;
@@ -40,10 +52,29 @@ function getFlightGeometry(W: number) {
     y: m.top + pinOffset,
   }));
   const last = stops[stops.length - 1];
-  const runOut =
-    last.x === xR
-      ? [{ x: xL, y: last.y + 155 }, { x: xR, y: 1674 }]
-      : [{ x: xR, y: 1674 }];
+
+  /**
+   * The Perth arrival, then the exit.
+   *
+   * `arrival` is the pin the `.corridor-node--perth` postcard hangs off, so it has to
+   * stay at `PERTH_ARRIVAL_Y`. An earlier pass mistook that y for the end of the whole
+   * corridor and cut the section off there, which left the Perth postcard hanging 349px
+   * out of the corridor and across the section below it.
+   *
+   * The exit then carries on PAST the Perth node - `perthBottom` is measured, because the
+   * node holds an image and its height moves with the breakpoint - and off the right-hand
+   * edge of the viewBox. The SVG clips to its box, so the plane flies out through that
+   * edge and is gone rather than parking on the last pin. On the way it passes behind the
+   * postcard, which sits on a higher z-index, and reappears below it for the sweep out.
+   *
+   * The exit still descends. The plane's position comes from `lengthAtY`, a binary search
+   * over y, so a flat horizontal run-out would be invisible to it: every point on it
+   * shares one y, the search would return the first, and the plane would stop dead at the
+   * start of the run and never travel it.
+   */
+  const arrival = { x: xR, y: PERTH_ARRIVAL_Y };
+  const runOut = last.x === xR ? [{ x: xL, y: last.y + 155 }, arrival] : [arrival];
+  const exit = { x: W + 190, y: perthBottom + EXIT_DROP };
   const points = [{ x: xM, y: startY }, ...stops, ...runOut];
 
   let path = `M ${points[0].x} ${points[0].y}`;
@@ -64,6 +95,13 @@ function getFlightGeometry(W: number) {
     }
   }
 
+  {
+    const p0 = points[points.length - 1];
+    const dx = exit.x - p0.x;
+    const dy = exit.y - p0.y;
+    path += ` C ${p0.x} ${Math.round(p0.y + dy * 0.62)}, ${Math.round(exit.x - dx * 0.42)} ${exit.y}, ${exit.x} ${exit.y}`;
+  }
+
   const pins = [
     { cx: xM, cy: startY, r: isMobile ? 6.5 : 9, fill: "#AF1411" },
     ...stops.map((s, i) => ({
@@ -80,7 +118,26 @@ function getFlightGeometry(W: number) {
     },
   ];
 
-  return { path, pins };
+  // `endY` goes out with the path because the corridor has to be at least this tall.
+  // The plane's position is `lengthAtY(progress * corridorHeight)`, so a corridor that
+  // stops short of the path simply never asks for the last stretch of it — which is
+  // what left the plane stranded mid-exit on mobile while the line ran on without it.
+  return { path, pins, endY: exit.y };
+}
+
+/**
+ * The corridor's height, which the viewBox, the corridor box and the SVG box must all
+ * agree on exactly - `preserveAspectRatio="xMidYMid meet"` silently rescales and
+ * re-centres the whole path the moment they disagree, and the line stops meeting the
+ * cards.
+ *
+ * Derived from the path's own exit rather than written down. It used to be a hardcoded
+ * 2230 in THREE stylesheet places against one constant here, and the `max-width: 768px`
+ * copy went stale the moment the desktop value moved. It is now set inline from this, so
+ * they cannot drift.
+ */
+function corridorHeightFor(W: number, perthBottom: number) {
+  return getFlightGeometry(W, perthBottom).endY + CORRIDOR_TAIL;
 }
 
 function MilestonePlate({ plate, side }: { plate: Milestone["plate"]; side: "left" | "right" }) {
@@ -168,23 +225,43 @@ export default function JourneyTimeline() {
   const bodyRefs = useRef<(HTMLDivElement | null)[]>([]);
 
   const [corridorWidth, setCorridorWidth] = useState(1000);
+  /** Bottom of the Perth arrival node, in corridor pixels. */
+  const [perthBottom, setPerthBottom] = useState(PERTH_ARRIVAL_Y + PERTH_NODE_HEIGHT);
 
   useEffect(() => {
     const corridor = corridorRef.current;
     if (!corridor) return;
 
+    const perth = corridor.querySelector<HTMLElement>(".corridor-node--perth");
+
     function handleResize() {
-      if (corridor) {
-        setCorridorWidth(corridor.clientWidth || 1000);
+      if (!corridor) return;
+      setCorridorWidth(corridor.clientWidth || 1000);
+
+      // The Perth node is absolutely positioned at a fixed `top`, so its bottom does not
+      // depend on the corridor's height and measuring it here cannot feed back into
+      // itself. It has to be measured rather than assumed: it holds an image, so its
+      // height moves with the breakpoint and with what the image resolves to.
+      if (perth) {
+        const bottom = perth.offsetTop + perth.offsetHeight;
+        if (bottom > 0) setPerthBottom(bottom);
       }
     }
 
     handleResize();
     window.addEventListener("resize", handleResize);
-    return () => window.removeEventListener("resize", handleResize);
+
+    // the node's image lands after first paint and changes its height
+    const ro = new ResizeObserver(handleResize);
+    if (perth) ro.observe(perth);
+
+    return () => {
+      window.removeEventListener("resize", handleResize);
+      ro.disconnect();
+    };
   }, []);
 
-  const flightGeometry = getFlightGeometry(corridorWidth);
+  const flightGeometry = getFlightGeometry(corridorWidth, perthBottom);
 
   useEffect(() => {
     const corridor = corridorRef.current;
@@ -281,7 +358,7 @@ export default function JourneyTimeline() {
       // one SVG unit == one corridor pixel, so the scrolled-to y in corridor
       // space is simply p * height — the plane then always sits level with
       // whichever card is currently on screen.
-      const currentDist = lengthAtY(p * CORRIDOR_HEIGHT);
+      const currentDist = lengthAtY(p * corridorHeightFor(corridorWidth, perthBottom));
       routeProgress!.style.strokeDashoffset = `${routeLen - currentDist}`;
 
       if (routeGhostRef.current) {
@@ -336,11 +413,15 @@ export default function JourneyTimeline() {
       window.removeEventListener("resize", onResize);
       cancelAnimationFrame(raf);
     };
-  }, [corridorWidth]);
+  }, [corridorWidth, perthBottom]);
+
+  const corridorHeight = corridorHeightFor(corridorWidth, perthBottom);
 
   return (
     <section id="journey" className="journey-flow">
-      <div className="flight-corridor" ref={corridorRef}>
+      {/* height inline on both the corridor and the SVG, so the two boxes and the
+          viewBox below can never drift apart */}
+      <div className="flight-corridor" ref={corridorRef} style={{ minHeight: corridorHeight }}>
         {/* 1. Mumbai departure, 1890 */}
         <div className="corridor-node corridor-node--mumbai" ref={nodeMumbaiRef}>
           <div className="node-badge">
@@ -359,7 +440,8 @@ export default function JourneyTimeline() {
         {/* 2. flight string with the 5-milestone S-curve */}
         <svg
           className="flight-svg"
-          viewBox={`0 0 ${corridorWidth} ${CORRIDOR_HEIGHT}`}
+          viewBox={`0 0 ${corridorWidth} ${corridorHeight}`}
+          style={{ height: corridorHeight }}
           preserveAspectRatio="xMidYMid meet"
           aria-label="Flight line from Mumbai to Perth"
         >

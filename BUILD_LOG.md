@@ -1,3 +1,80 @@
+## 2026-09-08 - The flight path exits the frame, and the tail padding comes off
+
+Two things asked for on the journey timeline: the line should carry on to the right after
+the Perth image and let the plane fly out, and the empty run of page after it should go.
+
+### The exit
+
+The path used to stop at `x = W - cardWidth` - inside the frame - so the plane arrived at
+the last pin and parked there. It now continues past the Perth node and off the
+right-hand edge of the viewBox, and `.flight-svg` is `overflow: hidden` (it was
+`visible`), so the plane flies out through that edge and is gone.
+
+This is the same technique the live site uses, which the client pointed at as the
+reference. Checked against it: `mumbaidabbawala.com.au` runs its `#run-path` to
+`x = 1929` inside a `0 0 1728 2400` viewBox - **201 units past the edge** - with
+`overflow: hidden` on the SVG. Ours goes 190 units past. Same idea, same magnitude.
+
+The exit descends rather than running flat, and it has to: the plane's position is
+`lengthAtY(progress x corridorHeight)`, a binary search over y. Every point on a
+horizontal run shares one y, so the search would return the first of them and the plane
+would stop dead at the start of the run and never travel it.
+
+### The regression in the middle of this, and what caused it
+
+The first attempt read the path's old end - `y = 1674` - as the end of the whole thing
+and cut the corridor down to 1800. **1674 is where `.corridor-node--perth` starts.** That
+node is the Perth arrival postcard, absolutely positioned at `top: 1674px` and ~423px
+tall, and the 2230 corridor was not dead space at all - it was holding it. Cutting the
+corridor left the Perth postcard hanging **349px outside it and across the section
+below**, which is what the client saw.
+
+The measurement that missed it only queried `.timeline-postcard`. The Perth arrival is a
+`.corridor-node`, like Mumbai, so it was not in the set. The check now sweeps
+`.timeline-postcard, .corridor-node` and compares against both the corridor's bottom and
+the next section's top.
+
+### The corridor's height is now derived, not written down
+
+It used to be a hardcoded 2230 in **three** stylesheet places - the base
+`.flight-corridor`, the `max-width: 768px` override, and `.flight-svg { height }` -
+against one constant in the component. The mobile copy went stale the instant the desktop
+value moved, which is exactly the drift the comment in `globals.css` warned about, and it
+stranded the plane mid-exit on mobile because the corridor stopped short of the path.
+
+Now the component computes it from the path's own exit and sets it inline on both boxes,
+and the stylesheet holds no height at all. The Perth node is **measured** (`offsetTop +
+offsetHeight`, with a `ResizeObserver` because its image lands after first paint) rather
+than assumed - it is 423px at desktop and 268px on mobile, so a single constant could
+never have served both.
+
+### The padding
+
+`.journey-flow`'s tail padding went from `--space-phi-6` to `--space-phi-3` (89 -> 21),
+and from `--space-phi-7` to `--space-phi-4` (144 -> 34) from 640px up. Together with the
+tighter corridor the section is **2463 -> 2322** at desktop and **2306 -> 2120** on
+mobile.
+
+### Verified, five widths
+
+| width | corridor | viewBox agrees | Perth node bottom | spill out of corridor | clear of next section | exits right |
+|---|---|---|---|---|---|---|
+| 1920 | 2199 | yes | 2097 | none (76px inside) | 110px | yes |
+| 1440 | 2199 | yes | 2097 | none | 110px | yes |
+| 1024 | 2199 | yes | 2097 | none | 110px | yes |
+| 820 | 2199 | yes | 2097 | none | 110px | yes |
+| 390 | 2044 | yes | 1942 | none (75px inside) | 96px | yes |
+
+**No overlap at any width.** The plane's own travel reads 220 -> 770 (the Perth arrival at
+y 1674) -> **1230**, past the 1040 viewBox edge, by 95% of the track.
+
+**Not seen, only measured:** the exit as motion. The preview pane serves no
+`requestAnimationFrame` frames, and the plane's position is smoothed through a rAF tick,
+so the in-between positions cannot be sampled here and the deep-page screenshots come
+back blank. Endpoints and geometry are confirmed; the sweep itself wants a real browser.
+
+eslint + `tsc --noEmit` clean, production build passes.
+
 ## 2026-09-08 - Buttons drop the gradients: flat colour on both sides
 
 The client did not want the gradients at all, and named the two pairs: cream hovers to
