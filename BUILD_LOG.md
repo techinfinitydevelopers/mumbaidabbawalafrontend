@@ -1,3 +1,57 @@
+## 2026-09-08 - The flight leaves through the postcard's right-hand side
+
+Third attempt at this, and the first that does what was asked. The client marked a
+screenshot showing the line carrying on rightward across the card at about its upper
+third and leaving through the right side.
+
+I misread that mark as a rendering bug and spent a round telling them it was a stale
+build instead of looking at it properly. It was an annotation.
+
+### What was actually blocking it
+
+The postcard's right edge sits **~9px from the corridor's own edge**. There was no canvas
+to the right of it, so every attempt had to route around the card instead of past it:
+diving to `perthBottom + 62` crossed it diagonally and surfaced over the caption, and
+clearing it above `cardTop` never reached the right-hand side at all.
+
+The fix is to make the canvas wider, not to move the line. **The SVG now borrows the
+gutter** - the space between the 1040px corridor and the section's edge - by widening its
+box and its viewBox together by the same amount. One SVG unit stays one corridor pixel, so
+the path still meets the cards; `left: 0` is unchanged, so all the extra width lands on the
+right, which is where the flight needs it. Capped at `MAX_GUTTER` 260.
+
+The exit then crosses the card at `EXIT_CARD_FRACTION` (0.38) of its measured height, runs
+out through its right edge into the gutter, and overshoots the drawable edge by 40 so the
+SVG's `overflow: hidden` takes the plane away. It passes *behind* the postcard on the way,
+which is already how the line relates to every other card here (line z-index 1, cards 3
+and 5).
+
+The card's full box is measured now, not just its top - its offset inside the node moves
+with how the badge wraps, and its height moves with the image.
+
+### Verified, five widths
+
+| viewport | corridor | gutter borrowed | boxes agree | past the card's right edge | exits drawable edge | crosses at |
+|---|---|---|---|---|---|---|
+| 1920 | 1040 | 260 | yes | yes, at (1033, 1793) | yes | 0.25 |
+| 1440 | 1040 | 193 | yes | yes, at (1049, 1801) | yes | 0.39 |
+| 1000 | 961 | 12 | yes | yes, at (951, 1815) | yes | 0.25 |
+| 830 | 791 | 12 | yes | yes, at (785, 1814) | yes | 0.25 |
+| 390 | 366 | 12 | yes | yes, at (372, 1761) | yes | 0.39 |
+
+Sampled 801 points along the path each time. Below ~1050px the gutter is only 12px, so the
+run to the right of the card is short before it clips - there is no space there to borrow,
+and at those widths the section edge *is* the viewport edge.
+
+### Verification honesty
+
+This is measured, not seen. The preview pane would not paint the isolated Perth area on
+any of several attempts, and the plane's position is smoothed through a `requestAnimationFrame`
+tick which the pane never runs. Geometry, boxes and the path/card intersection are all
+confirmed numerically; the sweep itself still wants a real browser.
+
+eslint + `tsc --noEmit` clean, production build passes.
+
 ## 2026-09-08 - The flight leaves above the Perth postcard, not through it
 
 The exit was crossing the postcard. It swept from the touchdown pin down to the

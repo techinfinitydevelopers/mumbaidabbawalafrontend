@@ -18,17 +18,23 @@ const PERTH_ARRIVAL_Y = 1674;
 const PERTH_NODE_HEIGHT = 404;
 
 /**
- * How far below the arrival pin the path sweeps out of frame, and the gap it keeps above
- * the Perth postcard.
+ * Where the exit crosses the Perth postcard, as a fraction of the card's own height.
  *
- * The exit leaves ABOVE the postcard, not under it. Going under meant crossing the card
- * diagonally - the card spans x 581..1031 of a 1040-wide corridor, so any descent on the
- * right-hand side runs straight through it, and the plane came out over the caption.
- * There is no route down its right-hand side either: its right edge sits ~9px from the
- * corridor's own edge.
+ * The flight leaves through the card's RIGHT-HAND side, at about its upper third - it
+ * passes behind the postcard (the line is z-index 1, the cards are 3 and 5) and comes out
+ * at its right edge to carry on into the gutter and off the frame.
+ *
+ * Two earlier attempts were wrong in opposite directions: diving to `perthBottom + 62`
+ * crossed the card diagonally and surfaced over the caption, and clearing it entirely
+ * above `cardTop` never reached the right-hand side at all.
  */
-const EXIT_DROP = 60;
-const EXIT_CARD_GAP = 14;
+const EXIT_CARD_FRACTION = 0.38;
+
+/** How far past the drawable edge the path runs, so the plane leaves the frame. */
+const EXIT_OVERSHOOT = 40;
+
+/** Most gutter the SVG will borrow on each side of the corridor. */
+const MAX_GUTTER = 260;
 
 /** Air below the point where the flight path leaves the frame. */
 const CORRIDOR_TAIL = 40;
@@ -48,7 +54,7 @@ const PIN_OFFSET = 154;
  * mismatch here (pin on one side, card on the other) is what made the plane
  * and the cards look disconnected from the line.
  */
-function getFlightGeometry(W: number, perthBottom: number, perthCardTop: number) {
+function getFlightGeometry(W: number, gutter: number, card: { top: number; bottom: number }) {
   const isMobile = W < 768;
   const cardWidth = isMobile ? Math.min(168, Math.round(W * 0.44)) : clamp(Math.round(W * 0.26), 65, 300);
   const xL = cardWidth;
@@ -84,10 +90,19 @@ function getFlightGeometry(W: number, perthBottom: number, perthCardTop: number)
    */
   const arrival = { x: xR, y: PERTH_ARRIVAL_Y };
   const runOut = last.x === xR ? [{ x: xL, y: last.y + 155 }, arrival] : [arrival];
-  // as far down as the drop allows, but never into the postcard
+
+  /**
+   * The exit runs out through the card's right-hand side.
+   *
+   * `gutter` is the measured space between the corridor and the section's edge, and the
+   * SVG borrows it so there is real canvas to the right of the postcard - the card's own
+   * right edge is only ~9px from the corridor's, which is why the line had nowhere to go
+   * before. `EXIT_OVERSHOOT` then takes it past that edge, where the SVG's
+   * `overflow: hidden` clips it and the plane is gone.
+   */
   const exit = {
-    x: W + 190,
-    y: Math.min(arrival.y + EXIT_DROP, perthCardTop - EXIT_CARD_GAP),
+    x: W + gutter + EXIT_OVERSHOOT,
+    y: Math.round(card.top + (card.bottom - card.top) * EXIT_CARD_FRACTION),
   };
   const points = [{ x: xM, y: startY }, ...stops, ...runOut];
 
@@ -150,10 +165,15 @@ function getFlightGeometry(W: number, perthBottom: number, perthCardTop: number)
  * copy went stale the moment the desktop value moved. It is now set inline from this, so
  * they cannot drift.
  */
-function corridorHeightFor(W: number, perthBottom: number, perthCardTop: number) {
-  // whichever runs deeper: the flight's exit, or the Perth node itself. The exit sits
-  // above the postcard now, so it is the node that sets the height.
-  const endY = getFlightGeometry(W, perthBottom, perthCardTop).endY;
+function corridorHeightFor(
+  W: number,
+  gutter: number,
+  card: { top: number; bottom: number },
+  perthBottom: number,
+) {
+  // whichever runs deeper: the flight's exit, or the Perth node itself. The exit crosses
+  // the card's upper third, so it is the node that sets the height.
+  const endY = getFlightGeometry(W, gutter, card).endY;
   return Math.max(endY, perthBottom) + CORRIDOR_TAIL;
 }
 
@@ -244,8 +264,14 @@ export default function JourneyTimeline() {
   const [corridorWidth, setCorridorWidth] = useState(1000);
   /** Bottom of the Perth arrival node, in corridor pixels. */
   const [perthBottom, setPerthBottom] = useState(PERTH_ARRIVAL_Y + PERTH_NODE_HEIGHT);
-  /** Top of the Perth postcard, which the flight has to clear on its way out. */
-  const [perthCardTop, setPerthCardTop] = useState(PERTH_ARRIVAL_Y + 73);
+  /** The Perth postcard's box, which the exit crosses on its way out to the right. */
+  const [card, setCard] = useState({ top: PERTH_ARRIVAL_Y + 73, bottom: PERTH_ARRIVAL_Y + 358 });
+  /**
+   * Space between the corridor and the section's edge, which the SVG borrows so the
+   * flight has somewhere to go to the right of the postcard. Zero on narrow screens,
+   * where the corridor already fills the section and the frame edge is the viewport's.
+   */
+  const [gutter, setGutter] = useState(0);
 
   useEffect(() => {
     const corridor = corridorRef.current;
@@ -261,16 +287,22 @@ export default function JourneyTimeline() {
       // depend on the corridor's height and measuring it here cannot feed back into
       // itself. It has to be measured rather than assumed: it holds an image, so its
       // height moves with the breakpoint and with what the image resolves to.
+      const parentWidth = corridor.parentElement?.clientWidth ?? corridor.clientWidth;
+      setGutter(
+        Math.max(0, Math.min(MAX_GUTTER, Math.round((parentWidth - corridor.clientWidth) / 2))),
+      );
+
       if (perth) {
         const bottom = perth.offsetTop + perth.offsetHeight;
         if (bottom > 0) setPerthBottom(bottom);
 
-        // the postcard, so the exit can be kept above it at every breakpoint - its
-        // offset inside the node moves with the badge's wrapped height
-        const card = perth.querySelector<HTMLElement>(".tl-sticker");
-        if (card) {
-          const cardTop = perth.offsetTop + card.offsetTop;
-          if (cardTop > 0) setPerthCardTop(cardTop);
+        // the postcard's box, so the exit crosses it at the same relative height at every
+        // breakpoint - its offset inside the node moves with the badge's wrapped height,
+        // and its own height moves with the image
+        const sticker = perth.querySelector<HTMLElement>(".tl-sticker");
+        if (sticker && sticker.offsetHeight > 0) {
+          const top = perth.offsetTop + sticker.offsetTop;
+          setCard({ top, bottom: top + sticker.offsetHeight });
         }
       }
     }
@@ -288,7 +320,7 @@ export default function JourneyTimeline() {
     };
   }, []);
 
-  const flightGeometry = getFlightGeometry(corridorWidth, perthBottom, perthCardTop);
+  const flightGeometry = getFlightGeometry(corridorWidth, gutter, card);
 
   useEffect(() => {
     const corridor = corridorRef.current;
@@ -385,7 +417,7 @@ export default function JourneyTimeline() {
       // one SVG unit == one corridor pixel, so the scrolled-to y in corridor
       // space is simply p * height — the plane then always sits level with
       // whichever card is currently on screen.
-      const currentDist = lengthAtY(p * corridorHeightFor(corridorWidth, perthBottom, perthCardTop));
+      const currentDist = lengthAtY(p * corridorHeightFor(corridorWidth, gutter, card, perthBottom));
       routeProgress!.style.strokeDashoffset = `${routeLen - currentDist}`;
 
       if (routeGhostRef.current) {
@@ -440,9 +472,9 @@ export default function JourneyTimeline() {
       window.removeEventListener("resize", onResize);
       cancelAnimationFrame(raf);
     };
-  }, [corridorWidth, perthBottom, perthCardTop]);
+  }, [corridorWidth, gutter, card, perthBottom]);
 
-  const corridorHeight = corridorHeightFor(corridorWidth, perthBottom, perthCardTop);
+  const corridorHeight = corridorHeightFor(corridorWidth, gutter, card, perthBottom);
 
   return (
     <section id="journey" className="journey-flow">
@@ -467,8 +499,12 @@ export default function JourneyTimeline() {
         {/* 2. flight string with the 5-milestone S-curve */}
         <svg
           className="flight-svg"
-          viewBox={`0 0 ${corridorWidth} ${corridorHeight}`}
-          style={{ height: corridorHeight }}
+          // The box and the viewBox widen together by the gutter, so one SVG unit stays
+          // one corridor pixel and the path keeps meeting the cards. `left: 0` is
+          // unchanged, so the extra width is all on the right - which is where the flight
+          // needs it.
+          viewBox={`0 0 ${corridorWidth + gutter} ${corridorHeight}`}
+          style={{ height: corridorHeight, width: corridorWidth + gutter }}
           preserveAspectRatio="xMidYMid meet"
           aria-label="Flight line from Mumbai to Perth"
         >
