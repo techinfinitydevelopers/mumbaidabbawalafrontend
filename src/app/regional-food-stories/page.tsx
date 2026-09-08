@@ -82,26 +82,26 @@ export default function RegionalFoodStoriesPage() {
               z-indexes (4/3/2), which order them against each other and not against
               anything outside, so the `h2` needs its own.
 
-              The `pt` is arithmetic, not taste. The label block sits centred in the seal,
-              so its bottom lands about `top + 0.75 × size`; the padding has to clear that.
-              At `sm`: 12 + 0.75 × 108 = 93, and `pt-[102px]` leaves 9px under it. An
-              earlier pass had the seal 8px lower against a smaller `pt`, which put the
-              label's bottom 17px INSIDE the letters and swallowed "2026".
+              `left-[80%]` and `top-[42px]` are the client's own numbers, and from `sm` up
+              they land where they should: the seal sits past the end of "Taste All Five",
+              only its rim crossing the final letters, and its label clear of them by a few
+              pixels.
 
-              `left` is arithmetic too. The heading is centred, so the glyphs start at a
-              measured 23.3% of this box at `sm` and 13.7% on mobile, and the seal's own
-              half-width is 7.7% and 15.6% of it. Wanting the rim to cross the "T" by about
-              a third of the seal gives `centre = glyphStart − 0.4 × half`, and pulling it
-              further left from there lands on 17% and 7%. Most of the seal sits in the
-              clear space to the LEFT of the text rather than on top of it, with only its
-              rim crossing the "T".
+              Mobile cannot take the same `top`. The heading nearly fills the width there
+              (the first line spans 68..322 of a 350px box), so 80% falls INSIDE the text
+              rather than past it, and at `top-[42px]` all three of the seal's labels
+              measured 34px behind the letters — the "2026 disappeared" problem again. So
+              mobile keeps the seal just above the line instead: `top-[6px]` against
+              `pt-[112px]`, which clears it by 5px.
 
-              There is a floor on how far left it can go: at `sm` a centre of 15% puts the
-              seal's right edge 4px SHORT of the glyphs, and the overlap the whole effect
-              depends on disappears. */}
-          <div className="relative pt-[90px] sm:pt-[102px]">
+              Both numbers are arithmetic, not taste. A rotated square's box is bigger than
+              the square: at 92px and -12deg it measures 109px and hangs 8.5px past each
+              edge, so a `top` of 6 puts the rect's bottom at 106.5 and the padding has to
+              beat that. It is also why `getBoundingClientRect().top` reads 10px lower than
+              the `top` you set at `sm`. */}
+          <div className="relative pt-[112px] sm:pt-[102px]">
             <Starburst
-              className="absolute left-[7%] top-[10px] z-0 h-[92px] w-[92px] -translate-x-1/2 -rotate-12 sm:left-[17%] sm:top-[12px] sm:h-[108px] sm:w-[108px]"
+              className="absolute left-[80%] top-[6px] z-0 h-[92px] w-[92px] -translate-x-1/2 -rotate-12 sm:top-[42px] sm:h-[108px] sm:w-[108px]"
               fill="var(--color-brand-orange)"
             >
               <div>

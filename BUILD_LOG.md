@@ -1,3 +1,31 @@
+## 2026-09-08 - Seal to the client's own numbers: left 80%, top 42px
+
+Applied as given, and from `sm` up they land well: the seal sits past the end of "Taste
+All Five" with 41px of rim crossing the final letters, and all three of its labels clear
+of them.
+
+**Mobile could not take the same `top`, and this is worth recording.** The heading nearly
+fills the width there — its first line spans 68..322 of a 350px box — so 80% falls INSIDE
+the text rather than past it. At `top-[42px]` all three labels measured **34px behind the
+letters**: the "2026 disappeared" problem, back again. Mobile therefore keeps the seal just
+above the line: `top-[6px]` against `pt-[112px]`.
+
+Both figures are arithmetic. A rotated square's box is bigger than the square: at 92px and
+−12deg it measures 109px and hangs 8.5px past each edge, so `top: 6` puts the rect's bottom
+at 106.5 and the padding has to beat it. That is also why `getBoundingClientRect().top`
+reads 10px lower than the `top` you set at `sm` — the 108px seal's box is 128px tall. Worth
+knowing before assuming a `top` has not applied.
+
+### Verified
+
+| viewport | seal centre | `top` | rim over line 1 | any label covered | clipped | page overflow |
+|---|---|---|---|---|---|---|
+| 1440 | 80% | 42px | 41px | **no** | 0 | 0 |
+| 1024 | 80% | 42px | 41px | **no** | 0 | 0 |
+| 390 | 80% | 6px | 77px (rim only) | **no** | 0 | 0 |
+
+eslint clean, production build passes.
+
 ## 2026-09-08 - The seal moves left, into the space beside the "T"
 
 The client circled the clear area to the LEFT of the heading. The seal now sits mostly
