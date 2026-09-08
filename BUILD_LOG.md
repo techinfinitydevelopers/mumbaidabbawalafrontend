@@ -1,3 +1,83 @@
+## 2026-09-08 — Reviews rebuilt as a rotating deck, one screen, red cards
+
+Three changes to the home page, on the reference card the client sent.
+
+### The reviews are now an overlapping deck
+
+`ReviewDeck` replaces the three-column grid: three cards abreast, the middle one
+tilted `-6.5deg` and scaled `1.06` so it sits forward, the shoulders at `0.9` and
+`±2.5deg`. It cycles every **4.2s**, so each review takes its turn in the centre and
+gets the diagonal treatment — verified stepping 0 -> 1 -> 2 with the active dot
+following (Priya -> Arjun -> Meera).
+
+Built as a **single-cell CSS grid** with every card stacked in that one cell. That is
+what makes it work with no measuring: the cards are centred on each other, they all
+take the same height, and transforms don't affect layout, so the tilt and the scale
+can't reflow the page. Shoulder offset is one `--deck-x` custom property set
+responsively (60% / 70% / 78%), so one rule covers every breakpoint.
+
+Only `transform` and `opacity` animate — both stay on the compositor. `box-shadow`
+is deliberately **not** animated (it repaints every frame); one shadow value serves
+all three cards and `scale()` shrinks it on the shoulders for free, which is also
+what makes the centre card read as lifted.
+
+Controls: arrows plus dots, and the rotation pauses on hover and on `focus-within`
+so a review can't slide away mid-sentence. Verified held for 9.5s under hover — two
+missed advances — then resumed on leave. No autoplay under
+`prefers-reduced-motion: reduce`; the deck geometry and the arrows stay.
+
+Deck supports **more than three** reviews as asked: `offsetFrom` wraps the signed
+distance the shorter way round, and anything two or more slots out parks off to its
+side at `opacity: 0`, ready to slide in. The doc still only gives three.
+
+### Card colour — red panel in a white frame
+
+The client picked this from three options. The paper frame stays; the inner panel
+goes **brand-red** with the quote in **cream**, so the frame is the pale thing and
+the panel is the dark thing — the reference card's photo-in-a-polaroid relationship,
+and it carries at deck scale on a cream ground where cream-on-cream did not. The
+yellow star sticker and the orange footer dot are unchanged. Verified computed:
+frame `rgb(255,253,246)`, panel `rgb(175,20,17)`, quote `rgb(252,243,205)`.
+
+### The section now holds one screen
+
+`min-h-[100svh]` with `flex flex-col justify-center`, and everything that would push
+it over is capped against `svh` with `min()` — the width breakpoint picks the size it
+wants and a short viewport takes the smaller: heading `sm:text-[min(44px,5svh)]`,
+kicker `text-[min(30px,3.4svh)]`, quote `text-[min(20px,2.1svh)]`, panel padding
+`p-[min(21px,2.4svh)]`, deck padding `py-[min(48px,5.2svh)]`, card height
+`h-[clamp(230px,36svh,340px)]`.
+
+`pt-[88px]` is measured, not chosen. The header is fixed and 82px tall, floating over
+whatever is beneath it, so less than that puts the kicker behind the nav; more than
+that and the content box stops clearing the block at 768. `pt-24` (96px) was the
+first attempt and left the section **17px over** one screen at 768.
+
+Verified with the section snapped to the viewport top — section height exactly equal
+to the viewport at every size, nothing hidden:
+
+| viewport | section | under header | bottom room | all visible |
+|---|---|---|---|---|
+| 1366x768 | 768 | 11px | 51px | yes |
+| 1440x900 | 900 | 37px | 79px | yes |
+| 1920x1080 | 1080 | — | — | one screen |
+| 390x844 | 844 | 48px | 82px | yes |
+
+No quote overflows its panel at any of those sizes (`scrollHeight - clientHeight`
+is 0 on all three cards), and no horizontal overflow at 390. The card height is now
+**set** rather than driven by the copy, which is what guarantees the fit — a review
+much longer than the doc's would clip, so the panel carries `overflow-hidden`.
+
+### The hero's checkered print is gone
+
+The `graph-paper-light` overlay is removed from `HomeHero` — 0 grid layers left in
+the section, and the section itself never carried the class. The print belongs on
+flat brand grounds; ruled over moving footage it read as a grid sitting on the lens
+rather than as paper. The texture still returns on the cream section the wave hands
+down to. `grain` stays — that is fractal noise, not the checker.
+
+eslint + `tsc --noEmit` clean, production build passes.
+
 ## 2026-09-08 — Home page built, with the film in the hero
 
 Seven sections, in the content doc's own order for section 1 (Home Page):

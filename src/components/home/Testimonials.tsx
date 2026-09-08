@@ -1,32 +1,24 @@
 import Link from "next/link";
 import Reveal from "@/components/Reveal";
-import { TESTIMONIALS } from "@/data/home";
-
-/** Filled and empty stars, drawn rather than typed, so the rating renders as artwork. */
-function Rating({ stars }: { stars: number }) {
-  return (
-    <p className="flex gap-0.5" aria-label={`${stars} out of 5`}>
-      {Array.from({ length: 5 }, (_, i) => (
-        <svg
-          key={i}
-          width="15"
-          height="15"
-          viewBox="0 0 24 24"
-          aria-hidden="true"
-          className={i < stars ? "text-brand-orange" : "text-brand-red/20"}
-        >
-          <path
-            d="M12 2.6l2.9 6 6.6.9-4.8 4.6 1.2 6.5-5.9-3.2-5.9 3.2 1.2-6.5L2.5 9.5l6.6-.9 2.9-6Z"
-            fill="currentColor"
-          />
-        </svg>
-      ))}
-    </p>
-  );
-}
+import ReviewDeck from "@/components/home/ReviewDeck";
 
 /**
  * "WHAT OUR CUSTOMERS SAY — Taste. Home. Reliability. In Their Words."
+ *
+ * Heading and CTA are server-rendered; the reviews themselves are a client deck
+ * (`ReviewDeck`) because they rotate.
+ *
+ * The section is built to hold one screen, so the heading, the deck, its controls and the
+ * CTA are all visible together without scrolling. "One screen" has to be true at every
+ * height, not just at 1080, so the pieces that would otherwise push it over are capped
+ * against `svh` with `min()` — the width breakpoint picks the size it wants, and short
+ * viewports take the smaller of the two.
+ *
+ * The 88px top padding is measured, not chosen: the fixed header is 82px tall and floats
+ * over whatever is under it, so anything less puts the script kicker behind the nav. It
+ * also has to stay small enough that the content box still clears the tallest content at
+ * 768 — with `pb-12` that leaves 632px against a 625px block, so the section is exactly
+ * one screen there rather than 17px over it.
  *
  * Quote, rating and attribution are the doc's. The doc's "✅ Verified Customer" tick is
  * not printed: it asserts that each review has been verified, which is a claim the site
@@ -36,19 +28,21 @@ function Rating({ stars }: { stars: number }) {
  */
 export default function Testimonials() {
   return (
-    <section className="grain graph-paper relative overflow-hidden bg-brand-cream pb-phi-6 pt-phi-6">
-      <div className="relative mx-auto max-w-[1720px] px-5 sm:px-8 lg:px-12">
+    <section className="grain graph-paper relative flex min-h-[100svh] flex-col justify-center overflow-hidden bg-brand-cream pb-12 pt-[88px]">
+      <div className="relative mx-auto w-full max-w-[1720px] px-5 sm:px-8 lg:px-12">
         <Reveal className="mx-auto max-w-3xl text-center">
-          <p className="font-script text-3xl text-brand-orange">What our customers say</p>
-          <h2 className="poster-stack mx-auto mt-3 [--po:4px] [--po-gap:12px] sm:[--po:5px] sm:[--po-gap:18px]">
+          <p className="font-script text-[min(30px,3.4svh)] text-brand-orange">
+            What our customers say
+          </p>
+          <h2 className="poster-stack mx-auto mt-3 [--po:4px] [--po-gap:12px] sm:[--po:5px]">
             <span
-              className="poster text-[26px] text-brand-red sm:text-[44px]"
+              className="poster text-[26px] text-brand-red sm:text-[min(44px,5svh)]"
               style={{ ["--po-color" as string]: "var(--color-brand-yellow)" }}
             >
               Taste. Home. Reliability.
             </span>
             <span
-              className="poster text-[26px] text-brand-green-dark sm:text-[44px]"
+              className="poster text-[26px] text-brand-green-dark sm:text-[min(44px,5svh)]"
               style={{ ["--po-color" as string]: "var(--color-brand-yellow)" }}
             >
               In Their Words.
@@ -56,32 +50,11 @@ export default function Testimonials() {
           </h2>
         </Reveal>
 
-        <div className="mt-phi-5 grid gap-4 md:grid-cols-3">
-          {TESTIMONIALS.map((review, i) => (
-            <Reveal key={review.name} delay={i * 80}>
-              <figure className="flex h-full flex-col rounded-[28px] border border-brand-red/12 bg-paper p-phi-3 shadow-[0_8px_26px_-20px_rgba(42,24,16,0.28)] transition-transform duration-500 hover:-translate-y-1.5 sm:p-phi-4">
-                <Rating stars={review.stars} />
+        <Reveal delay={90} className="mt-phi-2">
+          <ReviewDeck />
+        </Reveal>
 
-                <blockquote className="mt-phi-3 flex-1">
-                  <p className="font-display text-phi-3 font-bold leading-snug text-ink">
-                    &ldquo;{review.text}&rdquo;
-                  </p>
-                </blockquote>
-
-                <figcaption className="mt-phi-3 border-t border-brand-red/10 pt-phi-2">
-                  <span className="block text-phi-1 font-bold uppercase tracking-[0.14em] text-brand-red">
-                    {review.name}
-                  </span>
-                  <span className="block text-phi-0 font-bold uppercase tracking-[0.16em] text-ink/45">
-                    {review.suburb}
-                  </span>
-                </figcaption>
-              </figure>
-            </Reveal>
-          ))}
-        </div>
-
-        <Reveal delay={140} className="mt-phi-5 text-center">
+        <Reveal delay={140} className="mt-phi-3 text-center">
           <Link
             href="/contact"
             className="inline-flex items-center gap-2 rounded-full bg-brand-red px-7 py-3.5 text-[11px] font-bold uppercase tracking-[0.18em] text-brand-cream transition-transform duration-300 hover:-translate-y-0.5"

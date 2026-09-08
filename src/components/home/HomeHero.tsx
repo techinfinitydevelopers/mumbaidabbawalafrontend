@@ -15,8 +15,11 @@ import Starburst from "@/components/poster/Starburst";
  * Over film, the type has to be the bright thing rather than the dark thing, so the
  * headline runs cream/yellow on an ink scrim instead of red/green on cream. The scrim is
  * weighted to the copy side and thins out over the right, so the footage stays visible
- * where nothing sits on top of it. The graph print is laid over the whole thing in the
- * cream variant, so the page still opens on the house texture.
+ * where nothing sits on top of it.
+ *
+ * No graph print here, deliberately: the print belongs on flat brand grounds, and ruled
+ * over moving footage it reads as a grid sitting on the lens rather than as paper. The
+ * texture returns on the cream section the wave hands down to.
  */
 export default function HomeHero() {
   return (
@@ -44,8 +47,6 @@ export default function HomeHero() {
             "linear-gradient(96deg, rgba(42,24,16,0.95) 0%, rgba(42,24,16,0.88) 38%, rgba(42,24,16,0.42) 66%, rgba(42,24,16,0.08) 100%)",
         }}
       />
-      <div aria-hidden="true" className="graph-paper-light absolute inset-0 z-10" />
-
       <div className="relative z-20 mx-auto w-full max-w-[1720px] px-5 sm:px-8 lg:px-12 2xl:px-16">
         <div className="max-w-[54rem]">
           <span className="rise inline-block rounded-full bg-brand-green-dark px-3 py-1 text-[9px] font-bold uppercase tracking-[0.2em] text-brand-cream sm:px-4 sm:py-1.5 sm:text-[10px] sm:tracking-[0.22em]">
