@@ -86,10 +86,22 @@ export default function RegionalFoodStoriesPage() {
               so its bottom lands about `top + 0.75 × size`; the padding has to clear that.
               At `sm`: 12 + 0.75 × 108 = 93, and `pt-[102px]` leaves 9px under it. An
               earlier pass had the seal 8px lower against a smaller `pt`, which put the
-              label's bottom 17px INSIDE the letters and swallowed "2026". */}
+              label's bottom 17px INSIDE the letters and swallowed "2026".
+
+              `left` is arithmetic too. The heading is centred, so the glyphs start at a
+              measured 23.3% of this box at `sm` and 13.7% on mobile, and the seal's own
+              half-width is 7.7% and 15.6% of it. Wanting the rim to cross the "T" by about
+              a third of the seal gives `centre = glyphStart − 0.4 × half`, and pulling it
+              further left from there lands on 17% and 7%. Most of the seal sits in the
+              clear space to the LEFT of the text rather than on top of it, with only its
+              rim crossing the "T".
+
+              There is a floor on how far left it can go: at `sm` a centre of 15% puts the
+              seal's right edge 4px SHORT of the glyphs, and the overlap the whole effect
+              depends on disappears. */}
           <div className="relative pt-[90px] sm:pt-[102px]">
             <Starburst
-              className="absolute left-[26%] top-[10px] z-0 h-[92px] w-[92px] -translate-x-1/2 -rotate-12 sm:left-[31%] sm:top-[12px] sm:h-[108px] sm:w-[108px]"
+              className="absolute left-[7%] top-[10px] z-0 h-[92px] w-[92px] -translate-x-1/2 -rotate-12 sm:left-[17%] sm:top-[12px] sm:h-[108px] sm:w-[108px]"
               fill="var(--color-brand-orange)"
             >
               <div>

@@ -1,3 +1,36 @@
+## 2026-09-08 - The seal moves left, into the space beside the "T"
+
+The client circled the clear area to the LEFT of the heading. The seal now sits mostly
+there, with only its rim crossing the "T", instead of sitting on top of "TA".
+
+`left` is arithmetic, the same as the vertical was. The heading is centred, so the glyphs
+start at a **measured** 23.3% of the seal's positioning box at `sm` and 13.7% on mobile,
+and the seal's own half-width is 7.7% and 15.6% of that box. Wanting the rim to cross the
+"T" gives `centre = glyphStart − 0.4 × half`, then pulled further left on the client's
+follow-up: **17%** and **7%**.
+
+**There is a floor on how far left it can go.** At `sm` a centre of 15% puts the seal's
+right edge 4px SHORT of the glyphs and the overlap the whole effect depends on disappears.
+17% is close to that edge deliberately.
+
+### Verified at both ends
+
+| viewport | rim over the text | seal clipped at the left | "2026" gap to the glyphs | any label over the text |
+|---|---|---|---|---|
+| 1440 | 20px | 0 | 21.7px | no |
+| 390 | 31px | 10px | 3.2px | no |
+
+The 10px clipped at 390 is the seal bleeding off the screen edge, which is fine; the page
+itself has no horizontal overflow.
+
+**A note on the check that cried wolf.** A first pass compared only the vertical extents
+of the label and the text and reported "2026" as covered by 11px. It is not: once the seal
+moved left, the label and the glyphs no longer share any horizontal range, so they cannot
+overlap at all. An intersection has to be tested on **both** axes — the corrected check
+reports every label clear of the text box at both breakpoints.
+
+eslint clean, production build passes.
+
 ## 2026-09-08 - The seal's "2026" comes back out from under the letters
 
 The tuck was too deep: the seal's label block sits centred in the seal, so its bottom
