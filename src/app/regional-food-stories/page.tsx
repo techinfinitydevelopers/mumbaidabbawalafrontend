@@ -66,7 +66,12 @@ export default function RegionalFoodStoriesPage() {
 
       {/* ───── Closing CTA, styled after the "SOME TRADITIONS TRAVEL WELL" poster ───── */}
       <section className="grain graph-paper-light relative overflow-hidden bg-brand-red pb-phi-5 pt-phi-7 sm:pt-phi-8 sm:pb-phi-5">
-        <WaveDivider tone="bg-paper" />
+        {/* untextured: the section above is plain `bg-paper` with no print, so carrying
+            the grid through the curve put an isolated patch of it inside the 150px band
+            and drew a hard horizontal edge along the band's top. `WaveDivider`'s own doc
+            warns about exactly this - textured is only right when the section above is
+            printed too. */}
+        <WaveDivider tone="bg-paper" textured={false} />
 
         <Reveal className="relative z-20 mx-auto max-w-3xl px-5 text-center sm:px-8">
           {/* the seal sits just above the word "Taste", not floating centred over the block */}

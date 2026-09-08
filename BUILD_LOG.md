@@ -1,3 +1,25 @@
+## 2026-09-08 - Checkered print off the Regional Food Stories wave
+
+The grid was showing on the paper above the red closing band, with a hard horizontal edge
+where it started. That edge is the tell: the print was confined to the wave band.
+
+`<WaveDivider tone="bg-paper" />` was textured while the section above it is plain
+`bg-paper` with **no print at all** (`backgroundImage: none`, confirmed on the live node).
+Carrying the grid through the curve therefore put an isolated 150px patch of it inside the
+band and ruled a line along the band's own top edge. `WaveDivider`'s own doc warns about
+this case - textured is only correct when the section above is printed too. Now
+`textured={false}`.
+
+Verified: the band computes `background-image: none` on flat `bg-paper` with its clip path
+intact, and the paper strip above the curve renders clean.
+
+**Left alone on purpose:** the wave on `/whats-cooking-tomorrow`, which is still textured.
+There the section above IS a printed `bg-brand-cream`, so the grid runs continuously
+through the curve - which is the behaviour asked for earlier ("continuous rakho"), not a
+patch. Say the word if that one should go flat too.
+
+eslint clean, production build passes.
+
 ## 2026-09-08 - Exit dropped lower on the postcard
 
 `EXIT_CARD_FRACTION` 0.38 -> **0.58**, on the client's note to take the line a bit lower.
