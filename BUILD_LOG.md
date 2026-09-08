@@ -1,3 +1,32 @@
+## 2026-09-08 - Button hovers run to red, not yellow
+
+The client pointed at the hero's secondary button mid-hover - cream running to yellow -
+and asked for red there instead. Applied wherever yellow was the destination:
+
+| variant | reveal was | reveal now | label |
+|---|---|---|---|
+| `cream` | cream -> yellow | **red -> orange** | red at rest, cream on hover |
+| `orange` | orange -> yellow | **orange -> red** | cream throughout |
+| `outlineCream` | cream -> yellow (sweep) | **cream -> paper** | unchanged |
+
+The `cream` change turns that button into a clean inversion: cream with red type at rest,
+red with cream type under the cursor. The `orange` change also drops a wart - its reveal
+ran into yellow, which forced the label to flip to ink halfway to stay legible; running
+to red keeps it cream the whole way.
+
+`outlineCream` sits on the brand-red bands, so its sweep has to stay pale - red there
+would vanish into the ground behind it. Its yellow half became paper.
+
+**One yellow stays on purpose:** the `yellow` variant, which exists for those same red
+bands. A red button on a red section is invisible. Its own reveal runs yellow -> cream, so
+there was no yellow-against-red to swap. Noted in the stylesheet next to it.
+
+Verified by hovering for real: the `cream` button's panel sweeps to `+244px`, the box
+underneath reads `linear-gradient(to right, rgb(175,20,17), rgb(243,98,32))` and the label
+computes to `rgb(252,243,205)`. No yellow anywhere in the frame.
+
+eslint clean, production build passes.
+
 ## 2026-09-08 - One button for the whole site, at a 15px radius
 
 The client picked a Uiverse button (uiverse.io, by adamgiebl) and asked for every button

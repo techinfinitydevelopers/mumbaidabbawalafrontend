@@ -663,12 +663,15 @@ h1, h2, h3, h4 {
 
 .btn-orange {
   --btn-rest: var(--color-brand-orange);
-  --btn-reveal: linear-gradient(to right, var(--color-brand-orange), var(--color-brand-yellow));
+  --btn-reveal: linear-gradient(to right, var(--color-brand-orange), var(--color-brand-red));
   --btn-text: var(--color-brand-cream);
-  --btn-text-hover: var(--color-ink);
+  --btn-text-hover: var(--color-brand-cream);
   box-shadow: 0 12px 24px -16px rgba(243, 98, 32, 0.9);
 }
 
+/* The one variant that stays yellow: it exists for the brand-red bands, where a red
+   button would disappear into the ground. Its reveal runs yellow -> cream, so there is no
+   yellow-against-red to swap out. */
 .btn-yellow {
   --btn-rest: var(--color-brand-yellow);
   --btn-reveal: linear-gradient(to right, var(--color-brand-yellow), var(--color-brand-cream));
@@ -680,9 +683,9 @@ h1, h2, h3, h4 {
 
 .btn-cream {
   --btn-rest: var(--color-brand-cream);
-  --btn-reveal: linear-gradient(to right, var(--color-brand-cream), var(--color-brand-yellow));
+  --btn-reveal: linear-gradient(to right, var(--color-brand-red), var(--color-brand-orange));
   --btn-text: var(--color-brand-red);
-  --btn-text-hover: var(--color-brand-red);
+  --btn-text-hover: var(--color-brand-cream);
   --btn-ring: var(--color-brand-cream);
   box-shadow: 0 12px 24px -16px rgba(0, 0, 0, 0.55);
 }
@@ -705,7 +708,7 @@ h1, h2, h3, h4 {
 }
 
 .btn-outline-cream {
-  --btn-rest: linear-gradient(to right, var(--color-brand-cream), var(--color-brand-yellow));
+  --btn-rest: linear-gradient(to right, var(--color-brand-cream), var(--color-paper));
   --btn-reveal: transparent;
   --btn-text: var(--color-brand-cream);
   --btn-text-hover: var(--color-brand-red);
