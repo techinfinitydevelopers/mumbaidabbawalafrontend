@@ -653,9 +653,11 @@ h1, h2, h3, h4 {
 }
 
 /* Filled variants -------------------------------------------------------- */
+/* Flat colour on both sides - no gradients. Each variant is one colour at rest and one
+   under the cursor, and the label colour follows. */
 .btn-red {
   --btn-rest: var(--color-brand-red);
-  --btn-reveal: linear-gradient(to right, var(--color-brand-red), var(--color-brand-orange));
+  --btn-reveal: var(--color-brand-orange);
   --btn-text: var(--color-brand-cream);
   --btn-text-hover: var(--color-brand-cream);
   box-shadow: 0 12px 24px -16px rgba(175, 20, 17, 0.85);
@@ -663,18 +665,17 @@ h1, h2, h3, h4 {
 
 .btn-orange {
   --btn-rest: var(--color-brand-orange);
-  --btn-reveal: linear-gradient(to right, var(--color-brand-orange), var(--color-brand-red));
+  --btn-reveal: var(--color-brand-red);
   --btn-text: var(--color-brand-cream);
   --btn-text-hover: var(--color-brand-cream);
   box-shadow: 0 12px 24px -16px rgba(243, 98, 32, 0.9);
 }
 
 /* The one variant that stays yellow: it exists for the brand-red bands, where a red
-   button would disappear into the ground. Its reveal runs yellow -> cream, so there is no
-   yellow-against-red to swap out. */
+   button would disappear into the ground. */
 .btn-yellow {
   --btn-rest: var(--color-brand-yellow);
-  --btn-reveal: linear-gradient(to right, var(--color-brand-yellow), var(--color-brand-cream));
+  --btn-reveal: var(--color-brand-cream);
   --btn-text: var(--color-brand-red);
   --btn-text-hover: var(--color-brand-red);
   --btn-ring: var(--color-brand-cream);
@@ -683,7 +684,7 @@ h1, h2, h3, h4 {
 
 .btn-cream {
   --btn-rest: var(--color-brand-cream);
-  --btn-reveal: linear-gradient(to right, var(--color-brand-red), var(--color-brand-orange));
+  --btn-reveal: var(--color-brand-red);
   --btn-text: var(--color-brand-red);
   --btn-text-hover: var(--color-brand-cream);
   --btn-ring: var(--color-brand-cream);
@@ -692,15 +693,17 @@ h1, h2, h3, h4 {
 
 .btn-paper {
   --btn-rest: var(--color-paper);
-  --btn-reveal: linear-gradient(to right, var(--color-paper), var(--color-brand-cream));
+  --btn-reveal: var(--color-brand-red);
   --btn-text: var(--color-brand-red);
-  --btn-text-hover: var(--color-brand-red);
+  --btn-text-hover: var(--color-brand-cream);
   box-shadow: 0 12px 24px -18px rgba(42, 24, 16, 0.6);
 }
 
 /* Outline variants ------------------------------------------------------- */
+/* Nothing sits under a transparent button, so `--btn-rest` is the panel that sweeps IN
+   rather than the one that covers at rest. */
 .btn-outline {
-  --btn-rest: linear-gradient(to right, var(--color-brand-red), var(--color-brand-orange));
+  --btn-rest: var(--color-brand-red);
   --btn-reveal: transparent;
   --btn-text: var(--color-brand-red);
   --btn-text-hover: var(--color-brand-cream);
@@ -708,7 +711,7 @@ h1, h2, h3, h4 {
 }
 
 .btn-outline-cream {
-  --btn-rest: linear-gradient(to right, var(--color-brand-cream), var(--color-paper));
+  --btn-rest: var(--color-brand-cream);
   --btn-reveal: transparent;
   --btn-text: var(--color-brand-cream);
   --btn-text-hover: var(--color-brand-red);

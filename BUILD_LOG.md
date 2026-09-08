@@ -1,3 +1,39 @@
+## 2026-09-08 - Buttons drop the gradients: flat colour on both sides
+
+The client did not want the gradients at all, and named the two pairs: cream hovers to
+red, red hovers to orange. Every variant is now one flat colour at rest and one flat
+colour under the cursor.
+
+| variant | rest | hover | label rest -> hover |
+|---|---|---|---|
+| `red` | brand-red | **brand-orange** | cream -> cream |
+| `orange` | brand-orange | **brand-red** | cream -> cream |
+| `cream` | brand-cream | **brand-red** | red -> cream |
+| `paper` | paper | **brand-red** | red -> cream |
+| `yellow` | brand-yellow | brand-cream | red -> red |
+| `outline` | (sweeps in) brand-red | - | red -> cream |
+| `outlineCream` | (sweeps in) brand-cream | - | cream -> red |
+
+`yellow` keeps its pair for the reason recorded before: it exists for the brand-red
+bands, where a red button disappears into the ground.
+
+Nothing else about the button changed - the skewed panel, the wipe, the 15px radius, the
+`:disabled` and reduced-motion guards all stand. The variants were only ever four custom
+properties each, so this is a colour edit and no structural one.
+
+### Verified
+
+**Zero gradients left** on any of the 14 buttons on the home page - `background-image`
+computes to `none` on every box and every `::before`. Rest and hover colours read as flat
+values: primary `rgb(243, 98, 32)` -> `rgb(175, 20, 17)`, secondary `rgb(252, 243, 205)`
+-> `rgb(175, 20, 17)` with the label going to `rgb(252, 243, 205)`, panel swept to
+`+244px`. Confirmed on a real `:hover`, not just from the stylesheet.
+
+Note: the "More than a meal" statement band's word chips still use gradients. Those are
+not buttons and were left alone - say the word if they should go flat too.
+
+eslint clean, production build passes.
+
 ## 2026-09-08 - Button hovers run to red, not yellow
 
 The client pointed at the hero's secondary button mid-hover - cream running to yellow -
