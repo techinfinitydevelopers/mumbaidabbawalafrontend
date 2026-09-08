@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Roboto_Slab, DM_Sans, Caveat, Anton } from "next/font/google";
+import { Roboto_Slab, DM_Sans, Caveat, Anton, Newsreader, Manrope } from "next/font/google";
 import "./globals.css";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
@@ -30,6 +30,20 @@ const anton = Anton({
   weight: "400",
 });
 
+// The "What a dabba carries" statement band is set in these two: Newsreader for the
+// sentence, Manrope for the braces and the heritage-badge numerals.
+const newsreader = Newsreader({
+  variable: "--font-newsreader",
+  subsets: ["latin"],
+  weight: ["400", "600"],
+});
+
+const manrope = Manrope({
+  variable: "--font-manrope",
+  subsets: ["latin"],
+  weight: ["200", "400", "800"],
+});
+
 export const metadata: Metadata = {
   title: "Mumbai Dabbawala — Perth",
   description:
@@ -40,7 +54,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html
       lang="en"
-      className={`${robotoSlab.variable} ${dmSans.variable} ${caveat.variable} ${anton.variable} h-full antialiased`}
+      className={`${robotoSlab.variable} ${dmSans.variable} ${caveat.variable} ${anton.variable} ${newsreader.variable} ${manrope.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col bg-paper text-ink">
         <Header />

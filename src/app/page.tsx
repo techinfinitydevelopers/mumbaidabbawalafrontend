@@ -1,6 +1,6 @@
 import DabbaOfferings from "@/components/DabbaOfferings";
 import StandFor from "@/components/StandFor";
-import DabbaCarries from "@/components/home/DabbaCarries";
+import DabbaLine from "@/components/home/DabbaLine";
 import HomeHero from "@/components/home/HomeHero";
 import NeverJustLunch from "@/components/home/NeverJustLunch";
 import PerthLanding from "@/components/home/PerthLanding";
@@ -27,7 +27,7 @@ export default function Home() {
     <div className="overflow-x-clip">
       <HomeHero />
       <StandFor />
-      <DabbaCarries />
+      <DabbaLine />
       <NeverJustLunch />
       <DabbaOfferings />
       <WhyTheDabba />

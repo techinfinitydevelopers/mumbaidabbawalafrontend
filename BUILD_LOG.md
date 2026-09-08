@@ -3021,3 +3021,165 @@ geometry unchanged (path 3124, corridor 2230, every pin still inside its card at
 **Follow-ups worth taking from upstream's timeline commit**: re-measuring when
 `getTotalLength()` returns 0 before layout settles, and a `prefers-reduced-motion` branch.
 Neither is in the local version.
+
+---
+
+## 2026-09-08 — Repo clone
+
+- Cloned `https://github.com/techinfinitydevelopers/mumbaidabbawalafrontend.git` into `/Users/apple/Desktop/MD-Website` (branch `main`, HEAD `1d30123`).
+- No dependencies installed, no build run, no source changes.
+
+## 2026-09-08 — "What a dabba carries" redesign: DabbaLine ported in
+
+Replaced the old sticky pan band with the scroll-reveal line from
+`~/Downloads/text-scroll-reveal` (its `PORTING.md`, route A — Next.js App Router).
+
+Files added:
+
+- `src/components/home/DabbaLine.tsx` — the section; all content lives in the `TOKENS` array
+- `src/components/home/DabbaLine.module.css` — its styling, self-contained
+- `src/hooks/useTrackScroll.ts` — the reusable pinned-track scroll hook
+
+Adaptations made on the way in:
+
+- `"use client"` at the top of `DabbaLine.tsx` and `useTrackScroll.ts` (refs, `window`, rAF).
+- The hook went to `src/hooks/` rather than sitting beside the component, since it is generic;
+  the import in `DabbaLine.tsx` is `@/hooks/useTrackScroll`.
+- The hook's ref params are typed `RefObject<HTMLElement | null>`. Under React 19 types
+  `useRef<T>(null)` yields `RefObject<T | null>`, so the source's `RefObject<HTMLElement>`
+  would not have typechecked here.
+- Fonts through `next/font` instead of the `<link>` tags: `Newsreader` and `Manrope` added in
+  `src/app/layout.tsx` as `--font-newsreader` / `--font-manrope`, and the two stacks in the CSS
+  module now read those variables.
+- `src/app/page.tsx` renders `<DabbaLine />` in place of `<DabbaCarries />`.
+
+`DabbaCarries.tsx` and `DABBA_CARRIES` in `src/data/home.ts` are left in the tree but are no
+longer referenced.
+
+Verified: `tsc --noEmit` clean, `eslint` clean, `next build` succeeds (22 routes). In the browser
+the pin holds at `top: 0` across the track and the row translates — the home page wrapper is
+`overflow-x-clip`, so sticky is not broken (gotcha 1 in `PORTING.md`). Track travel measures
+6121px, which at `RATIO = 2.28` makes the section 14676px tall — about 19 viewport heights.
+
+Open, deliberately not decided here:
+
+- The stickers are emoji glyphs (🥘 🍱 🖼️ 🌶️ 📦 🏙️), not the brand cut-outs the old section used
+  from `/images/items`, `/images/cutouts`, `/images/stickers`.
+- The section's scroll length, tunable via `RATIO` in `src/hooks/useTrackScroll.ts`.
+- The old section's "What a dabba carries" script kicker is not in the new design.
+
+## 2026-09-08 — DabbaLine: brand artwork, the kicker back, off the black ground
+
+Three changes on top of the port, all in `DabbaLine.tsx` and its CSS module.
+
+**1. Real artwork instead of emoji.** The ported `Sticker` type carried a `glyph: string` that
+rendered an OS emoji. It is a discriminated union now — `cutout` (a transparent PNG), `photo` (an
+archive snapshot with a pale border and a tilt) and `glyph` (the two drawn marks, the heart and the
+parcel, that no photograph covers) — rendered by a small `Sticker` component through `next/image`.
+The six pieces are the ones the old section used:
+
+| word | artwork |
+|---|---|
+| meal, | `/images/items/butterchicken-bowl.png` |
+| dabba | `/images/items/tiffin-dabba.png` |
+| tradition, | `/images/about/net-05.jpg` (framed as a photo) |
+| care, | drawn heart |
+| flavours, | `/images/cutouts/spice-chilli.png` |
+| carefully | `/images/cutouts/spice-curryleaf.png` |
+| packed, | drawn parcel |
+| (tail) | `/images/stickers/run-perth.png` |
+
+`size` is the sticker's height in `em`, so every piece keeps its proportion to the word it hangs on
+across breakpoints. Left lazy: the section sits ~1500px down the page and the lazy-load margin is
+wider than the reveal window, so nothing pops in mid-pan.
+
+**2. The script kicker is back.** "What a dabba carries" in `--font-script`, brand orange, at the
+top of the pin. `.stage` is a column now so the kicker holds still while the line travels under it —
+it has to, because the pin runs for a dozen screens and the reader would otherwise lose the frame.
+
+**3. Off the near-black ground.** The band is paper now, warmed to cream in the middle so it still
+reads as its own ground between the cream section above and the paper one below. Everything keyed to
+the dark ground moved with it:
+
+- the line is `--color-ink`, not `#f4f0e8`;
+- the reference's pastel pills are the brand tokens, each carrying its own foreground — the red,
+  orange and forest green need cream on them, the rest need ink;
+- the sparkles, the house, the arrow and the checker diamond are drawn in ink, not white;
+- the burst is brand orange with cream numerals and a yellow accent;
+- the grain drops from 0.05 to 0.035 (it reads as speckle rather than paper on a light ground) and
+  the cut-outs get a soft contact shadow instead of the sticker's old dark drop-shadow.
+
+Verified: `tsc --noEmit` clean, `eslint` clean, `next build` succeeds. In the running app the kicker
+paints at the top of the pin, the stage holds at `top: 0`, word opacities grade 1 → 0.29 along the
+line (the stagger working), and all six assets serve 200. Not verified visually — the Browser pane
+was hidden for this session, so `document.visibilityState` stayed `hidden`, rAF never ticked in the
+capture surface and every screenshot came back as the bare ground.
+
+Still open: the section is 14676px tall (`RATIO` in `src/hooks/useTrackScroll.ts`), and
+`DabbaCarries.tsx` plus `DABBA_CARRIES` in `src/data/home.ts` are unreferenced but still in the tree.
+
+## 2026-09-08 — DabbaCarries removed; the band no longer opens empty
+
+**The old section is gone.** `src/components/home/DabbaCarries.tsx` is deleted, and with it
+`ChipTone`, `CarriesToken` and `DABBA_CARRIES` from `src/data/home.ts` (nothing else referenced
+them; `home.ts` is 228 → 147 lines). Two things from that file's doc comment were worth keeping and
+moved onto the `TOKENS` array in `DabbaLine.tsx`: that the line is verbatim as the client supplied
+it on 2026-09-08, and the note that "freshly prepared, carefully packed" also appears, near enough
+word for word, as the third beat of the "It's Never Just Lunch" ladder further down the page —
+still worth deciding which one keeps it.
+
+**The opening words are on stage at rest.** The ported track began with a `100vw` spacer, so at
+scroll progress 0 the whole sentence sat off-stage right and the band pinned onto empty ground under
+the kicker — it read as a section that had failed to load. Two changes:
+
+- the lead-in spacer is a `.leadIn` class in the stylesheet rather than an inline `100vw`: `81vw`
+  normally, `62vw` under 900px where the type steps down to 38px. What is left over is the slice of
+  line showing at rest, and it is sized to about two words. It lives in the CSS because it is really
+  a function of the type size, which lives there too.
+- `progressAt()` returns 1 outright for any word inside that slice. Those words have no entrance to
+  play — there is no scroll before zero — and `panel()` would otherwise strand them part-risen and
+  part-blurred at rest with no way to finish.
+
+At a 1280px viewport that puts "More than" fully lit with "a" arriving at the edge.
+
+Verified: `tsc --noEmit` clean, `eslint` clean, `next build` succeeds. **Not** verified in the
+browser: the Browser pane stayed hidden for this session, so the tab's render surface collapsed to
+`innerWidth: 0` and every layout measurement came back as zero. The word offsets are stable
+(`More` 12, `than` 115, `a` 242 at the fixed 62px type), so the arithmetic above holds, but the
+result has not been seen.
+
+## 2026-09-08 — DabbaLine: a tail hold, so the end of the line can be read
+
+The ported hook panned across the whole pinned height, so the pan and the pin ended on the same
+pixel — "…and delivered to Perth." arrived exactly as the band let go. The lerp made it worse:
+`current` is still catching up to `target` at the moment the section unpins, so at any normal scroll
+speed the ending was never actually still on screen. Nothing was clipped spatially (the track's
+trailing `30vw` spacer leaves the last words mid-stage at full travel, and the tail's `panel()`
+reaches 0.92, which eases to 0.999) — it was purely a timing failure, and it read as a cut.
+
+`src/hooks/useTrackScroll.ts` now splits the pinned height in two:
+
+```
+section height = travel * RATIO   +   TAIL_HOLD_VH * vh   +   vh
+                 └── the pan ──┘       └── the hold ──┘
+```
+
+`readScroll()` measures progress against `panSpan` alone rather than against the whole pinned
+height, so past the pan it clamps to 1 and the track simply stays put while the rest of the section
+scrolls under the pin.
+
+`TAIL_HOLD_VH = 1` — the hold is one viewport height, not a share of the track. A share would let a
+long line buy itself a proportionally absurd hold; at `TAIL = 0.15` on this track that would have
+been over two screens of holding a still frame. One screen of scrolling is what it takes to read the
+end of a sentence whether the track is three screens or twenty.
+
+Cost, at 1280×720 with the current copy: `travel` 5878, pan 13402px, hold 720px, section 14842px —
+720px taller than before. `RATIO` is still 2.28 and is still the lever if the section wants to be
+shorter overall.
+
+Verified: `tsc --noEmit` clean, `eslint` clean, `next build` succeeds. Still not seen in a browser —
+the pane stayed hidden, and in that state the tab reports `innerWidth: 0`, which collapses
+`clip.clientWidth` to 0 and makes the hook write a 458,120px section height. That is the
+zero-width case the hook's `ResizeObserver` exists to recover from (upstream `PORTING.md` calls it
+out), and it corrects itself the moment the stage has a real width — but it means no measurement
+taken while the pane is hidden is worth anything.
