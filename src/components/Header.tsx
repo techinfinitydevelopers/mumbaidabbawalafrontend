@@ -26,7 +26,7 @@ export default function Header() {
       <div className="mx-auto flex max-w-[1720px] items-center justify-between rounded-[28px] border border-brand-red/10 bg-paper/95 px-4 py-2.5 shadow-[0_10px_30px_-12px_rgba(175,20,17,0.18)] backdrop-blur-md sm:px-6">
         <Link
           href="/"
-          className="flex items-center gap-2.5 sm:gap-3"
+          className="flex items-center"
           onClick={() => setOpen(false)}
         >
           <Image
@@ -37,10 +37,6 @@ export default function Header() {
             priority
             className="h-8 w-auto sm:h-9"
           />
-          {/* the mark carries "Since 1890"; Perth is the part this launch adds */}
-          <span className="hidden border-l border-brand-red/15 pl-2.5 font-body text-phi-0 font-bold tracking-[0.2em] text-ink/55 sm:block">
-            PERTH
-          </span>
         </Link>
 
         <nav className="hidden items-center gap-1 xl:flex">

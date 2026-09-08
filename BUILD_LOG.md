@@ -1,3 +1,17 @@
+## 2026-09-08 - "PERTH" comes off the header
+
+The rule-and-label beside the logo is gone, along with the flex `gap` that only existed to
+separate the logo from it — the mark now stands on its own.
+
+Nothing else changed: the logo's `alt` still reads "Mumbai Dabbawala — since 1890" and the
+site title is still "Mumbai Dabbawala — Perth". Those are the document's own copy, not the
+header badge that was asked about.
+
+Verified: no `/perth/i` anywhere in the header's text, its text is now just the nav and
+the CTA, and the logo link is down to one child.
+
+eslint + `tsc --noEmit` clean, production build passes.
+
 ## 2026-09-08 - For Business comes off the red, and the headings go up a step
 
 The client did not want the red ground. `/contact` now has no red section at all
