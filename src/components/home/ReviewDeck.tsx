@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { TESTIMONIALS } from "@/data/home";
+import { REVIEW_DECK } from "@/data/home";
 
 /**
  * The reviews as an overlapping deck: three cards abreast, the middle one tilted, scaled
@@ -17,6 +17,9 @@ import { TESTIMONIALS } from "@/data/home";
  * screen — see `Testimonials`. It is capped against `svh`, so a short viewport gets a
  * shorter card and the quote type shrinks with it; the two clamps are tuned together so
  * the longest review in the doc still sets in four lines at the smallest size.
+ *
+ * It can be driven three ways: the arrows, the dots, or clicking either shoulder card to
+ * bring it to the centre.
  *
  * Everything that moves is `transform` and `opacity` only — both stay on the compositor.
  * `box-shadow` is deliberately NOT animated (it repaints every frame); one shadow value
@@ -66,6 +69,9 @@ function slotStyle(d: number): React.CSSProperties {
     transform: `translateX(calc(var(--deck-x) * ${side * 2})) rotate(${side * 4}deg) scale(0.82)`,
     zIndex: 10,
     opacity: 0,
+    // invisible but still in the layer: without this it would keep catching clicks
+    // meant for whatever is under it, which only shows up once the deck holds >3
+    pointerEvents: "none",
   };
 }
 
@@ -100,7 +106,7 @@ function Rating({ stars }: { stars: number }) {
 }
 
 export default function ReviewDeck() {
-  const count = TESTIMONIALS.length;
+  const count = REVIEW_DECK.length;
   const [active, setActive] = useState(0);
   const [paused, setPaused] = useState(false);
 
@@ -131,17 +137,31 @@ export default function ReviewDeck() {
       {/* py- leaves room for the centre card's tilt and scale to overhang the cell
           without the section's overflow clipping its corners. */}
       <div className="grid grid-cols-1 grid-rows-1 [--deck-x:60%] py-[min(48px,5.2svh)] sm:[--deck-x:70%] lg:[--deck-x:78%]">
-        {TESTIMONIALS.map((review, i) => {
+        {REVIEW_DECK.map((review, i) => {
           const d = offsetFrom(i, active, count);
 
           return (
             <figure
-              key={review.name}
+              key={`${review.name}-${review.suburb}`}
               // every card is in the same grid cell: same height, centred, stacked
-              className="col-start-1 row-start-1 flex h-[clamp(230px,36svh,340px)] w-[264px] flex-col justify-self-center rounded-[30px] bg-paper p-3.5 shadow-[0_18px_44px_-26px_rgba(42,24,16,0.5)] transition-[transform,opacity] duration-[900ms] ease-[cubic-bezier(0.16,1,0.3,1)] will-change-transform motion-reduce:transition-none sm:w-[300px] lg:w-[344px]"
+              className="relative col-start-1 row-start-1 flex h-[clamp(230px,36svh,340px)] w-[264px] flex-col justify-self-center rounded-[30px] bg-paper p-3.5 shadow-[0_18px_44px_-26px_rgba(42,24,16,0.5)] transition-[transform,opacity] duration-[900ms] ease-[cubic-bezier(0.16,1,0.3,1)] will-change-transform motion-reduce:transition-none sm:w-[300px] lg:w-[344px]"
               style={slotStyle(d)}
-              aria-hidden={Math.abs(d) > 1 || undefined}
             >
+              {/* Clicking a shoulder card brings it to the centre.
+                  It is an overlay button rather than a handler on the <figure>, because a
+                  <figure> is not focusable or keyboard-operable and a <button> may not wrap
+                  a <blockquote>. Only the two shoulders get one: the centre card has none,
+                  so its quote stays selectable, and the parked cards get none either, so
+                  they never take a tab stop while invisible. */}
+              {Math.abs(d) === 1 && (
+                <button
+                  type="button"
+                  onClick={() => setActive(i)}
+                  aria-label={`Show the review from ${review.name}`}
+                  className="absolute inset-0 z-10 cursor-pointer rounded-[30px] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-brand-red"
+                />
+              )}
+
               {/* the red panel sits where the reference card's photo does — the frame is
                   the pale thing and the panel is the dark thing, which is what makes the
                   quote carry at deck scale on a cream ground. */}
@@ -190,9 +210,9 @@ export default function ReviewDeck() {
           </button>
 
           <div className="flex items-center gap-2">
-            {TESTIMONIALS.map((review, i) => (
+            {REVIEW_DECK.map((review, i) => (
               <button
-                key={review.name}
+                key={`${review.name}-${review.suburb}`}
                 type="button"
                 onClick={() => setActive(i)}
                 aria-label={`Show the review from ${review.name}`}

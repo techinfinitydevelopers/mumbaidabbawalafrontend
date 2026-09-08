@@ -61,7 +61,14 @@ export const PERTH_AUDIENCES: { who: string; copy: string }[] = [
  * holds back the accuracy statistics applies. Restore it once the client confirms these
  * are real, consented reviews.
  */
-export type Testimonial = { stars: number; text: string; name: string; suburb: string };
+export type Testimonial = {
+  stars: number;
+  text: string;
+  name: string;
+  suburb: string;
+  /** invented copy, present only for previewing the deck — see SHOW_PLACEHOLDER_REVIEWS */
+  placeholder?: boolean;
+};
 
 export const TESTIMONIALS: Testimonial[] = [
   {
@@ -83,3 +90,58 @@ export const TESTIMONIALS: Testimonial[] = [
     suburb: "Box Hill",
   },
 ];
+
+/* ────────────────────────────────────────────────────────────────────────────────────
+   PLACEHOLDER REVIEWS — INVENTED. NOT REAL CUSTOMERS. NOT REAL QUOTES.
+
+   Added 2026-09-08 at the client’s request, purely so the review deck can be judged
+   with more than the three reviews the content doc supplies. They are written to the
+   same lengths and rating spread as the real ones so the layout behaves honestly, and
+   they use Perth suburbs because that is the launch city.
+
+   >>> SET `SHOW_PLACEHOLDER_REVIEWS` TO FALSE BEFORE THE SITE GOES LIVE. <<<
+
+   Publishing invented testimonials as genuine is a misleading-conduct problem under
+   Australian Consumer Law, and every one of these is invented.
+   ──────────────────────────────────────────────────────────────────────────────────── */
+export const SHOW_PLACEHOLDER_REVIEWS = true;
+
+const PLACEHOLDER_TESTIMONIALS: Testimonial[] = [
+  {
+    stars: 5,
+    text: "The Monthly Dabba means I’ve stopped thinking about lunch entirely. Best decision of my semester.",
+    name: "Rohan",
+    suburb: "Northbridge",
+    placeholder: true,
+  },
+  {
+    stars: 4,
+    text: "Dal and roti still warm at 1pm out in Joondalup. I don’t know how they manage it.",
+    name: "Sanjana",
+    suburb: "Joondalup",
+    placeholder: true,
+  },
+  {
+    stars: 5,
+    text: "My kids ask for the Gujarati Thursday instead of takeaway now. That’s the whole review.",
+    name: "Kavita",
+    suburb: "Canning Vale",
+    placeholder: true,
+  },
+  {
+    stars: 5,
+    text: "Signed up for the three-day trial, forgot to cancel, and I’m very glad I forgot.",
+    name: "Daniel",
+    suburb: "Subiaco",
+    placeholder: true,
+  },
+];
+
+/**
+ * What the deck actually renders: the doc’s reviews, plus the placeholders while the
+ * flag above is on. Flipping the flag off leaves the three real ones and nothing else —
+ * the deck handles any count.
+ */
+export const REVIEW_DECK: Testimonial[] = SHOW_PLACEHOLDER_REVIEWS
+  ? [...TESTIMONIALS, ...PLACEHOLDER_TESTIMONIALS]
+  : TESTIMONIALS;

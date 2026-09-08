@@ -1,3 +1,60 @@
+## 2026-09-08 — Placeholder reviews for previewing the deck, and click-to-centre
+
+### Four invented reviews, behind a flag
+
+The content doc only supplies three reviews, so the deck could never be judged in the
+state it was actually built for. `src/data/home.ts` now also holds
+`PLACEHOLDER_TESTIMONIALS` — **four invented reviews, not real customers, not real
+quotes** — gated behind `SHOW_PLACEHOLDER_REVIEWS`, currently `true`. The deck renders
+`REVIEW_DECK`, which is the doc's three plus the placeholders while the flag is on;
+flipping it to `false` leaves the three real ones and nothing else.
+
+>>> **THE FLAG MUST BE SET TO FALSE BEFORE THE SITE GOES LIVE.** <<<
+
+Publishing invented testimonials as genuine is misleading conduct under Australian
+Consumer Law, and all four of these are invented. Each carries `placeholder: true` in
+the data as a second marker, and the block above them in `home.ts` says so in full.
+
+They are written to the doc's own lengths (82–98 characters) and rating spread (three
+5★, one 4★) so the layout is being judged honestly rather than against copy that
+happens to fit, and they use Perth suburbs — Northbridge, Joondalup, Canning Vale,
+Subiaco — because that is the launch city. The doc's three real ones are still
+attributed to Parramatta, Melbourne CBD and Box Hill, which are not.
+
+### Clicking a card brings it to the centre
+
+The deck now has three controls: the arrows, the dots, and the cards themselves.
+
+It is an **overlay `<button>`** inside the `<figure>`, not a handler on the figure: a
+`<figure>` is neither focusable nor keyboard-operable, and a `<button>` may not legally
+wrap a `<blockquote>`. Only the two shoulder cards get one —
+  - the **centre** card has none, so its quote stays selectable and clicking where you
+    are already looking does nothing;
+  - the **parked** cards get none either, so they never take a tab stop while invisible.
+
+Parked cards also gained `pointerEvents: "none"`. At `opacity: 0` they were still
+catching clicks aimed at whatever sat beneath them — a bug that could only appear once
+the deck held more than three cards, which until now it never did.
+
+`aria-hidden` came off the off-slot cards. Every review is real page content and should
+be readable at all times; hiding four of seven from the accessibility tree to match
+what is visually on top was the wrong trade.
+
+Keys moved from `review.name` to `` `${name}-${suburb}` `` now that the list is long
+enough for a first name to repeat.
+
+### Verified at 1366×768 with the section snapped to the viewport top
+
+- 7 cards, 7 dots, exactly **2** overlay buttons, centre card has none
+- all 4 parked cards report `pointer-events: none`
+- **0** quote overflow on all seven panels — the placeholder copy fits the set height
+- section still exactly **768** — 0px over one screen — 10px under the header, 52px
+  bottom room, everything visible
+- click the right shoulder → it takes the centre and the deck re-slots around it;
+  click the left shoulder → same. Both confirmed by reading which card holds `z-index: 30`
+
+eslint + `tsc --noEmit` clean, production build passes (22 static pages).
+
 ## 2026-09-08 — Reviews rebuilt as a rotating deck, one screen, red cards
 
 Three changes to the home page, on the reference card the client sent.
