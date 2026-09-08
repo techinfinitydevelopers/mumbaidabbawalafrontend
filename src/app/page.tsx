@@ -20,7 +20,11 @@ import WhyTheDabba from "@/components/home/WhyTheDabba";
  */
 export default function Home() {
   return (
-    <div className="overflow-x-hidden">
+    // `overflow-x-clip`, not `-hidden`: `hidden` makes this wrapper a scroll container,
+    // which silently stops `position: sticky` working anywhere inside it - the statement
+    // band's pin rode up with the page until this was changed. `clip` clips the same way
+    // without creating the scroll container.
+    <div className="overflow-x-clip">
       <HomeHero />
       <StandFor />
       <DabbaCarries />

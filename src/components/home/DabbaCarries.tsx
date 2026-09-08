@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 import { DABBA_CARRIES, type CarriesToken, type ChipTone } from "@/data/home";
 
 /**
@@ -9,25 +9,36 @@ import { DABBA_CARRIES, type CarriesToken, type ChipTone } from "@/data/home";
  * sent: the composition comes from their own artwork (chips and stickers inline in the
  * sentence, on a dark ground) and the motion comes from the techinfinity band.
  *
- * That band turned out **not** to be a scroll scrub. It is a Framer Motion
- * `whileInView` stagger: the pieces drop in from above, the row settles out of a slight
- * over-scale, and it then holds — sampling its transform across 1200px of further scroll
- * gives identical values. An earlier version of this section scrubbed the sentence
- * sideways with scroll, which is why the line never appeared to finish: the pan and the
- * pin ended together, so the last words arrived exactly as the section let go.
+ * The techinfinity band is a Framer Motion `whileInView` stagger - it plays once on a
+ * timer and holds. That is where the *shape* of this motion comes from (pieces dropping
+ * in from above, chips falling further than plain words, a slight over-scale settling),
+ * but the trigger here is different on purpose: the client asked for the line to emerge
+ * ON SCROLL, so the reveal is scrubbed rather than fired.
  *
- * So there is no track, no pin and no pan. The whole sentence **wraps and sits still**,
- * complete and readable, and the animation is a one-shot entrance:
+ * So the section is a tall scroll track with a `position: sticky` child. As you scroll
+ * through it the sentence writes itself in, word by word, left to right; the pin holds
+ * until the last token has landed, and the completed line then holds for the rest of the
+ * track. An earlier version panned the sentence sideways instead, which is why the line
+ * never appeared to finish - the pan and the pin ended together, so the last words
+ * arrived exactly as the section let go. Nothing pans now: the sentence wraps, sits
+ * still, and is fully readable the moment it has landed.
  *
- *  - chips fall `-3.1em`, plain words only `-0.7em`, both with the reference's `back.out`
- *    overshoot, so the highlights read as the event and the rest as supporting text;
- *  - the row settles from `scale(1.08)` to rest over 1s;
- *  - the stagger is per-token `transition-delay`, 38ms apart.
+ * How the scrub is wired:
  *
- * All of that lives in `globals.css` under `.statement`, keyed off one `data-shown`
- * attribute, so the only JS here is the observer that sets it. Only `opacity` and
- * `transform` animate, so the cost does not grow with the length of the sentence, and
- * `prefers-reduced-motion: reduce` lands everything at rest with no transition.
+ *  - progress `p` comes from the section's own rect, so it stays correct however the
+ *    page reflows above it;
+ *  - token `i` starts emerging at `(i / n) * SPREAD` and takes `WINDOW` of progress to
+ *    arrive, which leaves the last ~15% of the track as a hold on the finished line;
+ *  - each token gets `opacity` and a `translate3d` in `em`, so the travel scales with
+ *    the type at every breakpoint;
+ *  - JS writes those values DIRECTLY to the DOM, never through React state - 25 tokens
+ *    re-rendering per scroll frame would be a re-render storm - and skips the whole pass
+ *    when progress has not moved, which is every scroll event outside the band.
+ *
+ * `globals.css` deliberately puts no transition on the tokens: a transition would lag
+ * behind the scrub and smear the reveal. Tokens are visible by default and JS takes them
+ * away on mount, so with no JS, or under `prefers-reduced-motion: reduce`, the sentence
+ * is simply there.
  *
  * Chips take the reference's proportions — a 0.28em radius and generous padding against
  * the type — and its gradient grounds, mapped onto the brand: the pastel pink and
@@ -105,45 +116,74 @@ function Art({ art }: { art: NonNullable<CarriesToken["art"]> }) {
   );
 }
 
+/** Tokens start emerging across this much of the scroll; the rest is a hold. */
+const SPREAD = 0.72;
+/** How much progress one token takes to go from hidden to landed. */
+const WINDOW = 0.16;
+
 export default function DabbaCarries() {
   const ref = useRef<HTMLElement>(null);
-  const [shown, setShown] = useState(false);
 
   useEffect(() => {
-    const el = ref.current;
-    if (!el) return;
+    // reduced motion keeps the CSS rest state: the sentence is just there, all of it
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
 
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          setShown(true);
-          observer.disconnect();
-        }
-      },
-      { threshold: 0.2 },
-    );
+    const section = ref.current;
+    if (!section) return;
 
-    observer.observe(el);
+    const row = section.querySelector<HTMLElement>(".statement-row");
+    const tokens = Array.from(section.querySelectorAll<HTMLElement>("[data-token]"));
+    const n = tokens.length;
+    if (!n) return;
 
-    // the sentence must never stay hidden if the observer never fires — a background
-    // tab, a context with no scrolling. Same failsafe as `Reveal`.
-    const failsafe = window.setTimeout(() => setShown(true), 2500);
+    let last = -1;
+
+    const paint = () => {
+      const span = section.offsetHeight - window.innerHeight;
+      const p =
+        span <= 0 ? 1 : Math.min(1, Math.max(0, -section.getBoundingClientRect().top / span));
+
+      // every scroll event outside the band lands on the same clamped 0 or 1, so this
+      // guard makes those events a single float compare instead of 50 style writes
+      if (Math.abs(p - last) < 0.0005) return;
+      last = p;
+
+      for (let i = 0; i < n; i++) {
+        const token = tokens[i];
+        const arrived = Math.min(1, Math.max(0, (p - (i / n) * SPREAD) / WINDOW));
+        const drop = token.dataset.token === "chip" ? -2.6 : -0.7;
+
+        token.style.opacity = arrived.toFixed(3);
+        token.style.transform = `translate3d(0, ${((1 - arrived) * drop).toFixed(3)}em, 0)`;
+      }
+
+      if (row) {
+        // the row settles out of a slight over-scale across the first quarter
+        row.style.transform = `scale(${(1.05 - 0.05 * Math.min(1, p / 0.25)).toFixed(4)})`;
+      }
+    };
+
+    paint();
+    window.addEventListener("scroll", paint, { passive: true });
+    window.addEventListener("resize", paint);
 
     return () => {
-      observer.disconnect();
-      window.clearTimeout(failsafe);
+      window.removeEventListener("scroll", paint);
+      window.removeEventListener("resize", paint);
     };
   }, []);
 
   let chipIndex = 0;
 
   return (
-    <section
-      ref={ref}
-      data-shown={shown}
-      className="statement grain relative flex min-h-[100svh] flex-col justify-center overflow-hidden bg-ink py-phi-7"
-    >
-      <div className="mx-auto w-full max-w-[1720px] px-5 sm:px-8 lg:px-12">
+    <section ref={ref} className="statement grain relative h-[240svh] bg-ink">
+      {/* The track carries NO `overflow`. `overflow: hidden` on an ancestor makes that
+          ancestor the sticky child's scroll container, and since it does not scroll, the
+          child stops sticking and rides up with the section instead — which is exactly
+          what was happening here. The clip belongs on the sticky child, where it also
+          keeps a token still in the air from bleeding into the section above. */}
+      <div className="sticky top-0 flex h-[100svh] flex-col justify-center overflow-hidden px-5 sm:px-8 lg:px-12">
+        <div className="mx-auto w-full max-w-[1720px]">
         <p className="text-center font-script text-[min(30px,3.4svh)] text-brand-orange">
           What a dabba carries
         </p>
@@ -161,13 +201,9 @@ export default function DabbaCarries() {
                 // index keys: the array is static and never reorders
                 <span
                   key={i}
+                  // the scrub reads this to know how far the piece should fall
+                  data-token={token.chip ? "chip" : "word"}
                   className="statement-token flex shrink-0 items-center gap-x-[0.28em]"
-                  style={{
-                    // chips fall further than plain words, and the stagger runs
-                    // left-to-right through the sentence
-                    ["--drop" as string]: token.chip ? "-3.1em" : "-0.7em",
-                    transitionDelay: `${i * 38}ms`,
-                  }}
                 >
                   {token.chip ? (
                     <span
@@ -187,6 +223,7 @@ export default function DabbaCarries() {
               );
             })}
           </p>
+          </div>
         </div>
       </div>
     </section>

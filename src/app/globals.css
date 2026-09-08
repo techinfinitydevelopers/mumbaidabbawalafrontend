@@ -530,39 +530,24 @@ h1, h2, h3, h4 {
 }
 
 /* ── "More than a meal" statement band ────────────────────────────────────
-   The techinfinity band's motion: on entering view the pieces drop in from above with a
-   stagger and the whole row settles down out of a slight over-scale. It plays once and
-   rests — it is not scrubbed, so the sentence is complete and readable the whole time
-   after it lands.
+   The sentence emerges word by word as you scroll through the section, then holds. The
+   section is a tall scroll track with a sticky child, so the band stays put while the
+   reveal plays out and the line is complete before it lets go.
 
-   Driven entirely by `data-shown` on the container, so the only JS is one
-   IntersectionObserver: the stagger is per-token `transition-delay`, and the two travel
-   distances come in as `--drop`. Chips fall further than plain words, which is what makes
-   the highlights read as the event and the rest as supporting text.
+   `opacity` and `transform` on the tokens are written by JS from scroll progress, so
+   there is deliberately NO transition on them here — a transition would lag behind the
+   scrub and smear the reveal. What CSS owns is the rest state and the promise to the
+   compositor.
 
-   Both animated properties are `opacity` and `transform`, so this stays on the
-   compositor no matter how many tokens the sentence has. */
-.statement-row {
-  transform: scale(1.08);
-  transition: transform 1s cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-.statement[data-shown="true"] .statement-row {
-  transform: scale(1);
-}
-
+   Tokens are visible by default and JS takes them away on mount. That direction matters:
+   with no JS, or with reduced motion, the sentence is simply there. */
 .statement-token {
-  opacity: 0;
-  /* the overshoot is the reference's `back.out` — pieces drop past their mark and settle */
-  transform: translate3d(0, var(--drop, -0.7em), 0);
-  transition:
-    opacity 0.45s linear,
-    transform 0.85s cubic-bezier(0.34, 1.56, 0.64, 1);
+  will-change: opacity, transform;
 }
 
-.statement[data-shown="true"] .statement-token {
-  opacity: 1;
-  transform: translate3d(0, 0, 0);
+.statement-row {
+  transform-origin: center;
+  will-change: transform;
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -570,7 +555,6 @@ h1, h2, h3, h4 {
   .statement-token {
     opacity: 1 !important;
     transform: none !important;
-    transition: none !important;
   }
 }
 

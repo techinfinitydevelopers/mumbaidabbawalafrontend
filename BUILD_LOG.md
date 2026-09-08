@@ -1,3 +1,84 @@
+## 2026-09-08 — The statement line now emerges on scroll, and sticky actually sticks
+
+The client asked for the line to emerge **on scroll**, not on a timer. The reveal is now
+scrubbed against scroll progress: the section is a `240svh` track with a `position:
+sticky` child, and as you scroll through it the sentence writes itself in word by word,
+left to right. The pin holds until the last token lands, and the finished line then holds
+for the rest of the track.
+
+Nothing pans. The sentence still wraps and sits still — that part of the earlier fix
+stays, because panning is what stopped the line ever finishing.
+
+### The bug underneath all of this: sticky was never sticking
+
+Worth recording, because it silently broke two versions of this section and cost the
+most time.
+
+`position: sticky` had **no effect at all**. Measuring
+`sticky.getBoundingClientRect().top` across the track gave 0, −252, −504, −756, −1008,
+−1260 — the "pinned" band was riding straight up with the page. Both the panned version
+and the first scrub version were built on a pin that did not exist, which is a large part
+of why the band never read right.
+
+Two causes, found in order:
+
+1. `overflow-hidden` on the section itself. An ancestor with `overflow: hidden` becomes
+   the sticky element's scroll container; that box does not scroll, so the child stops
+   sticking. Moved the clip onto the sticky child, where it is wanted anyway to keep a
+   token still in the air from bleeding into the section above.
+2. **`overflow-x-hidden` on the home page wrapper** — the real culprit, and it would have
+   broken `sticky` for *any* section on the page. Changed to **`overflow-x-clip`**, which
+   clips identically but does **not** create a scroll container. Page horizontal overflow
+   is still 0 at 390 afterwards, so the containment it was there for is intact.
+
+The other pages still wrap in `overflow-x-hidden`. Nothing on them uses `sticky` today,
+but the same one-word change is waiting there if anything ever does.
+
+### How the scrub works
+
+- Progress comes from the section's own rect each scroll, so it stays correct however the
+  page reflows above it — which matters here, because images settling higher up move this
+  section while it is being measured.
+- Token `i` starts emerging at `(i / n) * 0.72` and takes `0.16` of progress to arrive.
+  That spread leaves the last ~10% of the track as a hold on the completed line, and puts
+  about five tokens in flight at any moment, so it reads as a rolling wave rather than a
+  queue.
+- Each token gets `opacity` plus a `translate3d` in **em**, so the travel scales with the
+  type at every breakpoint. Chips fall `-2.6em`, plain words `-0.7em`, keeping the
+  reference's hierarchy of highlight-as-event.
+- The row settles out of `scale(1.05)` across the first quarter of the track.
+- Values are written **straight to the DOM**, never through React state — 25 tokens
+  re-rendering per scroll frame would be a re-render storm. A `last`-progress guard makes
+  every scroll event outside the band a single float compare instead of 50 style writes.
+- `globals.css` puts **no transition** on the tokens on purpose: a transition would lag
+  behind the scrub and smear the reveal. Tokens are visible by default and JS takes them
+  away on mount, so with no JS — or under `prefers-reduced-motion: reduce`, where the
+  effect returns early — the sentence is simply all there.
+
+### Verified at 1440x900
+
+Section 2160 (240svh). **`stickyTop` is 0 at every one of seven progress points** — the
+band is genuinely pinned now. Reveal tracks scroll:
+
+| progress | landed | in flight | hidden |
+|---|---|---|---|
+| 0 | 0 | 0 | 25 |
+| 0.2 | 2 | 5 | 18 |
+| 0.4 | 9 | 5 | 11 |
+| 0.6 | 16 | 5 | 4 |
+| 0.8 | 23 | 2 | 0 |
+| 0.9 | **25** | 0 | 0 |
+| 1 | 25 | 0 | 0 |
+
+Page horizontal overflow 0. A mid-reveal frame at 55% shows the sentence landed through
+"home —", "freshly" caught in the air above its mark, "prepared," faint below it, and
+everything after still hidden.
+
+**Not verified:** the reduced-motion branch, as before — the preview pane cannot emulate
+the preference.
+
+eslint + `tsc --noEmit` clean, production build passes.
+
 ## 2026-09-08 — Statement band rebuilt: the line completes, and the motion is techinfinity’s
 
 Replaces the scroll-panned version committed earlier the same day. Two things were
