@@ -77,14 +77,19 @@ export default function RegionalFoodStoriesPage() {
           {/* The seal tucks in BEHIND the word "Taste" at a tilt, rather than sitting clear
               above the block.
               Two things make that work: `z-0` here against `z-10` on the `h2`, so the
-              letters cross over the seal's lower edge; and a `pt` sized so only that lower
-              third is covered — the seal's own "1890 → 2026" stays readable above the
-              letters. `poster-stack` gives its own children z-indexes (4/3/2), which order
-              them against each other and not against anything outside, so the `h2` needs
-              its own. */}
-          <div className="relative pt-[74px] sm:pt-[84px]">
+              letters cross over the seal's lower edge; and a `pt` sized so ONLY the seal's
+              spiky rim is covered, never its label. `poster-stack` gives its own children
+              z-indexes (4/3/2), which order them against each other and not against
+              anything outside, so the `h2` needs its own.
+
+              The `pt` is arithmetic, not taste. The label block sits centred in the seal,
+              so its bottom lands about `top + 0.75 × size`; the padding has to clear that.
+              At `sm`: 12 + 0.75 × 108 = 93, and `pt-[102px]` leaves 9px under it. An
+              earlier pass had the seal 8px lower against a smaller `pt`, which put the
+              label's bottom 17px INSIDE the letters and swallowed "2026". */}
+          <div className="relative pt-[90px] sm:pt-[102px]">
             <Starburst
-              className="absolute left-[26%] top-[18px] z-0 h-[92px] w-[92px] -translate-x-1/2 -rotate-12 sm:left-[31%] sm:top-[20px] sm:h-[108px] sm:w-[108px]"
+              className="absolute left-[26%] top-[10px] z-0 h-[92px] w-[92px] -translate-x-1/2 -rotate-12 sm:left-[31%] sm:top-[12px] sm:h-[108px] sm:w-[108px]"
               fill="var(--color-brand-orange)"
             >
               <div>

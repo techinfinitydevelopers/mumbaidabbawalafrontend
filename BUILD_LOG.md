@@ -1,3 +1,30 @@
+## 2026-09-08 - The seal's "2026" comes back out from under the letters
+
+The tuck was too deep: the seal's label block sits centred in the seal, so its bottom
+lands about `top + 0.75 × size`, and at `sm` that was 20 + 81 = **101** against a `pt` of
+84 — the label's bottom sat **17px inside** the letters and "2026" vanished behind the T.
+
+Seal raised 8px (`top-[10px] sm:top-[12px]`) and the `pt` taken to
+`pt-[90px] sm:pt-[102px]`, which is that same arithmetic solved the other way rather than
+nudged by eye: 12 + 0.75 × 108 = 93, and 102 leaves 9px under it. Only the seal's spiky
+rim is behind the letters now; its label never is.
+
+### Verified at both ends
+
+| viewport | seal | first line top | "2026" bottom | clear under the label | rim behind the letters |
+|---|---|---|---|---|---|
+| 1440 | 324–452 | 424 | 415 | **8px** | 28px |
+| 390 | 250–360 | 339 | 331 | **8px** | 21px |
+
+`labelClearsLetters` true at both, and hit-testing the centre of each label returns the
+label's own span, so "1890" and "2026" are both genuinely on top. No horizontal overflow
+at 390.
+
+(A flag in the first check read false because the test regex looked for `poster` and the
+label's own class contains `font-poster` — the page was right, the check was not.)
+
+eslint clean, production build passes.
+
 ## 2026-09-08 - The "1890 → 2026" seal tucks in behind "Taste All Five"
 
 On Regional Food Stories the seal sat clear above the heading at `z-30`, in front of
