@@ -738,7 +738,33 @@ h1, h2, h3, h4 {
   }
 }
 
+/* == Contact photo wall ======================================================
+   Two columns of photographs sliding past each other behind the waitlist card.
+
+   Each column holds its images twice and travels -50%, so the loop is seamless; the
+   second copy is `aria-hidden` in the markup. `--wall-dir` flips one column against the
+   other, which is what stops the two reading as one moving grid.
+
+   `transform` only, so it stays on the compositor however many photographs are in it.
+   Paused on hover and on focus-within, like `.rail`. */
+@keyframes wall-scroll {
+  from { transform: translate3d(0, 0, 0); }
+  to { transform: translate3d(0, -50%, 0); }
+}
+
+.wall-col {
+  animation: wall-scroll var(--wall-dur, 54s) linear infinite;
+  animation-direction: var(--wall-dir, normal);
+  will-change: transform;
+}
+
+.wall:hover .wall-col,
+.wall:focus-within .wall-col {
+  animation-play-state: paused;
+}
+
 @media (prefers-reduced-motion: reduce) {
+  .wall-col,
   .rail-track,
   .drift,
   .rise,

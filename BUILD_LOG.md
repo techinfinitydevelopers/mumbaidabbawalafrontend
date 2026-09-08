@@ -1,3 +1,67 @@
+## 2026-09-08 - Contact Us built. All nine pages are now real.
+
+Section 9 of the content doc, in its own order, plus the waitlist band the client asked
+for from their live site.
+
+1. **Hero** - "Let's Talk / Dabba." on the shared `PageHero`
+2. **For Customers** - the doc's four routes, the email, the phone, the five socials
+3. **The Waitlist** - the client's live-site band: photo wall left, waitlist and launch
+   cards right
+4. **For Business** - "Beyond the Dabba: Corporate & Global", the doc's four lines
+5. **Subscribe and Forget** - "The Best Lunch Decision Is the One You Only Make Once."
+
+Grounds run cream -> paper -> cream -> paper -> red, so no two adjacent sections share one.
+
+### Every route arrives sorted
+
+Each of the four customer topics opens a mail with **its own subject line** - "Orders &
+Plans", "Meal & Menu Questions" and so on - rather than everything landing in one
+unlabelled pile. Same for the corporate CTA.
+
+### The photo wall
+
+Two columns of the `about/net-*` documentary photographs sliding past each other behind
+the waitlist card, cropped by the panel and faded top and bottom so the crop does not
+read as a cut.
+
+Each column renders its list **twice** because the keyframe travels -50%; that is what
+makes the loop seamless, and the second pass is `aria-hidden` so the photographs are not
+announced again. The two columns run in **opposite directions** (`--wall-dir`) at
+different durations (58s and 46s) - matched directions read as one grid scrolling,
+opposed directions read as a wall. `transform` only, paused on hover and on
+`focus-within`, parked under `prefers-reduced-motion`.
+
+### The waitlist form, and what it does NOT do
+
+There is no list provider wired to this site, so the form does the one thing that works
+without a backend: it hands the address to the brand's inbox as a pre-filled email.
+
+**Nothing pretends to have subscribed anyone.** The note under the input says so before
+you submit ("No list software here yet, so this opens an email to ...") and after
+("We've opened an email ... send it and you're on the list"), in an `aria-live` region.
+That copy is the one thing on the page that is not the client's - everything else is the
+doc's or the live site's.
+
+>>> Replace `WaitlistForm`'s submit handler with a real provider before launch. The
+markup can stay as it is. <<<
+
+The submit control is a hand-rolled `button[type=submit].btn` rather than the shared
+`Button`: a submit inside a form has to stay a real submit, and `Button` would render it
+as a link. Same classes, so it matches every other button.
+
+### Verified at 1440
+
+5 sections with the intended grounds, all five headings present. Wall 522px tall, masked
+top and bottom, 2 columns animating `wall-scroll` at 58s/normal and 46s/reverse, 20
+images (10 unique, doubled). Form has its email input, its submit is a real
+`button[type=submit].btn`, and the live note reads correctly. 17 buttons, **all at 15px**.
+No horizontal overflow.
+
+`/contact` was the last "coming soon" stub. `ComingSoon` is now unused by any route -
+left in place rather than deleted, in case a new route needs it.
+
+eslint + `tsc --noEmit` clean, production build passes.
+
 ## 2026-09-08 - Checkered print off the Regional Food Stories wave
 
 The grid was showing on the paper above the red closing band, with a hard horizontal edge
