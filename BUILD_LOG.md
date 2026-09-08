@@ -1,3 +1,101 @@
+## 2026-09-08 - One button for the whole site, at a 15px radius
+
+The client picked a Uiverse button (uiverse.io, by adamgiebl) and asked for every button
+on the site to be that button, with a 15px radius throughout.
+
+### The mechanic
+
+The button's box carries a gradient; a `::before` panel skewed 30deg covers it at rest;
+on hover the panel slides out of the way and uncovers the gradient. The label lives in a
+`> span` above it on `z-index` - which is also where the padding sits, because `::before`
+fills the button box and padding on the button itself would push the panel around instead
+of the text.
+
+Two deliberate departures from the original:
+
+- **Colour.** The original's purple (`#8e2de2 -> #4a00e0`) is not a brand colour. Each
+  variant is now four custom properties - a rest colour, a reveal gradient and a label
+  colour per state - all drawn from the palette. Seven variants: `red`, `orange`,
+  `yellow`, `cream`, `paper`, `outline`, `outlineCream`.
+- **The skew survives the slide.** The original sets `transform: translate3d(100%,0,0)`
+  on hover with no `skew`, so the panel straightens as it leaves. Keeping the skew makes
+  it a clean wipe.
+
+**Outline variants cannot work by uncovering** - there is nothing under a transparent
+button - so they invert: the panel waits off-canvas to the LEFT and sweeps IN on hover,
+label flipping to suit. Same language, opposite direction.
+
+### The plumbing
+
+`globals.css` gets the `.btn` system (~150 lines, including a `:disabled` guard that
+freezes the wipe in both directions, `:focus-visible`, and a reduced-motion block).
+`src/components/Button.tsx` assembles the classes and the required `<span>`, and exports
+`Button` (renders `next/link` with `href`, otherwise a real `<button>` with
+`type="button"`) plus `IconButton` for the square controls.
+
+Three sizes, which are the three the site was already using by hand: `sm` in the heroes,
+`md` for most CTAs, `lg` for the closing ones on the red bands.
+
+**28 hand-rolled pills across 21 files** are gone. `rounded-full bg-brand-red px-7 py-3.5
+text-[11px] font-bold uppercase tracking-[0.18em] text-brand-cream transition-transform
+duration-300 hover:-translate-y-0.5`, repeated with small variations everywhere, is now
+`variant="red" size="md"`.
+
+### A conversion bug worth recording
+
+The first sweep classified variants with `'bg-brand-red' in className`. Outline buttons
+carry `hover:bg-brand-red`, so **every outline CTA was silently converted to a filled
+one** - six of them. The classifier now strips any class containing `:` before matching,
+so only base classes decide the variant. Caught by reading the conversion report rather
+than the diff, which is the only reason it did not ship.
+
+(Recovering from it cost the CSS too: `git checkout -- src/app ...` to revert the
+mis-converted pages also reverted `src/app/globals.css`, taking the new `.btn` block with
+it. Re-added.)
+
+### What did NOT get the wipe
+
+Deliberately - a sweep under a page number or inside a segmented control is noise. These
+came onto the 15px radius and nothing else:
+
+- the header's hamburger, and the nav links (navigation, not buttons)
+- blog pagination (its active state is a fill)
+- the menu's two segmented controls - outer 15px, segments **11px**, so the inner corners
+  sit concentric with the outer ones (15 minus the 4px of `p-1`)
+- the blog and menu toolbar inputs, which sit directly beside the buttons
+
+Badges, tags, status dots and the radial glows keep `rounded-full` - they are not buttons.
+The review deck's progress dots stay round for the same reason.
+
+### Verified in the browser
+
+Every page: **every `.btn` computes to exactly `15px`**, and zero clickable elements over
+90x28 are left pill-shaped.
+
+| page | buttons |
+|---|---|
+| `/` | 14 |
+| `/plans` | 15 |
+| `/menu` | 12 |
+| `/about` | 11 |
+| `/regional-food-stories` | 20 |
+| `/whats-cooking-tomorrow` | 12 |
+| `/chefs-corner` | 8 |
+| `/blog` | 7 |
+| `/blog/[slug]` | 11 |
+
+All 23 `.btn` rules confirmed present in the cascade, including the `@media (hover: hover)`
+block and the `:disabled` guards. Structure checked on live elements: `position: relative`,
+`overflow: hidden`, span at `z-index: 10` with `14px 28px` padding, `::before` skew matrix
+`0.57735` (= tan 30deg).
+
+**The wipe was hovered for real**, not just read: on `:hover` the filled button's
+`::before` went from `translateX(0)` to **`translateX(368.316px)`** - 115% of its own
+width - and the button went from flat red to the red->orange gradient in the screenshot.
+The outline button beside it stayed parked at `-224px`, untouched.
+
+eslint + `tsc --noEmit` clean, production build passes.
+
 ## 2026-09-08 — Statement band back to a horizontal scroll pan, on a pin that works
 
 The client wanted the horizontal band all along. It failed the first time because of the

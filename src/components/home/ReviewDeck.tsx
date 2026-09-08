@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { IconButton } from "@/components/Button";
 import { REVIEW_DECK } from "@/data/home";
 
 /**
@@ -192,11 +193,10 @@ export default function ReviewDeck() {
 
       {count > 1 && (
         <div className="mt-phi-2 flex items-center justify-center gap-phi-3">
-          <button
-            type="button"
+          <IconButton
             onClick={() => step(-1)}
             aria-label="Previous review"
-            className="grid h-10 w-10 place-items-center rounded-full border-2 border-brand-red/25 text-brand-red transition-colors duration-300 hover:border-brand-red hover:bg-brand-red hover:text-brand-cream"
+            size={40}
           >
             <svg width="15" height="15" viewBox="0 0 24 24" fill="none" aria-hidden="true">
               <path
@@ -207,7 +207,7 @@ export default function ReviewDeck() {
                 strokeLinejoin="round"
               />
             </svg>
-          </button>
+          </IconButton>
 
           <div className="flex items-center gap-2">
             {REVIEW_DECK.map((review, i) => (
@@ -224,11 +224,10 @@ export default function ReviewDeck() {
             ))}
           </div>
 
-          <button
-            type="button"
+          <IconButton
             onClick={() => step(1)}
             aria-label="Next review"
-            className="grid h-10 w-10 place-items-center rounded-full border-2 border-brand-red/25 text-brand-red transition-colors duration-300 hover:border-brand-red hover:bg-brand-red hover:text-brand-cream"
+            size={40}
           >
             <svg width="15" height="15" viewBox="0 0 24 24" fill="none" aria-hidden="true">
               <path
@@ -239,7 +238,7 @@ export default function ReviewDeck() {
                 strokeLinejoin="round"
               />
             </svg>
-          </button>
+          </IconButton>
         </div>
       )}
     </div>

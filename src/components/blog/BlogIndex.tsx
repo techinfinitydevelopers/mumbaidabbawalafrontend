@@ -72,7 +72,7 @@ export default function BlogIndex() {
             value={query}
             onChange={(e) => change(setQuery)(e.target.value)}
             placeholder="Search posts…"
-            className="w-full rounded-full border border-brand-red/15 bg-paper py-2.5 pl-10 pr-4 text-sm text-ink placeholder:text-ink/40 focus:border-brand-green focus:outline-none"
+            className="w-full rounded-[15px] border border-brand-red/15 bg-paper py-2.5 pl-10 pr-4 text-sm text-ink placeholder:text-ink/40 focus:border-brand-green focus:outline-none"
           />
         </label>
 
@@ -80,7 +80,7 @@ export default function BlogIndex() {
           value={category}
           onChange={(e) => change(setCategory)(e.target.value as BlogCategory | "all")}
           aria-label="Filter by category"
-          className="rounded-full border border-brand-red/15 bg-paper px-4 py-2.5 text-sm font-semibold text-ink focus:border-brand-green focus:outline-none"
+          className="rounded-[15px] border border-brand-red/15 bg-paper px-4 py-2.5 text-sm font-semibold text-ink focus:border-brand-green focus:outline-none"
         >
           <option value="all">All categories</option>
           {BLOG_CATEGORIES.map((c) => (
@@ -94,7 +94,7 @@ export default function BlogIndex() {
           value={sort}
           onChange={(e) => change(setSort)(e.target.value as Sort)}
           aria-label="Sort posts"
-          className="rounded-full border border-brand-red/15 bg-paper px-4 py-2.5 text-sm font-semibold text-ink focus:border-brand-green focus:outline-none"
+          className="rounded-[15px] border border-brand-red/15 bg-paper px-4 py-2.5 text-sm font-semibold text-ink focus:border-brand-green focus:outline-none"
         >
           <option value="newest">Newest first</option>
           <option value="oldest">Oldest first</option>
@@ -168,7 +168,7 @@ export default function BlogIndex() {
               type="button"
               onClick={() => setPage(n)}
               aria-current={n === current ? "page" : undefined}
-              className={`grid h-10 w-10 place-items-center rounded-full text-sm font-bold transition-colors ${
+              className={`grid h-10 w-10 place-items-center rounded-[15px] text-sm font-bold transition-colors ${
                 n === current
                   ? "bg-brand-red text-brand-cream"
                   : "border border-brand-red/15 text-ink/70 hover:border-brand-green hover:text-brand-red"

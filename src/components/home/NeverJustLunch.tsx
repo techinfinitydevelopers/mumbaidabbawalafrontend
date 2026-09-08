@@ -1,5 +1,5 @@
 import Image from "next/image";
-import Link from "next/link";
+import Button from "@/components/Button";
 import Reveal from "@/components/Reveal";
 import Starburst from "@/components/poster/Starburst";
 import { NEVER_JUST_LUNCH } from "@/data/home";
@@ -90,12 +90,9 @@ export default function NeverJustLunch() {
               ))}
             </ol>
 
-            <Link
-              href="/regional-food-stories"
-              className="mt-phi-4 inline-flex items-center gap-2 rounded-full border-2 border-brand-red/25 px-6 py-3 text-[11px] font-bold uppercase tracking-[0.16em] text-brand-red transition-colors duration-300 hover:border-brand-red hover:bg-brand-red hover:text-brand-cream"
-            >
+            <Button href="/regional-food-stories" variant="outline" size="md" className="mt-phi-4">
               Read The Food Stories
-            </Link>
+            </Button>
           </Reveal>
         </div>
       </div>

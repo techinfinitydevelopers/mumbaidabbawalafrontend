@@ -1,4 +1,5 @@
 import Image from "next/image";
+import Button from "@/components/Button";
 import Link from "next/link";
 import type { Metadata } from "next";
 import Reveal from "@/components/Reveal";
@@ -149,12 +150,9 @@ export default function BlogPage() {
             New dispatches from the kitchen and the route, plus what&rsquo;s coming to the
             Perth menu — straight to your inbox.
           </p>
-          <Link
-            href="/contact"
-            className="mt-7 inline-block rounded-full bg-brand-red px-8 py-4 text-[11px] font-bold uppercase tracking-[0.18em] text-brand-cream transition-transform duration-300 hover:-translate-y-0.5 hover:bg-brand-orange"
-          >
+          <Button href="/contact" variant="red" size="lg" className="mt-7">
             Subscribe
-          </Link>
+          </Button>
         </Reveal>
       </section>
     </div>

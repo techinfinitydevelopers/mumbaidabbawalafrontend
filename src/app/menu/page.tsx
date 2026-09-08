@@ -1,4 +1,4 @@
-import Link from "next/link";
+import Button from "@/components/Button";
 import type { Metadata } from "next";
 import PageHero from "@/components/PageHero";
 import Reveal from "@/components/Reveal";
@@ -48,12 +48,9 @@ export default function MenuPage() {
                 the full dabba.
               </p>
             </div>
-            <Link
-              href="/whats-cooking-tomorrow"
-              className="rounded-full bg-brand-orange px-6 py-3 text-[11px] font-bold uppercase tracking-[0.18em] text-brand-cream transition-transform duration-300 hover:-translate-y-0.5"
-            >
+            <Button href="/whats-cooking-tomorrow" variant="orange" size="md">
               What&rsquo;s Cooking Tomorrow
-            </Link>
+            </Button>
           </Reveal>
 
           <MenuRotation />
@@ -90,12 +87,9 @@ export default function MenuPage() {
         <RegionStoryCards className="mx-auto mt-14 max-w-5xl px-5 sm:px-8" />
 
         <Reveal className="mx-auto mt-14 max-w-3xl px-5 text-center sm:px-8">
-          <Link
-            href="/regional-food-stories"
-            className="inline-flex items-center gap-2 rounded-full bg-brand-red px-7 py-3.5 text-[11px] font-bold uppercase tracking-[0.18em] text-brand-cream transition-transform duration-300 hover:-translate-y-0.5"
-          >
+          <Button href="/regional-food-stories" variant="red" size="md">
             Read the Regional Food Stories
-          </Link>
+          </Button>
         </Reveal>
       </section>
 

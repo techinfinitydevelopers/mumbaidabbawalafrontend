@@ -1,4 +1,5 @@
 import Image from "next/image";
+import { IconButton } from "@/components/Button";
 import Link from "next/link";
 import BrandIcon from "@/components/BrandIcon";
 import { EMAIL, PHONE, PHONE_DISPLAY, SOCIALS } from "@/data/contact";
@@ -96,17 +97,18 @@ export default function Footer() {
           </p>
           <div className="flex flex-wrap gap-2">
             {SOCIALS.map((s) => (
-              <a
+              <IconButton
                 key={s.key}
                 href={s.href}
                 target="_blank"
                 rel="noreferrer"
                 aria-label={s.label}
                 title={s.label}
-                className="grid h-9 w-9 place-items-center rounded-full border border-brand-cream/25 text-brand-cream/80 transition-colors duration-300 hover:border-brand-yellow hover:text-brand-yellow"
+                variant="outlineCream"
+                size={36}
               >
                 <BrandIcon name={s.key} className="h-4 w-4" />
-              </a>
+              </IconButton>
             ))}
           </div>
         </div>

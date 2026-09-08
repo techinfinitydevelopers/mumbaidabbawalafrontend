@@ -1,4 +1,4 @@
-import Link from "next/link";
+import Button from "@/components/Button";
 import type { Plan } from "@/data/plans";
 
 /**
@@ -120,16 +120,14 @@ export default function PlanCard({ plan }: { plan: Plan }) {
 
       {/* mt-auto on the wrapper so the four CTAs line up however long the feature lists run */}
       <div className="mt-auto pt-7">
-        <Link
+        <Button
           href="/contact"
-          className={`block rounded-full px-6 py-3.5 text-center text-[11px] font-bold uppercase tracking-[0.16em] transition-transform duration-300 hover:-translate-y-0.5 ${
-            featured
-              ? "bg-brand-yellow text-brand-red"
-              : "bg-brand-red text-brand-cream hover:bg-brand-orange"
-          }`}
+          variant={featured ? "yellow" : "red"}
+          size="md"
+          className="w-full"
         >
           {plan.cta}
-        </Link>
+        </Button>
       </div>
     </article>
   );

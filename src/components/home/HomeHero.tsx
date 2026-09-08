@@ -1,4 +1,4 @@
-import Link from "next/link";
+import Button from "@/components/Button";
 import HeroVideo from "@/components/home/HeroVideo";
 import RouteTicker from "@/components/poster/RouteTicker";
 import Starburst from "@/components/poster/Starburst";
@@ -94,18 +94,12 @@ export default function HomeHero() {
             className="rise mt-4 flex flex-wrap gap-2.5 sm:mt-7 sm:gap-3"
             style={{ animationDelay: "0.3s" }}
           >
-            <Link
-              href="/plans"
-              className="rounded-full bg-brand-orange px-5 py-2.5 text-[10px] font-bold uppercase tracking-[0.16em] text-brand-cream shadow-[0_12px_22px_-10px_rgba(243,98,32,0.9)] transition-transform duration-300 hover:-translate-y-0.5 sm:px-7 sm:py-3.5 sm:text-[11px] sm:tracking-[0.18em]"
-            >
+            <Button href="/plans" variant="orange" size="sm">
               Order Your Dabba
-            </Link>
-            <Link
-              href="/whats-cooking-tomorrow"
-              className="rounded-full bg-brand-cream px-5 py-2.5 text-[10px] font-bold uppercase tracking-[0.16em] text-brand-red shadow-[0_12px_22px_-14px_rgba(0,0,0,0.7)] transition-transform duration-300 hover:-translate-y-0.5 sm:px-7 sm:py-3.5 sm:text-[11px] sm:tracking-[0.18em]"
-            >
+            </Button>
+            <Button href="/whats-cooking-tomorrow" variant="cream" size="sm">
               See What&rsquo;s Cooking
-            </Link>
+            </Button>
           </div>
 
           <RouteTicker

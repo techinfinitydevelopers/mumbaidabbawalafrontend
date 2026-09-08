@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
+import Button from "@/components/Button";
 import Image from "next/image";
-import Link from "next/link";
 import PageHero from "@/components/PageHero";
 import JourneyTimeline from "@/components/journey/JourneyTimeline";
 import Reveal from "@/components/Reveal";
@@ -83,12 +83,9 @@ export default function AboutPage() {
                 industry, anywhere in the world. We don&rsquo;t lead with the numbers — we
                 lead with what they represent: a promise, kept, for well over a century.
               </p>
-              <a
-                href="#journey"
-                className="mt-8 inline-block rounded-full bg-brand-red px-8 py-4 text-[11px] font-bold uppercase tracking-[0.18em] text-brand-cream transition-transform duration-300 hover:-translate-y-0.5 hover:bg-brand-orange"
-              >
+              <Button href="#journey" variant="red" size="lg" className="mt-8">
                 Our Story
-              </a>
+              </Button>
             </Reveal>
 
             {/* This column used to restate 1890 -> 2026, which the journey timeline
@@ -217,18 +214,12 @@ export default function AboutPage() {
           </p>
 
           <div className="mt-8 flex flex-wrap justify-center gap-3">
-            <Link
-              href="/plans"
-              className="rounded-full bg-brand-yellow px-8 py-4 text-[11px] font-bold uppercase tracking-[0.18em] text-brand-red shadow-[0_16px_30px_-14px_rgba(0,0,0,0.6)] transition-transform duration-300 hover:-translate-y-0.5"
-            >
+            <Button href="/plans" variant="yellow" size="lg">
               Order Your Dabba
-            </Link>
-            <Link
-              href="/menu"
-              className="rounded-full border-2 border-brand-cream/50 px-8 py-4 text-[11px] font-bold uppercase tracking-[0.18em] text-brand-cream transition-transform duration-300 hover:-translate-y-0.5 hover:bg-brand-cream/10"
-            >
+            </Button>
+            <Button href="/menu" variant="outlineCream" size="lg">
               See the Menu
-            </Link>
+            </Button>
           </div>
 
           <RouteTicker className="mx-auto mt-10 max-w-sm text-brand-cream" />

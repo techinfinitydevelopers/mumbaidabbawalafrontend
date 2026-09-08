@@ -1,4 +1,4 @@
-import Link from "next/link";
+import Button from "@/components/Button";
 import type { Metadata } from "next";
 import Reveal from "@/components/Reveal";
 import PageHero from "@/components/PageHero";
@@ -110,18 +110,12 @@ export default function RegionalFoodStoriesPage() {
           </p>
 
           <div className="mt-8 flex flex-wrap justify-center gap-3">
-            <Link
-              href="/menu"
-              className="rounded-full bg-brand-yellow px-8 py-4 text-[11px] font-bold uppercase tracking-[0.18em] text-brand-red shadow-[0_16px_30px_-14px_rgba(0,0,0,0.6)] transition-transform duration-300 hover:-translate-y-0.5"
-            >
+            <Button href="/menu" variant="yellow" size="lg">
               Explore Regional Menus
-            </Link>
-            <Link
-              href="/plans"
-              className="rounded-full border-2 border-brand-cream/50 px-8 py-4 text-[11px] font-bold uppercase tracking-[0.18em] text-brand-cream transition-transform duration-300 hover:-translate-y-0.5 hover:bg-brand-cream/10"
-            >
+            </Button>
+            <Button href="/plans" variant="outlineCream" size="lg">
               Order Your Dabba
-            </Link>
+            </Button>
           </div>
 
           <RouteTicker className="mx-auto mt-10 max-w-sm text-brand-cream" />

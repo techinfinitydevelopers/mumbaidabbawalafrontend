@@ -1,4 +1,4 @@
-import Link from "next/link";
+import Button from "@/components/Button";
 import DishCluster from "./DishCluster";
 import type { Region } from "@/data/regions";
 
@@ -9,7 +9,7 @@ const TONES = {
     name: "text-brand-cream",
     nameShadow: "rgba(175,20,17,0.85)",
     body: "text-brand-cream/90",
-    button: "bg-brand-cream text-brand-red",
+    button: "cream" as const,
     badgeLabel: "text-ink/45",
     badgeValue: "text-brand-orange",
   },
@@ -19,7 +19,7 @@ const TONES = {
     name: "text-brand-red",
     nameShadow: "var(--color-brand-yellow)",
     body: "text-ink/70",
-    button: "bg-brand-red text-brand-cream",
+    button: "red" as const,
     badgeLabel: "text-ink/45",
     badgeValue: "text-brand-red",
   },
@@ -82,13 +82,14 @@ export default function RegionCard({
         <p className={`mt-4 text-phi-1 leading-relaxed ${tone.body}`}>{region.description}</p>
 
         <div className="mt-6 flex justify-end">
-          <Link
+          <Button
             href="/menu"
             tabIndex={ariaHidden ? -1 : undefined}
-            className={`rounded-full px-6 py-3 text-[11px] font-bold uppercase tracking-[0.16em] transition-transform duration-300 hover:-translate-y-0.5 ${tone.button}`}
+            variant={tone.button}
+            size="md"
           >
             Explore Menu
-          </Link>
+          </Button>
         </div>
       </div>
     </article>

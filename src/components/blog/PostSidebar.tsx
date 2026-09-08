@@ -1,6 +1,6 @@
 "use client";
 
-import Link from "next/link";
+import Button, { IconButton } from "@/components/Button";
 import { usePathname } from "next/navigation";
 import { useSyncExternalStore } from "react";
 import BrandIcon from "@/components/BrandIcon";
@@ -58,27 +58,24 @@ export default function PostSidebar({ title }: { title: string }) {
         <p className="text-phi-0 font-bold uppercase tracking-[0.2em] text-ink/45">Share</p>
         <div className="mt-3 flex flex-wrap gap-2">
           {shares.map((s) => (
-            <a
+            <IconButton
               key={s.key}
               href={s.href}
               target="_blank"
               rel="noreferrer"
               aria-label={s.label}
               title={s.label}
-              className="grid h-10 w-10 place-items-center rounded-full border border-brand-red/15 bg-paper text-ink/70 transition-colors duration-300 hover:border-brand-green hover:bg-brand-cream hover:text-brand-red"
+              size={40}
             >
               <BrandIcon name={s.key} />
-            </a>
+            </IconButton>
           ))}
         </div>
       </div>
 
-      <Link
-        href="/contact"
-        className="rounded-full bg-brand-red px-6 py-3.5 text-center text-[11px] font-bold uppercase leading-snug tracking-[0.14em] text-brand-cream transition-transform duration-300 hover:-translate-y-0.5 hover:bg-brand-orange"
-      >
+      <Button href="/contact" variant="red" size="md">
         Subscribe to our newsletter
-      </Link>
+      </Button>
     </div>
   );
 }

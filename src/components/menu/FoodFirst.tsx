@@ -1,4 +1,4 @@
-import Link from "next/link";
+import Button from "@/components/Button";
 import Reveal from "@/components/Reveal";
 
 /** The five promises, in the client's order and wording. */
@@ -77,12 +77,9 @@ export default function FoodFirst() {
             Food isn&rsquo;t a feature of Mumbai Dabbawala.{" "}
             <span className="text-brand-red">It&rsquo;s the entire reason we exist.</span>
           </p>
-          <Link
-            href="#rotation"
-            className="shrink-0 rounded-full bg-brand-red px-7 py-3.5 text-center text-[11px] font-bold uppercase tracking-[0.18em] text-brand-cream transition-transform duration-300 hover:-translate-y-0.5 hover:bg-brand-orange"
-          >
+          <Button href="#rotation" variant="red" size="md" className="shrink-0">
             Explore Our Menu
-          </Link>
+          </Button>
         </Reveal>
       </div>
     </section>

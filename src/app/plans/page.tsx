@@ -1,4 +1,4 @@
-import Link from "next/link";
+import Button from "@/components/Button";
 import type { Metadata } from "next";
 import PageHero from "@/components/PageHero";
 import Reveal from "@/components/Reveal";
@@ -71,12 +71,9 @@ export default function PlansPage() {
             className="mt-10 flex flex-col gap-4 rounded-[28px] bg-brand-cream/60 p-6 sm:flex-row sm:items-center sm:justify-between sm:p-7"
           >
             <p className="max-w-2xl text-phi-1 leading-relaxed text-ink/70">{PLAN_TERMS_NOTE}</p>
-            <Link
-              href="/contact"
-              className="shrink-0 rounded-full border-2 border-brand-red/25 px-6 py-3 text-center text-[11px] font-bold uppercase tracking-[0.16em] text-brand-red transition-colors duration-300 hover:border-brand-red hover:bg-brand-red hover:text-brand-cream"
-            >
+            <Button href="/contact" variant="outline" size="md" className="shrink-0">
               Check My Delivery Zone
-            </Link>
+            </Button>
           </Reveal>
         </div>
       </section>
@@ -107,18 +104,12 @@ export default function PlansPage() {
           </p>
 
           <div className="mt-8 flex flex-wrap justify-center gap-3">
-            <Link
-              href="/contact"
-              className="rounded-full bg-brand-yellow px-8 py-4 text-[11px] font-bold uppercase tracking-[0.18em] text-brand-red shadow-[0_16px_30px_-14px_rgba(0,0,0,0.6)] transition-transform duration-300 hover:-translate-y-0.5"
-            >
+            <Button href="/contact" variant="yellow" size="lg">
               Start Trial
-            </Link>
-            <Link
-              href="/whats-cooking-tomorrow"
-              className="rounded-full border-2 border-brand-cream/50 px-8 py-4 text-[11px] font-bold uppercase tracking-[0.18em] text-brand-cream transition-transform duration-300 hover:-translate-y-0.5 hover:bg-brand-cream/10"
-            >
+            </Button>
+            <Button href="/whats-cooking-tomorrow" variant="outlineCream" size="lg">
               See Tomorrow&rsquo;s Dabba
-            </Link>
+            </Button>
           </div>
         </Reveal>
       </section>

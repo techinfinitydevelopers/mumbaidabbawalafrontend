@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import { IconButton } from "@/components/Button";
 import { useCallback, useEffect, useRef, useState } from "react";
 import type { Addon } from "@/data/addons";
 
@@ -55,13 +56,13 @@ export default function AddonSlider({ items }: { items: Addon[] }) {
               { dir: 1 as const, label: "Next add-ons", disabled: atEnd, d: "M9 6l6 6-6 6" },
             ]
           ).map((btn) => (
-            <button
+            <IconButton
               key={btn.label}
-              type="button"
+              size={44}
               onClick={() => scrollByCards(btn.dir)}
               disabled={btn.disabled}
               aria-label={btn.label}
-              className="pointer-events-auto grid h-11 w-11 place-items-center rounded-full border border-brand-red/15 bg-paper text-brand-red shadow-[0_10px_20px_-12px_rgba(42,24,16,0.6)] transition-all duration-300 hover:-translate-y-0.5 hover:bg-brand-red hover:text-brand-cream disabled:cursor-not-allowed disabled:opacity-35 disabled:hover:translate-y-0 disabled:hover:bg-paper disabled:hover:text-brand-red"
+              className="pointer-events-auto"
             >
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
                 <path
@@ -72,7 +73,7 @@ export default function AddonSlider({ items }: { items: Addon[] }) {
                   strokeLinejoin="round"
                 />
               </svg>
-            </button>
+            </IconButton>
           ))}
         </div>
       )}

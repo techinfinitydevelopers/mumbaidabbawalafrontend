@@ -1,5 +1,5 @@
 import Image from "next/image";
-import Link from "next/link";
+import Button from "@/components/Button";
 import Reveal from "@/components/Reveal";
 import RouteTicker from "@/components/poster/RouteTicker";
 import { PERTH_AUDIENCES } from "@/data/home";
@@ -64,18 +64,12 @@ export default function PerthLanding() {
             </p>
 
             <div className="mt-phi-4 flex flex-wrap items-center gap-3">
-              <Link
-                href="/contact"
-                className="rounded-full bg-brand-red px-7 py-3.5 text-[11px] font-bold uppercase tracking-[0.18em] text-brand-cream shadow-[0_14px_26px_-16px_rgba(175,20,17,0.9)] transition-transform duration-300 hover:-translate-y-0.5"
-              >
+              <Button href="/contact" variant="red" size="md">
                 Check If We Deliver To You
-              </Link>
-              <Link
-                href="/plans"
-                className="rounded-full border-2 border-brand-red/25 px-7 py-3.5 text-[11px] font-bold uppercase tracking-[0.16em] text-brand-red transition-colors duration-300 hover:border-brand-red hover:bg-brand-red hover:text-brand-cream"
-              >
+              </Button>
+              <Button href="/plans" variant="outline" size="md">
                 See The Plans
-              </Link>
+              </Button>
             </div>
           </Reveal>
 

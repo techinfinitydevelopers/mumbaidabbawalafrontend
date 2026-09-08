@@ -1,4 +1,4 @@
-import Link from "next/link";
+import Button from "@/components/Button";
 import Reveal from "@/components/Reveal";
 import ReviewDeck from "@/components/home/ReviewDeck";
 
@@ -55,12 +55,9 @@ export default function Testimonials() {
         </Reveal>
 
         <Reveal delay={140} className="mt-phi-3 text-center">
-          <Link
-            href="/contact"
-            className="inline-flex items-center gap-2 rounded-full bg-brand-red px-7 py-3.5 text-[11px] font-bold uppercase tracking-[0.18em] text-brand-cream transition-transform duration-300 hover:-translate-y-0.5"
-          >
+          <Button href="/contact" variant="red" size="md">
             Share Your Dabba Story
-          </Link>
+          </Button>
         </Reveal>
       </div>
     </section>

@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import Button from "@/components/Button";
 import Link from "next/link";
 import { useState } from "react";
 
@@ -47,7 +48,7 @@ export default function Header() {
             <Link
               key={link.href}
               href={link.href}
-              className="rounded-full px-3.5 py-2 text-sm font-semibold text-ink/75 transition-colors hover:bg-brand-cream hover:text-brand-red"
+              className="rounded-[15px] px-3.5 py-2 text-sm font-semibold text-ink/75 transition-colors hover:bg-brand-cream hover:text-brand-red"
             >
               {link.label}
             </Link>
@@ -57,16 +58,13 @@ export default function Header() {
         <div className="hidden items-center gap-2 xl:flex">
           <Link
             href="/contact"
-            className="rounded-full px-4 py-2 text-sm font-semibold text-ink/75 transition-colors hover:text-brand-red"
+            className="rounded-[15px] px-4 py-2 text-sm font-semibold text-ink/75 transition-colors hover:text-brand-red"
           >
             Contact
           </Link>
-          <Link
-            href="/plans"
-            className="rounded-full bg-brand-red px-5 py-2.5 text-sm font-bold text-brand-cream shadow-[0_8px_20px_-6px_rgba(175,20,17,0.6)] transition-transform hover:-translate-y-0.5 hover:bg-brand-orange"
-          >
+          <Button href="/plans" variant="red" size="sm">
             Order Your Dabba
-          </Link>
+          </Button>
         </div>
 
         <button
@@ -74,7 +72,7 @@ export default function Header() {
           onClick={() => setOpen((v) => !v)}
           aria-label="Toggle menu"
           aria-expanded={open}
-          className="grid h-10 w-10 place-items-center rounded-full text-brand-red xl:hidden"
+          className="grid h-10 w-10 place-items-center rounded-[15px] text-brand-red xl:hidden"
         >
           <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true">
             {open ? (
@@ -111,13 +109,15 @@ export default function Header() {
             >
               Contact
             </Link>
-            <Link
+            <Button
               href="/plans"
               onClick={() => setOpen(false)}
-              className="mt-1 rounded-full bg-brand-red px-4 py-3 text-center text-sm font-bold text-brand-cream"
+              variant="red"
+              size="md"
+              className="mt-1 w-full"
             >
               Order Your Dabba
-            </Link>
+            </Button>
           </nav>
         </div>
       )}

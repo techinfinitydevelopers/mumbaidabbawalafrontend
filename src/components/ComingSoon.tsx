@@ -1,4 +1,4 @@
-import Link from "next/link";
+import Button from "@/components/Button";
 
 export default function ComingSoon({
   eyebrow,
@@ -17,18 +17,12 @@ export default function ComingSoon({
       <h1 className="mt-5 font-display text-3xl font-bold text-ink sm:text-4xl">{title}</h1>
       <p className="mt-4 text-base leading-relaxed text-ink/70">{description}</p>
       <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
-        <Link
-          href="/regional-food-stories"
-          className="rounded-full bg-brand-red px-6 py-3 text-sm font-bold text-brand-cream transition-transform hover:-translate-y-0.5"
-        >
+        <Button href="/regional-food-stories" variant="red" size="md">
           Read Regional Food Stories
-        </Link>
-        <Link
-          href="/"
-          className="rounded-full border border-brand-red/20 px-6 py-3 text-sm font-bold text-brand-red hover:bg-brand-cream"
-        >
+        </Button>
+        <Button href="/" variant="outline" size="md">
           Back to Home
-        </Link>
+        </Button>
       </div>
     </section>
   );

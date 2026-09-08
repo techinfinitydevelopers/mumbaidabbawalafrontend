@@ -1,4 +1,4 @@
-import Link from "next/link";
+import Button from "@/components/Button";
 import HeroPlatter, { type Piece } from "@/components/regional/HeroPlatter";
 import Starburst from "@/components/poster/Starburst";
 import RouteTicker from "@/components/poster/RouteTicker";
@@ -136,18 +136,12 @@ export default function PageHero({
             className="slide-in-right mt-3 flex flex-wrap gap-2.5 sm:mt-5 sm:gap-3"
             style={{ animationDelay: "0.32s" }}
           >
-            <Link
-              href={primary.href}
-              className="rounded-full bg-brand-orange px-5 py-2.5 text-[10px] font-bold uppercase tracking-[0.16em] text-brand-cream shadow-[0_12px_22px_-10px_rgba(243,98,32,0.9)] transition-transform duration-300 hover:-translate-y-0.5 sm:px-7 sm:py-3.5 sm:text-[11px] sm:tracking-[0.18em]"
-            >
+            <Button href={primary.href} variant="orange" size="sm">
               {primary.label}
-            </Link>
-            <Link
-              href={secondary.href}
-              className="rounded-full bg-paper px-5 py-2.5 text-[10px] font-bold uppercase tracking-[0.16em] text-brand-red shadow-[0_12px_22px_-14px_rgba(42,24,16,0.6)] transition-transform duration-300 hover:-translate-y-0.5 sm:px-7 sm:py-3.5 sm:text-[11px] sm:tracking-[0.18em]"
-            >
+            </Button>
+            <Button href={secondary.href} variant="paper" size="sm">
               {secondary.label}
-            </Link>
+            </Button>
           </div>
 
           <RouteTicker

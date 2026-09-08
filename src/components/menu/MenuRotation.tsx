@@ -1,6 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import Button from "@/components/Button";
 import MenuDayCard, { type Diet } from "@/components/menu/MenuDayCard";
 import Reveal from "@/components/Reveal";
 import VegMark from "@/components/VegMark";
@@ -88,7 +89,7 @@ export default function MenuRotation() {
           <select
             value={cuisine}
             onChange={(e) => setCuisine(e.target.value)}
-            className="appearance-none rounded-full border border-brand-red/15 bg-paper py-3 pl-5 pr-11 text-sm font-semibold text-ink shadow-sm outline-none transition-colors hover:border-brand-green focus-visible:border-brand-green"
+            className="appearance-none rounded-[15px] border border-brand-red/15 bg-paper py-3 pl-5 pr-11 text-sm font-semibold text-ink shadow-sm outline-none transition-colors hover:border-brand-green focus-visible:border-brand-green"
           >
             <option value="all">All cuisines</option>
             {cuisines.map((c) => (
@@ -109,14 +110,14 @@ export default function MenuRotation() {
           </svg>
         </label>
 
-        <div className="flex rounded-full border border-brand-red/15 bg-paper p-1 shadow-sm">
+        <div className="flex rounded-[15px] border border-brand-red/15 bg-paper p-1 shadow-sm">
           {RANGES.map((r) => (
             <button
               key={r.id}
               type="button"
               onClick={() => setRange(r.id)}
               aria-pressed={range === r.id}
-              className={`rounded-full px-4 py-2 text-sm font-semibold transition-colors sm:px-5 ${
+              className={`rounded-[11px] px-4 py-2 text-sm font-semibold transition-colors sm:px-5 ${
                 range === r.id
                   ? "bg-brand-red text-brand-cream"
                   : "text-ink/70 hover:text-brand-red"
@@ -127,25 +128,32 @@ export default function MenuRotation() {
           ))}
         </div>
 
-        <button
-          type="button"
+        <Button
           onClick={() => window.print()}
-          className="flex items-center gap-2 rounded-full border border-brand-red/15 bg-paper px-5 py-3 text-sm font-semibold text-ink shadow-sm transition-colors hover:border-brand-green hover:text-brand-green-dark"
+          variant="outline"
+          size="md"
+          icon={
+            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path
+                d="M12 4v11m0 0l-4-4m4 4l4-4M5 19h14"
+                stroke="currentColor"
+                strokeWidth="2.2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+            </svg>
+          }
         >
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-            <path d="M12 4v11m0 0l-4-4m4 4l4-4M5 19h14" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" />
-          </svg>
           Download / print menu
-        </button>
-
-        <div className="ml-auto flex rounded-full border border-brand-red/15 bg-paper p-1 shadow-sm">
+        </Button>
+        <div className="ml-auto flex rounded-[15px] border border-brand-red/15 bg-paper p-1 shadow-sm">
           {DIETS.map((d) => (
             <button
               key={d.id}
               type="button"
               onClick={() => setDiet(d.id)}
               aria-pressed={diet === d.id}
-              className={`flex items-center gap-2 rounded-full px-4 py-2 text-sm font-semibold transition-colors ${
+              className={`flex items-center gap-2 rounded-[11px] px-4 py-2 text-sm font-semibold transition-colors ${
                 diet === d.id ? "bg-brand-cream text-brand-red" : "text-ink/70 hover:text-brand-red"
               }`}
             >

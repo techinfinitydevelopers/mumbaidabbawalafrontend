@@ -1,5 +1,5 @@
 import Image from "next/image";
-import Link from "next/link";
+import Button from "@/components/Button";
 import type { Metadata } from "next";
 import PageHero from "@/components/PageHero";
 import Reveal from "@/components/Reveal";
@@ -50,12 +50,9 @@ export default function WhatsCookingTomorrowPage() {
                 Tomorrow&rsquo;s Thali
               </h2>
             </div>
-            <Link
-              href="/menu"
-              className="rounded-full bg-brand-orange px-6 py-3 text-[11px] font-bold uppercase tracking-[0.18em] text-brand-cream transition-transform duration-300 hover:-translate-y-0.5"
-            >
+            <Button href="/menu" variant="orange" size="md">
               Full Menu
-            </Link>
+            </Button>
           </Reveal>
 
           <div className="mt-8 grid gap-5 lg:grid-cols-[1.05fr_1fr]">
@@ -214,12 +211,9 @@ export default function WhatsCookingTomorrowPage() {
             — Chef, Mumbai Dabbawala kitchen
           </p>
 
-          <Link
-            href="/plans"
-            className="mt-8 inline-flex items-center gap-2 rounded-full bg-brand-yellow px-8 py-4 text-[11px] font-bold uppercase tracking-[0.18em] text-brand-red shadow-[0_16px_30px_-14px_rgba(0,0,0,0.6)] transition-transform duration-300 hover:-translate-y-0.5"
-          >
+          <Button href="/plans" variant="yellow" size="lg" className="mt-8">
             Order Tomorrow&rsquo;s Dabba
-          </Link>
+          </Button>
           <p className="mt-4 text-xs font-bold uppercase tracking-[0.18em] text-brand-cream/75">
             Order by tonight, 9:00 PM
           </p>

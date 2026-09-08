@@ -543,6 +543,195 @@ h1, h2, h3, h4 {
   will-change: transform;
 }
 
+/* == Buttons ================================================================
+   One skew-wipe button for the whole site, after the Uiverse pattern the client
+   picked (uiverse.io, by adamgiebl).
+
+   The mechanic: the button's box carries a gradient, a `::before` panel skewed 30deg
+   covers it at rest, and on hover that panel slides out of the way and uncovers the
+   gradient. The label lives in a `> span` above it on `z-index`, which is also where the
+   padding sits - `::before` fills the button box, so padding on the button itself would
+   push the panel around instead of the text.
+
+   Two departures from the original, both deliberate:
+
+   - The original's purple (#8e2de2 -> #4a00e0) is replaced by brand pairs. Each variant
+     names a rest colour, a reveal gradient and the label colour for each state, so a
+     variant is four custom properties and nothing else.
+   - The original drops the skew during the slide (`transform: translate3d(100%,0,0)`
+     with no `skew`), which reads as the panel straightening as it leaves. Keeping the
+     skew makes it a clean wipe instead.
+
+   Outline variants cannot work by uncovering - there is nothing under a transparent
+   button - so they invert: the panel waits off-canvas to the LEFT and sweeps IN on
+   hover, with the label flipping to suit. Same language, opposite direction.
+
+   Radius is 15px everywhere, per the brief, via `--btn-radius`. */
+.btn {
+  --btn-radius: 15px;
+  position: relative;
+  display: inline-flex;
+  overflow: hidden;
+  border: none;
+  border-radius: var(--btn-radius);
+  background: var(--btn-reveal);
+  color: var(--btn-text);
+  font-family: inherit;
+  cursor: pointer;
+  transition: transform 0.25s cubic-bezier(0.3, 1, 0.8, 1);
+}
+
+.btn::before {
+  content: "";
+  position: absolute;
+  inset: 0 auto 0 -10%;
+  width: 120%;
+  z-index: 0;
+  background: var(--btn-rest);
+  transform: skew(30deg);
+  transition: transform 0.45s cubic-bezier(0.3, 1, 0.8, 1);
+}
+
+.btn > span {
+  position: relative;
+  z-index: 10;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5em;
+  width: 100%;
+  transition: color 0.4s;
+}
+
+.btn > span > svg {
+  width: 1.2em;
+  height: 1.2em;
+  flex-shrink: 0;
+}
+
+.btn:active {
+  transform: scale(0.95);
+}
+
+.btn:disabled {
+  cursor: not-allowed;
+  opacity: 0.35;
+  transform: none;
+}
+
+/* a disabled button must not wipe, in either direction */
+.btn:disabled::before {
+  transform: skew(30deg);
+}
+
+.btn-sweep-in:disabled::before {
+  transform: translate3d(-115%, 0, 0) skew(30deg);
+}
+
+.btn:focus-visible {
+  outline: 2px solid var(--btn-ring, var(--color-brand-red));
+  outline-offset: 3px;
+}
+
+@media (hover: hover) {
+  .btn:hover::before {
+    transform: translate3d(115%, 0, 0) skew(30deg);
+  }
+
+  .btn:hover > span {
+    color: var(--btn-text-hover, var(--btn-text));
+  }
+
+  /* outline: the panel waits off to the left and sweeps in */
+  .btn-sweep-in:hover::before {
+    transform: translate3d(0, 0, 0) skew(30deg);
+  }
+}
+
+.btn-sweep-in::before {
+  transform: translate3d(-115%, 0, 0) skew(30deg);
+}
+
+/* Filled variants -------------------------------------------------------- */
+.btn-red {
+  --btn-rest: var(--color-brand-red);
+  --btn-reveal: linear-gradient(to right, var(--color-brand-red), var(--color-brand-orange));
+  --btn-text: var(--color-brand-cream);
+  --btn-text-hover: var(--color-brand-cream);
+  box-shadow: 0 12px 24px -16px rgba(175, 20, 17, 0.85);
+}
+
+.btn-orange {
+  --btn-rest: var(--color-brand-orange);
+  --btn-reveal: linear-gradient(to right, var(--color-brand-orange), var(--color-brand-yellow));
+  --btn-text: var(--color-brand-cream);
+  --btn-text-hover: var(--color-ink);
+  box-shadow: 0 12px 24px -16px rgba(243, 98, 32, 0.9);
+}
+
+.btn-yellow {
+  --btn-rest: var(--color-brand-yellow);
+  --btn-reveal: linear-gradient(to right, var(--color-brand-yellow), var(--color-brand-cream));
+  --btn-text: var(--color-brand-red);
+  --btn-text-hover: var(--color-brand-red);
+  --btn-ring: var(--color-brand-cream);
+  box-shadow: 0 14px 28px -18px rgba(0, 0, 0, 0.6);
+}
+
+.btn-cream {
+  --btn-rest: var(--color-brand-cream);
+  --btn-reveal: linear-gradient(to right, var(--color-brand-cream), var(--color-brand-yellow));
+  --btn-text: var(--color-brand-red);
+  --btn-text-hover: var(--color-brand-red);
+  --btn-ring: var(--color-brand-cream);
+  box-shadow: 0 12px 24px -16px rgba(0, 0, 0, 0.55);
+}
+
+.btn-paper {
+  --btn-rest: var(--color-paper);
+  --btn-reveal: linear-gradient(to right, var(--color-paper), var(--color-brand-cream));
+  --btn-text: var(--color-brand-red);
+  --btn-text-hover: var(--color-brand-red);
+  box-shadow: 0 12px 24px -18px rgba(42, 24, 16, 0.6);
+}
+
+/* Outline variants ------------------------------------------------------- */
+.btn-outline {
+  --btn-rest: linear-gradient(to right, var(--color-brand-red), var(--color-brand-orange));
+  --btn-reveal: transparent;
+  --btn-text: var(--color-brand-red);
+  --btn-text-hover: var(--color-brand-cream);
+  box-shadow: inset 0 0 0 2px rgba(175, 20, 17, 0.25);
+}
+
+.btn-outline-cream {
+  --btn-rest: linear-gradient(to right, var(--color-brand-cream), var(--color-brand-yellow));
+  --btn-reveal: transparent;
+  --btn-text: var(--color-brand-cream);
+  --btn-text-hover: var(--color-brand-red);
+  --btn-ring: var(--color-brand-cream);
+  box-shadow: inset 0 0 0 2px rgba(252, 243, 205, 0.5);
+}
+
+/* A square icon button - same wipe, no label. 15px on a 40px box, like the rest. */
+.btn-icon > span {
+  gap: 0;
+  padding: 0;
+  aspect-ratio: 1;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .btn,
+  .btn::before,
+  .btn > span {
+    transition: none !important;
+  }
+
+  .btn:active {
+    transform: none !important;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .rail-track,
   .drift,
