@@ -433,52 +433,103 @@ h1, h2, h3, h4 {
 }
 
 /* ── Fanned rule cards ────────────────────────────────────────────────────────
-   Overlapping tilted cards that straighten and pop forward under the cursor.
+   Four overlapping tilted cards that part around the cursor, after the deck on
+   aardvarkbookclub.com.
 
-   The tilt, the vertical drop and the stacking order all come in as custom
-   properties rather than inline styles: an inline `rotate` or `z-index` beats any
-   class, so `:hover` could never override it. Below 640px the fan unstacks into a
-   plain column, so the tilt only applies from there up. */
-.fan-card {
+   The interaction is NOT per-card `:hover`. The row is divided into as many equal
+   vertical bands as there are cards, and the pointer's band decides which card is
+   active — so the deck reacts the moment the cursor crosses a boundary, including over
+   the parts of a card buried under its neighbour. `RuleFan` does that reading and
+   writes the custom properties below; everything here is the motion.
+
+   Two layers, because the card does two different things at once: the slot carries the
+   tilt, the lift and the scale, and the card inside it carries the sideways shove. One
+   element cannot hold both without the transforms fighting over composition order.
+
+   The tilt, the drop and the stacking order arrive as custom properties rather than as
+   inline `rotate` / `z-index`, which would beat any stylesheet rule and leave the
+   active state unable to override them.
+
+   Below 640px the fan unstacks into a plain column — four overlapping tilted cards are
+   unreadable at phone width — and the interaction does not bind at all. */
+
+/* elastic.out(1, 0.75), sampled from GSAP's own curve: one 10% overshoot and a short
+   settle. It is what gives the deck its spring — a plain ease makes the same motion
+   read as a slide. */
+:root {
+  --ease-elastic: linear(
+    0 0%, 0.177 2.5%, 0.354 5%, 0.519 7.5%, 0.665 10%, 0.79 12.5%, 0.891 15%,
+    0.969 17.5%, 1.026 20%, 1.065 22.5%, 1.088 25%, 1.099 27.5%, 1.101 30%,
+    1.096 32.5%, 1.086 35%, 1.074 37.5%, 1.061 40%, 1.048 42.5%, 1.036 45%,
+    1.025 47.5%, 1.016 50%, 1.008 52.5%, 1.002 55%, 0.998 57.5%, 0.995 60%,
+    0.993 65%, 0.994 75%, 0.998 85%, 1 100%
+  );
+}
+
+.fan-slot {
   position: relative;
   z-index: var(--fan-z, 1);
-  transition:
-    rotate 420ms cubic-bezier(0.22, 1, 0.36, 1),
-    translate 420ms cubic-bezier(0.22, 1, 0.36, 1),
-    scale 420ms cubic-bezier(0.22, 1, 0.36, 1),
-    box-shadow 420ms ease;
+}
+
+.fan-card {
+  box-shadow: 0 18px 44px -26px rgb(42 24 16 / 0.5);
 }
 
 @media (min-width: 640px) {
-  .fan-card {
-    /* Read through --fan-rot / --fan-lift so :hover can change those instead of
-       re-declaring `rotate` and `translate`. The base values arrive as inline custom
-       properties, and an inline custom property beats a stylesheet one — but the
-       hover-only variables are never set inline, so the hover rule always wins. */
+  .fan-slot {
+    /* Read through --fan-rot / --fan-lift / --fan-scale so the active state can change
+       those instead of re-declaring the transforms. The base values arrive as inline
+       custom properties, and an inline custom property beats a stylesheet one — but the
+       active-only variables are only ever set by script, so they always win. */
     rotate: var(--fan-rot, var(--fan-tilt, 0deg));
     translate: 0 var(--fan-lift, var(--fan-drop, 0px));
+    scale: var(--fan-scale, 1);
+    transition:
+      rotate 850ms var(--ease-elastic),
+      translate 850ms var(--ease-elastic),
+      scale 850ms var(--ease-elastic);
   }
-}
 
-@media (hover: hover) {
-  .fan-card:hover {
-    --fan-rot: 0deg;
-    --fan-lift: calc(var(--fan-drop, 0px) - 22px);
-    scale: 1.06;
-    z-index: 40;
+  /* The shove that opens a gap around the active card. `--fan-push` is a plain number
+     from script, and `--fan-push-scale` turns it into a length — a percentage translate
+     resolves against the card's own width, so the gap scales with the card.
+
+     The scale exists because the deck is only as wide as the room it has. Four 288px
+     cards overlapping by 64px make a 960px deck, and a full 45% shove throws the outer
+     card 130px clear — which needs a viewport of about 1150px before the parted deck
+     stops reaching past the edge of the page. Under that the shove is damped rather
+     than dropped, so the interaction still reads; the clip on the section catches
+     whatever is left. */
+  .fan-card {
+    translate: calc(var(--fan-push, 0) * var(--fan-push-scale, 1%)) 0;
+    transition:
+      translate 850ms var(--ease-elastic),
+      box-shadow 420ms ease;
+  }
+
+  .fan-slot[data-active="true"] .fan-card {
     box-shadow: 0 34px 60px -28px rgb(42 24 16 / 0.55);
   }
 }
 
+@media (min-width: 640px) and (max-width: 1151px) {
+  .fan-card {
+    --fan-push-scale: 0.35%;
+  }
+}
+
+/* The parted deck is wider than the deck at rest, and at the narrower end it reaches
+   past the page. `clip` keeps that off the horizontal scrollbar; `hidden` would do the
+   same but would also make this section a scroll container, which is worth avoiding on
+   reflex even where nothing here is sticky. */
+.fan-clip {
+  overflow-x: clip;
+}
+
 @media (prefers-reduced-motion: reduce) {
+  .fan-slot,
   .fan-card {
     transition: none;
-  }
-  /* leave the geometry alone entirely; only the stacking order still changes */
-  .fan-card:hover {
-    --fan-rot: var(--fan-tilt, 0deg);
-    --fan-lift: var(--fan-drop, 0px);
-    scale: 1;
   }
 }
 

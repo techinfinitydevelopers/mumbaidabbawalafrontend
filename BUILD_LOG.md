@@ -3183,3 +3183,57 @@ the pane stayed hidden, and in that state the tab reports `innerWidth: 0`, which
 zero-width case the hook's `ResizeObserver` exists to recover from (upstream `PORTING.md` calls it
 out), and it corrects itself the moment the stage has a real width — but it means no measurement
 taken while the pane is hidden is worth anything.
+
+## 2026-09-09 — Chef's Corner: the rule deck parts around the cursor
+
+The four kitchen-rule cards had a plain per-card `:hover` — straighten, lift, come forward.
+Replaced with the deck interaction from aardvarkbookclub.com's "How it works" section, desktop only.
+
+**What makes it different from a hover.** It is not one. The row is divided into as many equal
+vertical bands as there are cards, and the band the pointer is in picks the active card. So the deck
+reacts the instant the cursor crosses a boundary — no dead ground between cards, and no need to
+reach the visible sliver of a card buried under its neighbour, which matters when each card overlaps
+the one before it by 64px. Moving *within* a band does nothing: the handler compares against the
+last band and returns early.
+
+The active card straightens, lifts 22px and scales to 1.075. Every other card is shoved sideways by
+`45 / (index - active)` percent — a signed reciprocal, so direction and falloff both come out of one
+expression: immediate neighbours move the full 45%, the next ones 22.5%, then 15%. That is what
+reads as the deck *parting* rather than one card popping.
+
+**Structure.** Two layers now, because a card does two things at once: `.fan-slot` carries the tilt,
+lift and scale, `.fan-card` inside it carries the sideways shove. `FromTheKitchen` stays a server
+component; the deck moved to `src/components/chefs/RuleFan.tsx`, which is the only client part.
+
+**No animation library.** The reference uses GSAP; pulling it in for one section is not worth it.
+The motion is CSS transitions on custom properties, eased by `--ease-elastic` — a `linear()` curve
+sampled from GSAP's own `elastic.out(1, 0.75)` (one 10% overshoot, short settle). Script writes only
+which card is active: no loop, no layout property touched.
+
+**Two things deliberately not copied from the reference:**
+
+- it re-randomises a card's tilt each time the pointer leaves it. Here the resting fan is designed —
+  the tilts and drops in `FAN` are chosen so the four read as dealt by hand — and randomising would
+  throw that away and leave the section restless.
+- it ignores `prefers-reduced-motion` entirely; its cards spring about whatever the visitor asked
+  for. This binds no listener under that setting.
+
+**A real bug found while verifying.** The parted deck is wider than the deck at rest, and at 901px
+it reached past the page: `document.documentElement.scrollWidth` went 901 → 1001, i.e. a horizontal
+scrollbar on the whole site whenever you moved the mouse over the section. Two fixes:
+
+- `--fan-push-scale` damps the shove to 0.35% per unit between 640px and 1151px. Four 288px cards
+  overlapping by 64px make a 960px deck, and a full 45% shove throws the outer card 130px clear —
+  that needs roughly 1150px of viewport before it stops reaching past the edge. Under that the
+  interaction is damped rather than dropped, so it still reads.
+- `.fan-clip` puts `overflow-x: clip` on the section as the guarantee. `clip` not `hidden`: hidden
+  would also make the section a scroll container, worth avoiding on reflex even where nothing here
+  is sticky.
+
+Verified by dispatching synthetic `mousemove` at each band and reading back the written properties:
+active card z 40 / rot 0deg / scale 1.075, neighbours -45 / -22.5 / +45 as expected, all cleared on
+`mouseleave`. Overflow re-measured after the fix — `scrollWidth` holds at 901 in every state at
+901px wide, and at 1440px the parted deck spans 97..1341 inside a 1440 viewport. `tsc --noEmit`
+clean, `eslint` clean, `next build` succeeds.
+
+Not committed — pushing is on hold until asked.
