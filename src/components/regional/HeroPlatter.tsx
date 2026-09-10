@@ -32,9 +32,9 @@ export type Dabba = {
 
 /** the tall tiffin-can photo, current default centrepiece */
 export const DEFAULT_DABBA: Dabba = {
-  src: "/images/items/dabba-centre.cfdec415.png",
+  src: "/images/items/dabba-centre.3de5b694.png",
   width: 269,
-  height: 602,
+  height: 594,
   size: 20,
 };
 

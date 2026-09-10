@@ -4025,3 +4025,10 @@ Card read as sparse — big empty red field around the headline. Added three loo
 - Copied `/Users/apple/Downloads/card-bg.jpeg` (736×1104, swirling red-on-red texture) to `public/images/cards/region-stat-bg.d10018e6.jpeg` (content-hashed).
 - `src/components/regional/RegionStoryCards.tsx` — card now renders the image full-bleed (`next/image fill` + `object-cover`) in place of the flat `bg-brand-red` + `grain` texture; headline/tagline stay `relative z-10` above it.
 - Verified via DOM: image resolves through `/_next/image` with the hashed URL, `object-fit: cover`, fills the card exactly. `tsc --noEmit` and `eslint` clean.
+
+## Swap the hero's centre dabba for a cleaner re-export
+**2026-09-10**
+
+- Processed `/Users/apple/Downloads/Dabba 1.svg` (a different file from the one used for the original swap, despite the matching name) the same way as before: extracted the embedded PNG, alpha-bbox cropped, padded 12%, content-hashed into `public/images/items/dabba-centre.3de5b694.png`. Removed the old `dabba-centre.cfdec415.png`.
+- `src/components/regional/HeroPlatter.tsx` — `DEFAULT_DABBA.src`/`height` updated (269×594, was 269×602 — near-identical, `size: 20` unchanged).
+- Verified in-browser on `/menu`: new hashed URL loads, hero renders cleanly. `tsc --noEmit` and `eslint` clean.
