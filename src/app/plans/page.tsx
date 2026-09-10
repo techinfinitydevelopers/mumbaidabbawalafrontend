@@ -79,35 +79,43 @@ export default function PlansPage() {
       </section>
 
       {/* ───── Closing CTA ───── */}
-      <section className="grain graph-paper-light relative overflow-hidden bg-brand-red pb-phi-5 pt-phi-7 sm:pt-phi-8 sm:pb-phi-6">
+      <section className="grain graph-paper relative overflow-hidden bg-brand-cream pb-phi-5 pt-40 sm:pb-phi-6">
+        {/* `bg-paper`, because that is the section above. The wave paints whatever sits
+            above it curving down — a red one here read as a stripe from nowhere, since
+            nothing above this section is red. It only works on
+            `whats-cooking-tomorrow`, where the Add-ons band above genuinely is red.
+
+            The cost is that paper over cream is ~3% apart in luminance, so the curve is
+            faint. Making it read means changing what sits above, not what the wave is
+            painted with. */}
         <WaveDivider tone="bg-paper" textured={false} />
 
         <Reveal className="relative z-20 mx-auto max-w-3xl px-5 text-center sm:px-8">
-          <p className="font-script text-3xl text-brand-yellow">Still deciding?</p>
+          <p className="font-script text-3xl text-brand-orange">Still deciding?</p>
           <h2 className="poster-stack mt-3 [--po:4px] [--po-gap:12px] sm:[--po:5px] sm:[--po-gap:18px]">
             <span
-              className="poster text-[28px] text-brand-yellow sm:text-[44px]"
-              style={{ ["--po-color" as string]: "rgba(42,24,16,0.85)" }}
+              className="poster text-[28px] text-brand-red sm:text-[44px]"
+              style={{ ["--po-color" as string]: "var(--color-brand-yellow)" }}
             >
               Start With Three
             </span>
             <span
-              className="poster text-[28px] text-brand-green sm:text-[44px]"
-              style={{ ["--po-color" as string]: "rgba(42,24,16,0.6)" }}
+              className="poster text-[28px] text-brand-green-dark sm:text-[44px]"
+              style={{ ["--po-color" as string]: "var(--color-brand-yellow)" }}
             >
               Meals.
             </span>
           </h2>
-          <p className="mx-auto mt-5 max-w-measure text-phi-2 leading-relaxed text-brand-cream/85">
+          <p className="mx-auto mt-5 max-w-measure text-phi-2 leading-relaxed text-ink/70">
             The 3-day taster is the whole idea in miniature — one cuisine, no commitment,
             and the same food everyone else is eating that week.
           </p>
 
           <div className="mt-8 flex flex-wrap justify-center gap-3">
-            <Button href="/contact" variant="yellow" size="lg">
+            <Button href="/contact" variant="orange" size="lg">
               Start Trial
             </Button>
-            <Button href="/whats-cooking-tomorrow" variant="outlineCream" size="lg">
+            <Button href="/whats-cooking-tomorrow" variant="paper" size="lg">
               See Tomorrow&rsquo;s Dabba
             </Button>
           </div>

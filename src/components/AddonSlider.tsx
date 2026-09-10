@@ -9,10 +9,30 @@ import type { Addon } from "@/data/addons";
  * Horizontal add-on slider: a real scroll container with snap points, so it swipes on
  * touch and scrolls with the wheel, plus arrow buttons for pointer users.
  *
- * Arrow state is updated from scroll/resize callbacks rather than during an effect, so the
- * component doesn't set state while mounting.
+ * The arrows only appear when the track actually overflows, and getting that right on
+ * first paint is the fiddly part. `ResizeObserver` on the track is not enough on its own:
+ * it watches the track's own border box, which is full-width and identical whether the
+ * content overflows or not, so once the first callback has run there is nothing left to
+ * fire it. If that first reading lands before the cards have their widths — CSS arriving
+ * after first paint, a late font — it records no overflow and the arrows stay hidden
+ * until the user scrolls, which is exactly the state they were in.
+ *
+ * So the overflow is re-read at the points where it can actually change: on mount, on the
+ * frame after mount, once fonts have settled, on window resize, and on scroll.
  */
-export default function AddonSlider({ items }: { items: Addon[] }) {
+export default function AddonSlider({
+  items,
+  /**
+   * Which ground the arrows sit on. The default `outline` is a red ring and red type,
+   * which is correct on paper or cream and invisible on the brand red — pass
+   * `outlineCream` there. It is a prop rather than a hardcoded choice because the
+   * component cannot see its own background.
+   */
+  arrowVariant = "outline",
+}: {
+  items: Addon[];
+  arrowVariant?: "outline" | "outlineCream";
+}) {
   const trackRef = useRef<HTMLDivElement>(null);
   const [atStart, setAtStart] = useState(true);
   const [atEnd, setAtEnd] = useState(true);
@@ -29,9 +49,19 @@ export default function AddonSlider({ items }: { items: Addon[] }) {
     const el = trackRef.current;
     if (!el) return;
 
+    sync();
+    const frame = requestAnimationFrame(sync);
+    document.fonts?.ready.then(sync).catch(() => {});
+
     const observer = new ResizeObserver(sync);
     observer.observe(el);
-    return () => observer.disconnect();
+    window.addEventListener("resize", sync);
+
+    return () => {
+      cancelAnimationFrame(frame);
+      observer.disconnect();
+      window.removeEventListener("resize", sync);
+    };
   }, [sync]);
 
   const scrollByCards = (direction: 1 | -1) => {
@@ -58,6 +88,7 @@ export default function AddonSlider({ items }: { items: Addon[] }) {
           ).map((btn) => (
             <IconButton
               key={btn.label}
+              variant={arrowVariant}
               size={44}
               onClick={() => scrollByCards(btn.dir)}
               disabled={btn.disabled}

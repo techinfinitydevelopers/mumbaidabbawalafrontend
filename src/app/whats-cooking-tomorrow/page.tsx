@@ -2,6 +2,7 @@ import Image from "next/image";
 import Button from "@/components/Button";
 import type { Metadata } from "next";
 import PageHero from "@/components/PageHero";
+import { CLASSIC_DABBA } from "@/components/regional/HeroPlatter";
 import Reveal from "@/components/Reveal";
 import TomorrowDate from "@/components/TomorrowDate";
 import AddonSlider from "@/components/AddonSlider";
@@ -36,6 +37,7 @@ export default function WhatsCookingTomorrowPage() {
         secondary={{ href: "/menu", label: "See the Full Rotation" }}
         seal={{ eyebrow: "Order by", lines: ["9:00", "PM"], script: "tonight" }}
         tins={TOMORROW_TINS}
+        dabba={CLASSIC_DABBA}
       />
 
       {/* ───── Tomorrow's thali, in full ───── */}
@@ -158,28 +160,38 @@ export default function WhatsCookingTomorrowPage() {
       </section>
 
       {/* ───── Add-ons ───── */}
-      <section className="grain graph-paper relative overflow-hidden bg-brand-cream pb-phi-6 pt-phi-6 sm:pb-phi-6">
+      {/* Plain red, no grid print — the graph paper is off here by choice, so the ground
+          stays flat behind the slider's cards. Note the CTA's wave below still carries
+          `graph-paper-light`: it paints this section's colour curving down, and dropping
+          the print from the wave too would only matter if this section had it. */}
+      <section className="grain relative overflow-hidden bg-brand-red pb-phi-6 pt-phi-6 sm:pb-phi-6">
         <div className="mx-auto max-w-[1720px] px-5 sm:px-8 lg:px-12">
           <Reveal>
-            <p className="text-[11px] font-bold uppercase tracking-[0.22em] text-brand-red">
+            <p className="text-[11px] font-bold uppercase tracking-[0.22em] text-brand-yellow">
               Make it yours
             </p>
-            <h2 className="poster mt-2 text-[34px] text-brand-red [--po:4px] sm:text-[54px] sm:[--po:5px]">
+            {/* yellow on red with an ink shadow, the same poster treatment the other red
+                bands use — `poster` defaults its shadow to brand-yellow, which would be
+                the type's own colour here */}
+            <h2
+              className="poster mt-2 text-[34px] text-brand-yellow [--po:4px] sm:text-[54px] sm:[--po:5px]"
+              style={{ ["--po-color" as string]: "rgba(42,24,16,0.85)" }}
+            >
               Add-ons
             </h2>
-            <p className="mt-3 max-w-xl text-sm leading-relaxed text-ink/70">
+            <p className="mt-3 max-w-xl text-sm leading-relaxed text-brand-cream/85">
               Top up any day&rsquo;s thali with a real extra — priced individually, on top of
               your plan.
             </p>
           </Reveal>
 
           <Reveal className="mt-12">
-            <AddonSlider items={ADDONS} />
+            <AddonSlider items={ADDONS} arrowVariant="outlineCream" />
           </Reveal>
 
           {DEFAULT_DAY.addOns.length > 0 && (
             <Reveal className="mt-8">
-              <p className="text-[11px] font-bold uppercase tracking-[0.2em] text-brand-green-dark">
+              <p className="text-[11px] font-bold uppercase tracking-[0.2em] text-brand-yellow">
                 Also available tomorrow
               </p>
               <div className="mt-3 flex flex-wrap gap-2">
@@ -198,23 +210,36 @@ export default function WhatsCookingTomorrowPage() {
       </section>
 
       {/* ───── From the kitchen ───── */}
-      <section className="grain graph-paper-light relative overflow-hidden bg-brand-red pb-phi-6 pt-phi-7 sm:pt-phi-8 sm:pb-phi-6">
-        <WaveDivider tone="bg-brand-cream" />
+      {/* The curve is back — the same handover the CTA on `regional-food-stories` makes.
+          It was dropped when the section above this was also cream: a wave paints the
+          colour of the section ABOVE curving down into this one, so cream over cream was
+          a 150px no-op. Now that Add-ons is red there is a real step to soften again.
+
+          `textured={false}`: the flag adds `graph-paper`, whose lines are ink and would
+          vanish on red anyway, and the section above prints no grid at all now — so the
+          curve is flat red, matching it.
+
+          The padding is what pays for it. The wave is 110px tall, 150 from `sm`, and it
+          is red on a cream ground — unlike the paper-on-cream waves elsewhere, anything
+          overlapping it would be dark type on red. So the content clears the wave
+          outright rather than taking the 6rem the other CTAs use. */}
+      <section className="grain graph-paper relative overflow-hidden bg-brand-cream pb-phi-6 pt-[132px] sm:pb-phi-6 sm:pt-[172px]">
+        <WaveDivider tone="bg-brand-red" textured={false} />
 
         <Reveal className="relative z-20 mx-auto max-w-3xl px-5 text-center sm:px-8">
-          <p className="font-script text-3xl text-brand-yellow">From the kitchen</p>
-          <p className="mt-4 font-display text-xl leading-relaxed text-brand-cream sm:text-2xl">
+          <p className="font-script text-3xl text-brand-orange">From the kitchen</p>
+          <p className="mt-4 font-display text-xl leading-relaxed text-ink sm:text-2xl">
             &ldquo;Spices go in stages, never all at once — it&rsquo;s how the flavour holds
             up on the journey.&rdquo;
           </p>
-          <p className="mt-4 text-[11px] font-bold uppercase tracking-[0.18em] text-brand-cream/80">
+          <p className="mt-4 text-[11px] font-bold uppercase tracking-[0.18em] text-ink/70">
             — Chef, Mumbai Dabbawala kitchen
           </p>
 
-          <Button href="/plans" variant="yellow" size="lg" className="mt-8">
+          <Button href="/plans" variant="orange" size="lg" className="mt-8">
             Order Tomorrow&rsquo;s Dabba
           </Button>
-          <p className="mt-4 text-xs font-bold uppercase tracking-[0.18em] text-brand-cream/75">
+          <p className="mt-4 text-xs font-bold uppercase tracking-[0.18em] text-ink/65">
             Order by tonight, 9:00 PM
           </p>
         </Reveal>

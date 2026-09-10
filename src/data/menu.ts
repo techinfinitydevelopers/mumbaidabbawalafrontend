@@ -54,7 +54,7 @@ export const MENU_DAYS: MenuDay[] = [
     pickle: "Marcha-Gajar Nu Athanu",
   },
   {
-    image: "/images/days/day-02.png",
+    image: "/images/days/dish-bateta-ni-suki-bhaji.b5caa435.png",
     cuisine: "Gujarati",
     cuisineKey: "gujarati",
     grid: {
@@ -71,7 +71,7 @@ export const MENU_DAYS: MenuDay[] = [
     pickle: "Chhundo",
   },
   {
-    image: "/images/days/day-03.png",
+    image: "/images/days/dish-kathiyawadi-ringan-no-olo.74e39d4a.png",
     cuisine: "Gujarati",
     cuisineKey: "gujarati",
     grid: {
@@ -88,7 +88,7 @@ export const MENU_DAYS: MenuDay[] = [
     pickle: "Gor Keri Nu Athanu",
   },
   {
-    image: "/images/days/day-04.png",
+    image: "/images/days/dish-paneer-butter-masala.png",
     cuisine: "Punjabi",
     cuisineKey: "punjabi",
     grid: {

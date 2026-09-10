@@ -177,6 +177,33 @@ const TIGHT_GAP = 46;
 /** burst rotation per px of track travel — roughly one turn as it crosses */
 const SPIN_PER_PX = 0.22;
 
+/**
+ * Where each word comes in from, cycled by position in the line.
+ *
+ * Every word rising the same 30px out of the same blur made the row read as one object
+ * sliding up behind a mask — the entrances all landed on the same beat because they were
+ * the same entrance. Giving each word its own vector breaks that: some drop in from
+ * above, some lift from below, some slide in from the side, each with its own settling
+ * tilt. The line assembles rather than scrolls.
+ *
+ * The table is walked by index, not sampled randomly. Random would re-roll on every
+ * remount and could put three identical entrances in a row; a hand-ordered cycle of seven
+ * against a line of thirty-odd tokens never repeats a neighbour and is the same every
+ * time, which means it can actually be art-directed.
+ *
+ * `x` and `y` are the offset in px at the start of the entrance, `rot` the tilt it
+ * settles out of.
+ */
+const ENTRANCES = [
+  { x: 0, y: 34, rot: -3 },
+  { x: 30, y: -18, rot: 2.6 },
+  { x: 0, y: -32, rot: 2 },
+  { x: -26, y: 16, rot: -3.4 },
+  { x: 0, y: 30, rot: 3.2 },
+  { x: 24, y: 24, rot: -2.2 },
+  { x: -30, y: -20, rot: 2.8 },
+] as const;
+
 
 /** position of each braced word within its group, -1 for everything else */
 const INNER_ORDER = (() => {
@@ -397,19 +424,30 @@ export default function DabbaLine() {
       const t = progressAt(i);
 
       if (token?.inner) {
-        // inside the braces the words fade in from below, lightly staggered
+        /* Inside the braces the words stay a group — they all rise, lightly staggered,
+           because that beat is the frame closing and then filling. They only alternate
+           which side they lean in from, which varies the entrance without breaking the
+           four of them apart. */
+        const lean = (INNER_ORDER[i] % 2 ? 1 : -1) * 18;
         el.style.opacity = String(t);
-        el.style.transform = `translateY(${((1 - t) * 34).toFixed(2)}px) skewX(${skew}deg)`;
+        el.style.transform =
+          `translate(${((1 - t) * lean).toFixed(2)}px, ${((1 - t) * 34).toFixed(2)}px) ` +
+          `skewX(${skew}deg)`;
         el.style.filter = t > 0.99 ? 'none' : `blur(${((1 - t) * 4).toFixed(2)}px)`;
         return;
       }
 
-      const dx = i === CLOSE_BRACE_INDEX ? closeDx : 0;
-      // words rise, unblur, settle out of a tilt, and skew with the scroll
+      /* The closing brace's own travel is the gap opening, which is not an entrance and
+         has to survive on top of one — so it is added to the vector rather than
+         replacing it. */
+      const entrance = ENTRANCES[i % ENTRANCES.length];
+      const dx = (i === CLOSE_BRACE_INDEX ? closeDx : 0) + (1 - t) * entrance.x;
+
+      // each word arrives from its own direction, unblurs, and settles out of its tilt
       el.style.opacity = String(t);
       el.style.transform =
-        `translate(${dx.toFixed(2)}px, ${((1 - t) * 30).toFixed(2)}px) ` +
-        `rotate(${((1 - t) * -2.5).toFixed(2)}deg) skewX(${skew}deg)`;
+        `translate(${dx.toFixed(2)}px, ${((1 - t) * entrance.y).toFixed(2)}px) ` +
+        `rotate(${((1 - t) * entrance.rot).toFixed(2)}deg) skewX(${skew}deg)`;
       el.style.filter = t > 0.99 ? 'none' : `blur(${(1 - t) * 7}px)`;
     });
 

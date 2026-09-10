@@ -1,5 +1,18 @@
+import Image from "next/image";
 import Reveal from "@/components/Reveal";
 import { REGIONS } from "@/data/regions";
+
+/**
+ * Fills the sixth grid cell the five region cards leave empty on a 3-column row.
+ * A bold three-line poster stack — the same `.poster-stack` used on every section
+ * headline — with the tiffin cropped by the card's corner as the prop, the way a poster
+ * breaks its frame with an object instead of a photo.
+ */
+const HEADLINE = [
+  { text: "Five", tone: "text-brand-yellow" },
+  { text: "Regions", tone: "text-brand-cream" },
+  { text: "One Dabba", tone: "text-brand-green" },
+] as const;
 
 /**
  * The five cuisines as readable story cards — tagline, the region's story, and its
@@ -39,6 +52,35 @@ export default function RegionStoryCards({ className = "" }: { className?: strin
             </div>
           </Reveal>
         ))}
+
+        <Reveal delay={REGIONS.length * 80}>
+          <div className="relative flex h-full flex-col justify-center overflow-hidden rounded-[28px] border border-brand-red/10 p-6 shadow-[0_8px_26px_-20px_rgba(42,24,16,0.28)]">
+            <Image
+              src="/images/cards/region-stat-bg.d10018e6.jpeg"
+              alt=""
+              aria-hidden="true"
+              fill
+              sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
+              className="object-cover"
+            />
+
+            <h3 className="poster-stack relative z-10 [--po:2px] [--po-gap:2px]">
+              {HEADLINE.map((line) => (
+                <span
+                  key={line.text}
+                  className={`poster block text-[27px] leading-[0.92] sm:text-[32px] ${line.tone}`}
+                  style={{ ["--po-color" as string]: "rgba(42,24,16,0.9)" }}
+                >
+                  {line.text}
+                </span>
+              ))}
+            </h3>
+
+            <p className="relative z-10 mt-4 max-w-[210px] text-[13px] leading-snug text-brand-cream/75">
+              Real variety, every week — never the same three curries.
+            </p>
+          </div>
+        </Reveal>
       </div>
     </div>
   );

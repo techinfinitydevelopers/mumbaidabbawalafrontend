@@ -1,7 +1,6 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import Button from "@/components/Button";
 import MenuDayCard, { type Diet } from "@/components/menu/MenuDayCard";
 import Reveal from "@/components/Reveal";
 import VegMark from "@/components/VegMark";
@@ -128,24 +127,6 @@ export default function MenuRotation() {
           ))}
         </div>
 
-        <Button
-          onClick={() => window.print()}
-          variant="outline"
-          size="md"
-          icon={
-            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
-              <path
-                d="M12 4v11m0 0l-4-4m4 4l4-4M5 19h14"
-                stroke="currentColor"
-                strokeWidth="2.2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-            </svg>
-          }
-        >
-          Download / print menu
-        </Button>
         <div className="ml-auto flex rounded-[15px] border border-brand-red/15 bg-paper p-1 shadow-sm">
           {DIETS.map((d) => (
             <button

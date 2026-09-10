@@ -3237,3 +3237,791 @@ active card z 40 / rot 0deg / scale 1.075, neighbours -45 / -22.5 / +45 as expec
 clean, `eslint` clean, `next build` succeeds.
 
 Not committed — pushing is on hold until asked.
+
+## 2026-09-09 — DabbaLine: words arrive from different directions, and bigger
+
+**Every word used to come in the same way** — up 30px, out of the same blur, out of the same
+-2.5deg tilt. That is why the row read as one object sliding up behind a mask rather than as a line
+assembling: the entrances landed on the same beat because they *were* the same entrance.
+
+There is an `ENTRANCES` table now, seven vectors walked by token index — some words drop from above,
+some lift from below, some slide in from either side, each settling out of its own tilt. Walked by
+index rather than sampled randomly: random re-rolls on every remount and can put three identical
+entrances in a row, while a hand-ordered cycle of seven against thirty-odd tokens never repeats a
+neighbour, is the same every time, and can therefore be art-directed.
+
+Two carve-outs:
+
+- the braced words keep their shared rise, because that beat is the frame closing and then filling —
+  breaking those four apart would lose it. They only alternate which side they lean in from.
+- the closing brace's own travel is the gap opening, not an entrance, so its vector is *added* to
+  `closeDx` rather than replacing it.
+
+**Type is up from 62px to 78px** (46px from 38px on mobile), and the band grew with it — the clip
+and track from 440px to 520px, because a sticker hangs off the top of a word and runs to 2.6em,
+which at 78px is a little over 200px above the line.
+
+**The cost, and it is not small.** Bigger type is a longer line is a longer track: travel went from
+~5900px to 7216px at 1440, so the section is now **17,894px — just under 20 viewport heights**,
+against about 14,800 before. `RATIO` in `src/hooks/useTrackScroll.ts` is the lever; 2.28 → 1.85
+would put the length back roughly where it was at the new type size.
+
+`tsc --noEmit` clean, `eslint` clean, `next build` succeeds, and the new measurements above were
+read off the running app. The entrances themselves have not been *watched* — the Browser pane is
+hidden in this session, so rAF never ticks in the capture surface and the words sit frozen at
+whatever the last live frame left them.
+
+Not committed.
+
+## 2026-09-10 — A skyline band closes the footer
+
+`MD_footer.png` (supplied) is Mumbai on the left — Gateway of India, Rajabai Clock Tower, CST — and
+Perth's towers and opera-house sails on the right: the whole proposition in one picture. It now runs
+edge to edge across the bottom of the footer, so the page ends on the journey rather than on a row
+of social buttons.
+
+**The source needed cropping first.** It arrived 1920x1080 with the artwork sitting in the bottom
+496px and the top 584px fully transparent — better than half the canvas was empty sky. Dropped in as
+supplied it would have padded the footer with 300-plus pixels of nothing at desktop width, and the
+band's aspect ratio would have been a lie. Trimmed to the alpha bounding box and saved as
+`public/images/footer-skyline.png` at 1920x496, so the 3.87:1 below is the real aspect.
+
+**A real element, not a background.** As a background image it could only be sized by guessing a
+height, and the artwork would crop differently at every viewport; as an `<img>` at its own aspect it
+scales as one picture and the buildings always meet the bottom edge. It sits outside the
+`max-w-7xl` container because it has to be full-bleed, and inside `relative z-10` so it lands above
+the footer's grain rather than under it. Decorative, so `alt=""` and `aria-hidden`.
+
+Verified in the running app: the band renders 725x187 at a 740px viewport and 1425x368 at 1440,
+flush with the footer's bottom edge in both (`rect.bottom` equals the footer's), served through
+`next/image` as an optimised variant, and `document.documentElement.scrollWidth` unchanged — no
+overflow. `tsc --noEmit` clean, `eslint` clean, `next build` succeeds.
+
+Worth a decision: at 1440 the band is 368px, about 42% of the footer's 881px, and at 1920 it would
+be ~490px. That is the honest height for a full-bleed 3.87:1 illustration — capping it would mean
+either cropping the tops off the towers or giving up the edge-to-edge, so it is left at its natural
+size pending a call.
+
+Not committed.
+
+## 2026-09-10 — New skyline artwork, red restored, footer down to 743px
+
+**New artwork.** `Footer-New MD.png` replaces the first version — same skyline, much more saturated.
+The crop could not use the alpha bounding box this time: the new file carries a faint halo that puts
+non-zero alpha from y=36, so `getbbox()` returns almost the whole canvas and reinstates the empty
+sky the crop exists to remove. It tests alpha against a threshold of 24 per row instead, which finds
+the real edge at y=525, leaving 1672x416 of artwork.
+
+**Back to red.** Green-dark reverted, ground is `bg-brand-red` again, and the copyright line goes
+back up to `cream/85` with it — at `/70` over red it composites to 3.77:1, under AA at 12px. No
+contrast failures on the live footer; weakest is 4.52:1.
+
+**Shorter, without losing any of the picture.** The height of a full-bleed image is its width over
+its aspect, so the only way to shorten the band without cropping is to widen the *canvas*. The
+1672x416 artwork is padded back out to 2101x416 with the skyline centred — 214px of transparency
+each side — taking the aspect from 4.02:1 to 5.05:1 and the band from 358px to 285px at a 1440
+viewport. Every building stays whole. Cropping to the same height would have started at the Rajabai
+clock tower's spire and taken the top off it.
+
+Checked before padding that this was safe: the artwork does reach both edges, but only shallowly —
+15 opaque rows of 416 at x=0 and 38 at the right edge, the low shrubbery along the ground line, not
+a building sliced in half. So the gutters read as air rather than as a cut.
+
+Plus the trims: `py-14` to `py-10`, column grid `gap-10` to `gap-8`, bottom bar `mt-12 pt-6` to
+`mt-8 pt-5`.
+
+Measured at 1440: footer **743px** (was 881), band 282, content 461. Full bleed, flush with the
+bottom, no horizontal overflow. Band by viewport: 77px at 390, 152 at 768, 253 at 1280, 285 at 1440,
+380 at 1920.
+
+The asset serves correctly — `/_next/image` returns 200 and decodes to 1920x380 at 5.053, 136KB
+optimised from a 646KB source. Note the `<img>` reports `complete: false` in this session; that is
+the hidden Browser pane, where a lazy image never enters the viewport, not a broken file.
+
+`tsc --noEmit` clean, `eslint` clean, `next build` succeeds.
+
+Not committed.
+
+## 2026-09-10 — Why the old skyline kept showing: the filename
+
+The padded artwork was on disk and correct — verified pixel-identical to the crop of
+`Footer-New MD.png`, with the 214px gutter present (first non-empty column at x=214, 10.2% in) —
+but the browser was still decoding an image at 3.87:1, the *previous* crop.
+
+`/_next/image` keys its cache on the source URL. Replacing `footer-skyline.png` in place left every
+cache layer — the browser's, and Next's own on-disk image cache — holding the older, taller output
+at an address that had not changed, with nothing to tell them it had. Renamed to
+`footer-skyline-wide.png`: a new URL is a fetch nobody can serve from cache. `.next/cache/images`
+cleared too.
+
+Confirmed after: the `<img>` now points at `footer-skyline-wide.png` and a forced network fetch of
+it decodes to 1920x380 at 5.053.
+
+Worth remembering for any future asset swap on this project — replacing an image in `public/` under
+its existing name will look like it did nothing.
+
+**Unresolved:** the screenshot showing the problem also has a plane on a dashed flight arc across
+the footer. Nothing renders that — `#plane`, `.plane-fly` and any `[src*=plane]` all come back empty
+on the page, there is no dashed stroke in the footer, and the artwork itself has no plane in it. The
+codebase does have a `plane-fly` keyframe and `JourneyTimeline` draws dashed arcs, but neither is in
+the footer. Either the screenshot is a design reference rather than a local render, or it is from a
+build that no longer exists. Asked.
+
+Not committed.
+
+## 2026-09-10 — Skyline swapped again, and the filename now carries a content hash
+
+`MD new footer.png` replaces the previous export. It arrives 1920x500 and already trimmed — the
+artwork is the bottom 478px, same composition as before at a higher resolution (1920 wide against
+1672), aspect 4.017 against 4.019. Same treatment as agreed: cropped by alpha threshold, then padded
+out to 2414x478 with the skyline centred, holding the band at 5.05:1 and 285px at a 1440 viewport.
+Edges checked again before padding — 17 opaque rows of 478 at the left edge, 43 at the right, the
+ground line rather than a building, so the gutters read as air.
+
+**The filename is hashed now: `footer-skyline.c42e0de7.png`.** Replacing the file in place once
+already cost a round trip of "it still shows the old one" — `/_next/image` keys its cache on the
+source URL, so the swap was invisible to every cache layer. A content hash makes a new picture a new
+URL by construction. Regenerate it whenever the artwork changes; the old file is deleted rather than
+left behind.
+
+Verified on the running app: `/_next/image` returns 200, decodes to 1920x380 at 5.053, 139KB from an
+825KB source, full bleed, flush with the bottom, no horizontal overflow, ground still `bg-brand-red`.
+
+`tsc --noEmit` clean, `eslint` clean, `next build` succeeds.
+
+Still unanswered from the last round: the plane on a dashed flight arc in the reported screenshot is
+not rendered anywhere on the page and is not in the artwork.
+
+Not committed.
+
+## 2026-09-10 — Skyline goes full width; the padding is reverted
+
+The 5.05:1 padding is gone. It bought its shorter band with transparent gutters, so the artwork
+stopped about 10% short of each edge instead of bleeding off it — which is what "the image should be
+full width" rules out. The asset is now the tight crop of `MD new footer.png` at its own 4.02:1,
+1920x478, running edge to edge (`leftGutterPx: 0` on the served, decoded bytes).
+
+That costs height, and there is no way around it: a full-bleed image is as tall as its width over
+its aspect, so the band is 358px at a 1440 viewport. Cropping to a shorter box would start inside
+the Rajabai clock tower's spire. So the 73px came out of the footer's own spacing instead —
+`py-10` to `py-8`, the bottom bar `mt-8 pt-5` to `mt-6 pt-4`, the tagline `mt-6` to `mt-5`, the
+contact block `mt-5` to `mt-4`.
+
+Measured at 1440: footer **780px**, band 355, content 425 (was 461). Against 743px for the padded
+version — 37px taller in exchange for a picture that actually reaches both edges. The starting
+point today was 881px.
+
+Full bleed, flush with the bottom, no horizontal overflow, ground still `bg-brand-red`, asset served
+under a fresh hash (`cffa74e2`) so no cache can hold the padded one.
+
+`tsc --noEmit` clean, `eslint` clean, `next build` succeeds.
+
+Not committed.
+
+## 2026-09-10 — The closing CTA moves to the cream poster palette
+
+The red closing-CTA band is now cream, coloured after the section the client pointed at (the one on
+`/regional-food-stories` that already reads red-over-green-dark on cream). Changed on three pages —
+`regional-food-stories`, `plans`, `about`:
+
+| | was | now |
+|---|---|---|
+| ground | `bg-brand-red` | `bg-brand-cream` |
+| grid | `graph-paper-light` | `graph-paper` |
+| script kicker | `text-brand-yellow` | `text-brand-orange` |
+| heading line 1 | `text-brand-yellow` | `text-brand-red` |
+| heading line 2 | `text-brand-green` | `text-brand-green-dark` |
+| poster shadow | `rgba(42,24,16,.85/.6)` | `var(--color-brand-yellow)` |
+| body | `text-brand-cream/85` | `text-ink/70` |
+| primary button | `variant="yellow"` | `variant="orange"` |
+| secondary button | `variant="outlineCream"` | `variant="paper"` |
+| route ticker | `text-brand-cream` | `text-ink/70` |
+
+The grid had to move with the ground and is easy to miss: `graph-paper-light` draws its lines in
+cream at 12%, which on a cream ground is nothing at all. No new button variants were needed —
+`orange` and `paper` already existed and already match the reference.
+
+**`whats-cooking-tomorrow` is deliberately left red.** The section directly above its CTA is already
+`bg-brand-cream`, so turning the CTA cream stacks two identical grounds with nothing between them —
+and its `WaveDivider tone="bg-brand-cream"` would be painting cream onto cream, invisible. Making
+that page work means changing the section above it too, which is a different decision. Flagged.
+
+**One thing got worse and it should be a deliberate choice, not a side effect.** The primary button
+went from `yellow` (red on yellow, 5.23:1) to `orange`, and `btn-orange` is cream on orange —
+**2.86:1**, under AA for a 16px label. It is not a new bug: `btn-orange` is already used this way
+elsewhere on the site, including in the reference section itself. But these three CTAs did pass
+before and now do not. The fix, if wanted, is `--btn-text: var(--color-ink)` on `btn-orange`, which
+takes it to 5.32:1 — a site-wide change to every orange button, so not made unasked.
+
+Everything else measured on the live pages against the correct grounds (buttons against their
+`::before` face, not the element's own background, which is the hover-reveal colour underneath):
+heading 6.43 and 9.12, body 5.99, secondary button 7.04. Confirmed on `/regional-food-stories` and
+`/plans`.
+
+`tsc --noEmit` clean, `eslint` clean, `next build` succeeds.
+
+Not committed.
+
+## 2026-09-10 — Fourth CTA converted, and all four get a 6rem top
+
+`whats-cooking-tomorrow`'s closing CTA is cream now too, same palette as the other three: orange
+script kicker, ink body, `variant="orange"` button, `graph-paper` grid.
+
+**Its WaveDivider is gone, not restyled.** The wave paints the colour of the section *above*
+curving down into the one below, and the section above this CTA is already `bg-brand-cream` — so
+once the CTA went cream, the wave was painting cream onto cream: a 150px no-op. The two cream
+sections now read as one continuous ground and the CTA is set apart by its poster type and its
+button rather than by a colour step. The unused import went with it.
+
+**Top padding is 6rem on all four**, replacing `pt-phi-7 sm:pt-phi-8` (144px / 233px). That is a
+real reduction — 137px off each of these sections at desktop.
+
+**One consequence worth knowing about.** The three pages that still have a wave keep it at 150px,
+and 6rem is 96px, so content now starts inside it:
+
+- `regional-food-stories` is fine — its Starburst wrapper adds `pt-[102px]`, so the heading starts
+  at 198px, clear of the wave.
+- `plans` and `about` are not: the script kicker sits at 128-164px, crossing the wave's lower edge.
+  It is close to invisible in practice, because the wave paints `bg-paper` (#fffdf6) over
+  `bg-brand-cream` (#fcf3cd) and those are almost the same colour — but the crossing is there. Say
+  the word and the kicker gets its own clearance, or the wave shrinks to match the new padding.
+
+That near-identity is worth noting on its own: the wave was designed to hand a light section over
+to the red one below. With the CTA cream, paper-over-cream is barely a step, so on all three pages
+the wave is now a very faint shape rather than the divider it was.
+
+**Contrast, measured live on all four.** Everything passes except two things, both of them the same
+colour pairing and both straight from the reference:
+
+- the orange script kicker on cream is **2.86:1** at 30px, just under the 3:1 that large text needs;
+- `btn-orange`'s cream label on orange is **2.86:1**, under AA.
+
+Fixing the button means `--btn-text: var(--color-ink)` on `btn-orange` (5.32:1), which touches every
+orange button on the site. Fixing the kicker means a darker orange or dropping to brand-red. Neither
+made unasked — they are the reference's own colours.
+
+Passing: heading 6.43 / 9.12, body 5.99, the WCT quote 15.24, its attribution 5.99, its fine print
+5.08, secondary `btn-paper` 7.04.
+
+`tsc --noEmit` clean, `eslint` clean (the unused import fixed), `next build` succeeds.
+
+Not committed.
+
+## 2026-09-10 — Footer: the skyline tucks under the copy
+
+Top padding was asked for at 2rem and was already there (`py-8`); the bottom gives a little now, to
+`pb-6`, since the artwork no longer needs clearing.
+
+**The band slides up behind the text.** The top third of the skyline is nearly empty — the Rajabai
+spire and two tower tips, under 20% coverage until a third of the way down — so it was height the
+footer paid for and got nothing back. `-mt-[3.7%]` on the band pulls that dead zone up under the
+copy, and `z-0` against the content's `z-10` puts it behind rather than over.
+
+The margin is a percentage deliberately. Percentage margins resolve against the container's
+*width*, and the band's height is that same width over 4.017, so -3.7% is a fixed 15% of the band's
+own height at every viewport. A pixel value would be a different fraction of the artwork on every
+screen and would start eating buildings on narrow ones.
+
+Measured at 1440: footer **719px**, band 355, overlap 53px (14.9% of the band). The copyright line
+finishes 19px into the band's box and the social buttons 29px — both inside the top 8% of the
+artwork, where coverage is 0-1%. Nothing is behind them but transparency.
+
+Footer height today: 881 → 829 → 780 → **719**.
+
+`tsc --noEmit` clean, `eslint` clean, `next build` succeeds.
+
+Not committed.
+
+## 2026-09-10 — Deeper overlap, and 2rem on the footer itself
+
+`-mt-[3.7%]` to `-mt-[8.7%]` on the skyline band, and `padding-top: 2rem` on the `<footer>`.
+
+The padding went on as a `pt-8` utility on the element rather than as a bare `footer { padding-top:
+2rem }` rule in `globals.css`. Same 32px, and it keeps the footer's spacing where the rest of the
+footer's spacing already lives — an element selector in the stylesheet would sit outside the
+utility system and be the one rule nobody thinks to look for. Say the word if it should be the CSS
+rule instead.
+
+Note it *adds* to the inner container's own `pt-8`, so there is 64px above the logo now, not 32.
+That is what was asked for, but it is worth knowing it stacked rather than replaced.
+
+At 8.7% the overlap is 35% of the band's height — 124px at 1440 — so the artwork now reaches
+properly up behind the copy rather than just tucking its empty corner under it:
+
+| | depth into the band |
+|---|---|
+| copyright line ends | 25.4% |
+| social buttons end | 28.2% |
+
+At that depth the artwork is running 8-12% coverage, which in practice means the Rajabai spire and a
+couple of tower tips pass behind the copyright line — it sits at 16-22% across, and the copyright
+text spans about 8-29%. Deliberate, and it stays readable: cream/85 over the spire's terracotta is
+about 5:1.
+
+Footer at 1440 is **680px**. Today: 881 → 829 → 780 → 719 → 680.
+
+`tsc --noEmit` clean, `eslint` clean, `next build` succeeds.
+
+Not committed.
+
+## 2026-09-10 — Footer bottom bar: copyright replaces the tagline
+
+"Mumbai since 1890 · Perth from 14 September 2026" is gone, replaced by two centred lines:
+
+    © 2016 Mumbai Dabbawala. All Rights Reserved
+    Designed & Developed By Techinfinity
+
+with "Techinfinity" linking to https://techinfinity.io (`target="_blank"`, `rel="noreferrer"`,
+matching how the social links already open).
+
+The bar was `justify-between` with the tagline on the left and the socials on the right. With the
+tagline gone that would have left the socials stranded against one edge, so the bar is a centred
+column now: socials on one row, the copyright centred beneath them. Both lines measure as centred
+on the footer's own axis, and sit at 4.96:1 on the red — AA at 12px.
+
+**The year reads 2016, as supplied.** Given the site says Perth opens 14 September 2026 and the
+brand dates itself from 1890, that looks like a typo for 2026. Left exactly as written — worth a
+second look before this ships.
+
+The extra row costs height: the footer is **735px** at 1440, up from 680. The band and its 35%
+overlap are unchanged.
+
+`tsc --noEmit` clean, `eslint` clean, `next build` succeeds.
+
+Not committed.
+
+## 2026-09-10 — Bottom bar: copyright centred, socials pinned right
+
+Per the annotated screenshot: the copyright sits centred on the page and the social icons on the
+right of the same row, rather than stacked.
+
+**The socials are absolutely positioned, not a flex sibling.** In a `justify-between` row the
+copyright would centre itself in the space *left over* beside the icons, which puts it left of the
+page's true centre by half the icon row. Out of flow, it centres on the footer itself — measured
+at 0px offset from the footer's centre axis, with the icons flush to the container's right edge.
+
+**The breakpoint took three goes and the reason is worth writing down.** Centred copy plus a
+right-pinned row needs the page wider than the copyright text *plus twice* the icon row, because
+centred text grows from the middle outwards in both directions:
+
+| breakpoint tried | at its width | gap |
+|---|---|---|
+| `sm` (640) | 700px | **-25px — overlapping** |
+| `md` (768) | 768px | 2px — touching, not clearing |
+| `lg` (1024) | 1024px | 130px |
+
+Settled at `lg`. Below it the row stacks: copyright, then icons, both centred.
+
+Footer at 1440 is back to **670px** — merging the two rows gave back what the extra line cost.
+
+`tsc --noEmit` clean, `eslint` clean, `next build` succeeds.
+
+Not committed. The `© 2016` still reads 2016, as supplied.
+
+## 2026-09-10 — Copyright moves up into the contact column; year corrected to 2026
+
+The two copyright lines are out of the bottom bar and up in the first column, directly under the
+phone number, so they share that column's left edge with the email and the phone. Measured: all
+four start at exactly 105px at a 1440 viewport.
+
+They are left-aligned now rather than centred — that is what aligning with the email and phone
+means, and it also retires the whole absolutely-positioned bottom-bar arrangement from the previous
+pass, along with its `lg` breakpoint and the three attempts it took to find one. The rule now has
+only the social icons under it, centred, since nothing sits opposite them.
+
+`© 2016` corrected to `© 2026`.
+
+**It costs height: 670px to 743px at 1440.** The first column got two lines taller while the bottom
+bar kept its own row for the icons. If that matters, the cheapest recoveries are the `mt-6` above
+the copyright block, or folding the icons up beside something rather than giving them a row.
+
+`tsc --noEmit` clean, `eslint` clean, `next build` succeeds.
+
+Not committed.
+
+## 2026-09-10 — Copyright and socials move into the grid, level with the contact details
+
+Per the annotated screenshot: the copyright sits under the Explore column and the social icons
+under Connect, both bottom-aligned with the email and phone. The rule and the bar beneath it are
+deleted — with both of their occupants moved up, they were an empty row the footer was paying for.
+
+**Two items share one grid cell, and that is the trick.** The copyright takes row 1 of column 2
+alongside the Explore links, the icons row 1 of column 4 alongside Connect. The row is as tall as
+the brand column, which runs down to the phone number; the link lists sit at the top of their cells
+and these sit at the bottom via `self-end`, so they come out level without ever touching — 70px of
+clear cell under the Explore links, 126px under Connect.
+
+Nesting them inside the column divs would align them the same way, but it pins them to that column
+in source order, and below `lg` the grid collapses to one column — the copyright would surface in
+the middle of the footer, between the Explore links and the Order heading. As siblings placed with
+`col-start` they are last in source. Confirmed at 390px: brand, Explore, Order, Connect, copyright,
+icons.
+
+**Every item in the grid is placed by hand now, and it has to be.** The first attempt placed only
+the two new items and left the rest to auto-placement — which flows *around* explicitly-claimed
+cells, so Explore landed in column 3 and Order and Connect were pushed onto a second row. The
+footer went to 793px and the "collision" that showed up in the numbers was that, not an alignment
+problem. With all six placed, the grid is a single 284px row again.
+
+The column classes are written out as whole strings in a `COL_START` array rather than built as
+`lg:col-start-${i}` — Tailwind reads the source as text and would never generate the computed ones.
+
+Measured at 1440: copyright and icons both end at 645px, the phone at 644. Footer **603px**, down
+from 743 before this pass and 881 at the start of the day.
+
+`tsc --noEmit` clean, `eslint` clean, `next build` succeeds.
+
+Not committed.
+
+## 2026-09-10 — Footer rebuilt as two containers
+
+The client's own proposal, and it is the better structure:
+
+    container 1   logo + heading + para   |   Explore   |   Order   |   Connect
+    container 2   email + phone           |   copyright (centre)     |   socials (right)
+
+**It deletes the awkward part of the previous layout.** All six blocks used to live in one grid,
+with the copyright and the icons sharing cells with the link columns and bottom-aligning out of
+them via `self-end`. That worked, but it forced every item to be placed by hand — the moment two
+cells are claimed explicitly, auto-placement flows everything else *around* them, which is what put
+Explore in column 3 and pushed Order and Connect onto a second row. Two containers need no
+placement at all, so the `COL_START` table and every `col-start` / `row-start` / `self-end` is gone.
+
+**Container 2 is three equal columns, not `justify-between`.** The copyright has to sit on the
+page's true centre; under `justify-between` it would centre itself in the space left over between
+the contact block and the icons, which is only the middle if those two are the same width, and they
+are not. Equal thirds centre the middle cell on the container regardless. Measured: email flush at
+0px from the container's left, copyright 0px off the footer's centre axis, icons flush at 0px from
+the right.
+
+A rule separates the two containers — that is what makes them read as two. It is one class if it
+should go.
+
+Below `lg` both collapse and the order is brand, Explore, Order, Connect, email+phone, copyright,
+icons. Verified at 390px, no horizontal overflow.
+
+Footer is **652px** at 1440, against 603 for the shared-cell version — container 2 now has its own
+row, rule and padding rather than borrowing the height of the brand column. That is what the
+cleaner structure costs.
+
+`tsc --noEmit` clean, `eslint` clean, `next build` succeeds.
+
+Not committed.
+
+## 2026-09-10 — Rule between the footer containers removed, gap tightened
+
+`border-t border-brand-cream/20` off the second container, and with no rule to clear, the `pt-6`
+that padded it away came off too — the separation is the gap alone now. `mt-10` down to `mt-6`.
+
+Between the containers: 64px (40 margin + 24 padding) to **24px**. No bordered element left
+anywhere in the footer. Footer **611px** at 1440, from 652.
+
+`tsc --noEmit` clean, `eslint` clean, `next build` succeeds.
+
+Not committed.
+
+## 2026-09-10 — Skyline overlap eased to -4.7%
+
+`-mt-[8.7%]` to `-mt-[4.7%]` on the band. Still a percentage, so still a fixed fraction of the
+band's own height at every viewport — 19% now rather than 35%.
+
+At 1440: margin -67.7px, overlap 68px of a 359px band. The copy sits much shallower in it than
+before — the copyright line ends 6% down and the social icons 11.6%, where the artwork is running
+1-3% coverage, so there is effectively nothing behind them now.
+
+Less overlap is more height: footer **671px**, up from 611.
+
+`tsc --noEmit` clean, `eslint` clean, `next build` succeeds.
+
+Not committed.
+
+## 2026-09-10 — Three dish images added to the menu
+
+The three supplied files name the `veg` dish on three specific days in `MENU_DAYS`, so they replace
+those days' card images:
+
+| day | dish | image |
+|---|---|---|
+| 2 (Gujarati) | Bateta Ni Suki Bhaji | `dish-bateta-ni-suki-bhaji.png` |
+| 3 (Gujarati) | Kathiyawadi Ringan No Olo | `dish-kathiyawadi-ringan-no-olo.png` |
+| 4 (Punjabi) | Paneer Butter masala | `dish-paneer-butter-masala.png` |
+
+Copied into `public/images/days/` under dish names rather than overwriting `day-02/03/04.png`. New
+paths mean new URLs, which sidesteps the `/_next/image` caching that already cost a round trip on
+the footer artwork, and the filename now says what the picture is.
+
+**They are under-resolved, and it will show.** The card renders the image at 183 CSS px, so a
+DPR-2 screen wants 367px and the layout requests the 384px variant. The existing day images are
+1024px square and serve 384. These are 175px square, and Next does not upscale — asked for 384 they
+return 175:
+
+    day-01                        requested 384 -> served 384
+    dish-bateta-ni-suki-bhaji     requested 384 -> served 175
+    dish-kathiyawadi-ringan-no-olo  requested 384 -> served 175
+    dish-paneer-butter-masala     requested 384 -> served 175
+
+That is roughly 2.1x short on a retina display, and short even at 1x. They need re-exporting at
+about 800px square to match the rest.
+
+**They are also a different style.** The existing twenty are top-down shots of a bowl; these three
+are three-quarter views of a steel tiffin tin. Three cards in a grid of twenty will read as a
+different set. Fine if the whole grid is being replaced this way over time — worth knowing if not.
+
+Wired correctly and verified in the running app: the three appear in the 2nd, 3rd and 4th card
+positions, all serving 200.
+
+`tsc --noEmit` clean, `eslint` clean, `next build` succeeds.
+
+Not committed.
+
+## 2026-09-10 — Add-ons goes red, and the CTA gets its curve back
+
+**Add-ons is `bg-brand-red`.** The grid flipped with it — `graph-paper` draws its lines in ink and
+disappears on red, `graph-paper-light` draws them in cream. The kicker, the poster heading, the
+body and the "Also available tomorrow" label all moved off the dark-on-cream palette: yellow, and
+the heading takes an explicit ink `--po-color` because `poster` defaults its shadow to brand-yellow,
+which would have been the type's own colour. The slider cards are `bg-paper` and carry their own
+contrast, so they needed nothing. Measured on the live section: 5.23 / 5.23 / 4.96 / 5.23, all
+passing.
+
+**The CTA's wave is back**, matching `regional-food-stories`. It was removed earlier for a good
+reason — a wave paints the colour of the section *above* curving down into the one below, and that
+section was cream at the time, so cream over cream was a 150px no-op. Making Add-ons red restores a
+real step for it to soften.
+
+Two details it needed:
+
+- `textured={false}` with `graph-paper-light` passed through `className`, rather than `textured`.
+  The flag adds `graph-paper`, whose ink lines vanish on a red wave; the section above prints its
+  grid in cream and the curve has to carry the same one. Verified: the wave paints
+  `rgba(252,243,205,0.12)` lines over `rgb(175,20,17)`.
+- padding. The wave is 110px tall, 150 from `sm`, and here it is red on a cream ground — unlike the
+  paper-on-cream waves on the other CTAs, anything overlapping it is dark type on red. So this one
+  clears the wave outright at `pt-[132px] sm:pt-[172px]` rather than the 6rem the others use. The
+  kicker now starts at 204px, past the wave's 150.
+
+Section flow down the page is cream, paper, red, cream — no two adjacent grounds alike.
+
+`tsc --noEmit` clean, `eslint` clean, `next build` succeeds.
+
+Not committed.
+
+## 2026-09-10 — Grid print off the Add-ons section
+
+`graph-paper-light` off the section: the red ground is flat behind the slider's cards now.
+`grain` stays — that is the paper texture, not the grid.
+
+The CTA's wave below dropped its print with it. The wave paints the colour of the section above
+curving down into the CTA, so leaving `graph-paper-light` on the curve while the section itself had
+none would have put the grid *only* in that 150px band — print appearing out of nowhere at the
+seam. Both are flat red now: section `background-image: none`, wave `background-image: none`.
+
+`tsc --noEmit` clean, `eslint` clean, `next build` succeeds.
+
+Not committed.
+
+## 2026-09-10 — Add-on slider arrows: two separate faults
+
+The arrows were missing for two reasons at once, and only one of them was the red ground.
+
+**1. They never rendered until you scrolled.** `hasOverflow` is derived from `atStart && atEnd`,
+both of which start `true`, so the arrows are hidden until `sync()` corrects them. `sync` ran from
+exactly two places: the scroll handler, and a `ResizeObserver` on the track.
+
+The observer is the problem. It watches the track's own border box, which is full-width and
+identical whether the content overflows or not — 1337px here either way. Overflow lives in
+`scrollWidth` (1716px, a 379px overflow), which the observer never sees. So if its first callback
+lands before the cards have their widths — CSS arriving after first paint, a late font — it records
+no overflow, the box never changes again, nothing fires, and the arrows stay hidden until the user
+happens to scroll the track. Confirmed exactly that: on load the arrow container was not in the DOM
+at all, and dispatching a single `scroll` event brought both arrows in correctly.
+
+Now re-read at every point where overflow can actually change: on mount, on the next frame, once
+`document.fonts` settles, on window resize, and on scroll. Arrows are present on load.
+
+**2. They were the wrong colour for the ground.** `IconButton` defaults to `variant="outline"` —
+red type and a red ring, which is right on paper or cream and invisible on the red the Add-ons
+section just became. Added an `arrowVariant` prop rather than hardcoding cream, since the component
+cannot see its own background, and the page passes `outlineCream`. Measured 6.43:1 on the red.
+
+Verified on the running page: 379px of overflow, both arrows present and visible at load, Previous
+disabled at the start, both enabled mid-track, Next disabled at the end.
+
+Note the click-to-scroll path could not be exercised here — smooth scrolling does not animate and
+native scroll events are not delivered in the hidden Browser pane. The state logic behind it checks
+out when the events are dispatched by hand, but the actual click gesture wants a look in a real
+browser.
+
+`tsc --noEmit` clean, `eslint` clean, `next build` succeeds.
+
+Not committed.
+
+## 2026-09-10 — About and Plans get a curve you can actually see
+
+Both already had a `WaveDivider`. The problem was that it was invisible, not absent: the wave
+paints the colour of the section *above* curving down, both sat under a `bg-paper` section, and
+paper over `bg-brand-cream` is about 3% apart in luminance. The shape was in the DOM and did
+nothing on screen.
+
+Switched to `tone="bg-brand-red"` on both, matching `whats-cooking-tomorrow`. It stops being a
+handover from the section above and becomes a deliberate red cap on the CTA — which is the only
+version of this curve that reads at all on a cream band.
+
+Padding had to follow. At `pt-24` the script kicker sat at 128-164px inside a 150px wave. That was
+harmless while the wave was paper-on-cream; on red it would be dark type on a red ground. Both CTAs
+now clear the wave outright at `pt-[132px] sm:pt-[172px]` — the kicker starts at 204px, 54px below
+the wave's bottom edge.
+
+**`regional-food-stories` is deliberately untouched and is now the odd one out**: still
+`tone="bg-paper"` at `pt-24`, so its curve stays invisible. It was not in the request, and its CTA
+is the one with the Starburst and a different padding arrangement, so it wants its own look before
+being changed on assumption. Say the word and it matches the other three.
+
+Current state across the four:
+
+| page | wave | CTA padding-top |
+|---|---|---|
+| about | `bg-brand-red` | 132 / 172 |
+| plans | `bg-brand-red` | 132 / 172 |
+| whats-cooking-tomorrow | `bg-brand-red` | 132 / 172 |
+| regional-food-stories | `bg-paper` | 96 |
+
+`tsc --noEmit` clean, `eslint` clean, `next build` succeeds.
+
+Not committed.
+
+## 2026-09-10 — Red wave on About and Plans reverted
+
+Wrong call, reverted. The wave paints the colour of the section *above* curving down into the one
+below — that is the whole mechanism. Setting it to red on About and Plans, where nothing above is
+red, produced a red stripe arriving from nowhere rather than a handover. It works on
+`whats-cooking-tomorrow` only because the Add-ons band directly above it genuinely is red.
+
+Both back to `tone="bg-paper"` and `pt-24`, the 6rem that was asked for earlier — the extra
+clearance existed only to keep dark type off a red curve.
+
+All four are consistent again in the sense that matters: every wave paints the colour of the
+section above it.
+
+| page | section above | wave | CTA |
+|---|---|---|---|
+| about | paper | paper | cream |
+| plans | paper | paper | cream |
+| regional-food-stories | paper | paper | cream |
+| whats-cooking-tomorrow | red | red | cream |
+
+**The original problem stands and is unsolved:** on the three paper-above pages the curve is real
+but invisible, because paper and cream are about 3% apart in luminance. The fix is to change what
+sits *above* those CTAs, not what the wave is painted with — give those sections a ground with some
+distance from cream and the curve appears on its own. Not doing that unasked; it is a page-level
+design change on three pages.
+
+`tsc --noEmit` clean, `eslint` clean, `next build` succeeds.
+
+Not committed.
+
+## 2026-09-10 — About and Plans CTA padding-top to 10rem
+
+`pt-24` to `pt-40` on both closing CTAs — 96px to 160px, at every breakpoint (neither had an `sm:`
+override left).
+
+Measured on `/plans`: computed `padding-top: 160px`, and the script kicker now starts at 192px,
+clearing the 150px wave by 42px. It was inside the wave at `pt-24`, which did not show because the
+wave is paper on cream, but it is genuinely clear now.
+
+`tsc --noEmit` clean, `eslint` clean, `next build` succeeds.
+
+Not committed.
+
+## Stat tile fills the 5th-card gap on regional cuisine cards
+**2026-09-10**
+
+`RegionStoryCards` renders 5 regions in a 3-column grid, leaving the 6th cell on row 2 empty. Added a callout tile in that slot instead of a 6th cuisine (would dilute the "5 authentic regions" claim): "Every Region, One Dabba" script line over 5 Regions / 15 Days / 1 Dabba stats, styled as a solid brand-red card so it reads as a summary, not a 6th story.
+
+- `src/components/regional/RegionStoryCards.tsx` — added `STATS` array and the tile as the grid's final child, reusing the same card shell as the region cards.
+- Verified via DOM measurement (Browser pane hidden): tile sits at column 3 / row 2, height 303px — exact match to its row siblings (Rajasthani, South Indian).
+- `tsc --noEmit` and `eslint` clean.
+
+## Redesign the stat tile as tilted stamp seals
+**2026-09-10**
+
+The first version of the sixth-cell stat tile (5 Regions / 15 Days / 1 Dabba as flat centered numbers) read as a generic stat block, not on-brand. Redesigned to reuse the site's own circular "seal" badge motif (the same shape as `RegionCard`'s "REGION 01 of five" roundel): each stat is now a paper-cream circle stamped at its own tilt and vertical offset, dealt by hand like `RuleFan`'s card fan and `DabbaLine`'s entrance vectors. Added `grain` texture to the card, a divider rule, and a closing line.
+
+- `src/components/regional/RegionStoryCards.tsx` — `STATS` now carries per-seal `rot`/`y`; seals render as `rounded-full bg-paper` badges with inline `transform: rotate() translateY()`.
+- Verified via DOM measurement (Browser pane intermittently hidden this session — screenshots came back blank, confirmed instead by computed transform matrices, colors, and text content): three seals at -7°/+4°/-3° tilt, red card with grain overlay, paper circles at rgb(255,253,246).
+- `tsc --noEmit` and `eslint` clean.
+
+## Rebuild the stat tile as a poster-stack + prop image
+**2026-09-10**
+
+Reference: a bold three-line uppercase headline (Anton-style poster type) over a maroon ground, with a prop (a rotary phone) breaking the top-left corner of the frame. Rebuilt the sixth-cell tile around the same two ideas, using components already in the codebase: `.poster-stack` (the same three-line stacked headline used on every section hero) for "Five / Regions / One Dabba" in yellow/cream/green, and the tiffin-dabba PNG (`/images/items/tiffin-dabba.png`) cropped by the card's own corner at an 18° tilt as the prop, instead of a photo.
+
+- `src/components/regional/RegionStoryCards.tsx` — replaced the seal-badge version with `HEADLINE` (three poster-stack lines) plus the tiffin image, `overflow-hidden` on the card so the prop crops cleanly at the edge instead of needing to break the grid row.
+- `rotate-[18deg]` (Tailwind arbitrary value) silently produced no rule on this page — computed `transform` stayed `none` even though `opacity-95` and `drop-shadow-[...]` on the same element worked. Switched to an inline `style={{ transform: "rotate(18deg)" }}`, which the DOM confirms applies (`matrix(0.951, 0.309, -0.309, 0.951, 0, 0)`). Not investigated further; noting in case the same arbitrary-value class silently fails elsewhere.
+- Verified via DOM measurement (Browser pane screenshots returned blank all session despite the pane reporting open and correct viewport dimensions — confirmed instead via computed styles, transform matrices, and element rects): card 309×303px at the lg breakpoint (matches its row siblings), prop image rotated and cropped at the corner, no text overflow.
+
+## Add two supplied dish photos, replacing the two lowest-quality day images
+**2026-09-10**
+
+User supplied two Figma-exported SVGs, each an `<image>` wrapper around a base64 PNG (`15days_menu_page.svg` — one dish; `15days_menu_page 2.svg` — two dishes, one a byte-identical duplicate of the first file's). Extracted the two unique PNGs: a potato tiffin (matches day 2's "Bateta Ni Suki Bhaji") and an eggplant tiffin (matches day 3's "Kathiyawadi Ringan No Olo") — replacing the two dish images added earlier this session that were flagged as under-resolution (175×175, top-down bowl style, mismatched to the other day photos' 1024×1024 3/4 tiffin-tin style). The new images are 336×332 and 330×330 — closer to the rest of the set in framing, though still short of 1024px.
+
+- `public/images/days/dish-bateta-ni-suki-bhaji.b5caa435.png`, `public/images/days/dish-kathiyawadi-ringan-no-olo.74e39d4a.png` — content-hashed filenames (the `/_next/image` cache keys on source URL, so an in-place overwrite would have gone unnoticed, as happened with the footer image earlier this session); old unhashed files deleted.
+- `src/data/menu.ts` — days 2 and 3 repointed to the hashed filenames.
+- Verified via DOM: both `<img>` tags resolve through `/_next/image` with the new hashed URLs and render at their `naturalWidth`/`naturalHeight`.
+- Third day's image (`dish-paneer-butter-masala.png`, day 4) is untouched — no replacement supplied for it; still 175×175.
+
+## Remove the "Download / print menu" button
+**2026-09-10**
+
+- `src/components/menu/MenuRotation.tsx` — dropped the button and its now-unused `Button` import; `window.print()` handler removed with it.
+- Left the `@media print` stylesheet and `no-print` classes in `globals.css` / the filter bar untouched — a visitor can still print the page manually (Cmd/Ctrl+P), only the on-page affordance is gone, which is what was asked.
+- Verified via DOM: "Download / print menu" no longer present on `/menu`. `tsc --noEmit` and `eslint` clean.
+
+## Replace the shared hero's dabba + tin photography
+**2026-09-10**
+
+User supplied 6 progressive Figma-export SVGs (`Dabba 1.svg`–`Dabba 6.svg`, each an `<image>` wrapper around a base64 PNG; later files were cumulative composites, so only 6 images were actually unique). Identified: a new tall wooden-handle tiffin (centrepiece) and 5 dishes — potato bhaji, rice, roti, gulab jamun, salad — replacing the old dhokla/butter-chicken/fish-curry/dal/sambar ring, which no longer matched. Asked which pages to touch, since the art lives in one shared component (`HeroPlatter`, driven by `PageHero`) rendered on Menu, About, Plans, Chef's Corner, and Regional Stories; user chose all five, with What's Cooking Tomorrow (its own tin set) left alone.
+
+- Extracted the 6 unique PNGs (dedup by md5 — the composites repeated earlier images), alpha-bbox cropped each to its subject, padded 12% on all sides onto a transparent canvas (existing tins/dabba on-disk carry similar breathing room), content-hashed filenames into `public/images/items/`.
+- `src/components/regional/HeroPlatter.tsx` — `REGION_TINS` now points at the 5 new tins. Added a `Dabba` type (`src`/`width`/`height`/`size`) and a `dabba` prop, because the new tiffin's aspect ratio (tall, ~0.45) is nowhere near the old square cutout's (~1) — sizing it by the old "54% width" rule would have overflowed the hero vertically, so it's now sized by its own `size` (30%, tuned so its edges just meet the tins, reproducing the original "packed dabba" overlap). Exported `DEFAULT_DABBA` (new tiffin) and `CLASSIC_DABBA` (old one, kept on disk).
+- `src/components/PageHero.tsx` — threads a `dabba` prop through to `HeroPlatter`.
+- `src/app/whats-cooking-tomorrow/page.tsx` — passes `dabba={CLASSIC_DABBA}` explicitly, so its hero (custom `TOMORROW_TINS`, old-style dhokla/butter-chicken/etc. tins) is untouched as agreed.
+- Verified in-browser on `/menu` and `/about` (new artwork) and `/whats-cooking-tomorrow` (old artwork, confirmed unchanged). `tsc --noEmit` and `eslint` clean.
+- Same caveat as the earlier dish-image swap: source photos are ~250–600px, smaller than the 1024px the rest of the item photography runs at — usable, but softer up close.
+
+## Resize the new hero dabba and tins
+**2026-09-10**
+
+- `src/components/regional/HeroPlatter.tsx` — `DEFAULT_DABBA.size` 30% → 20%; all five `REGION_TINS` entries 27–29% → 23%. `CLASSIC_DABBA`/`TOMORROW_TINS` (What's Cooking Tomorrow) untouched.
+- Verified in-browser on `/menu`: composition stays tight with no gaps at the smaller sizes. `tsc --noEmit` and `eslint` clean.
+
+## Reposition the allergens/nutrition badge over the top-left tin
+**2026-09-10**
+
+User referenced a crop showing the starburst badge sitting above the top-left tin with a clear overlap, rather than beside it. On desktop the badge previously sat roughly level with the potato-bhaji tin (`sm:left-[2%] sm:top-[15%]`), side by side with little overlap.
+
+- `src/components/PageHero.tsx` — `sm:left-[2%] sm:top-[15%]` → `sm:-left-[2%] sm:top-[2%]`. Badge now sits above the tin with its lower half overlapping the tin's top edge, bleeding slightly past the food-group box's left edge (still well inside the viewport — confirmed via `getBoundingClientRect`, not clipped by the section's `overflow-hidden`).
+- Mobile/base classes untouched — verified at 375px, badge still sits cleanly above the tin ring with no collision.
+- Verified in-browser on `/menu` and `/about` (shared `PageHero`, so the change applies to all 5 pages using the new tin set). `tsc --noEmit` and `eslint` clean.
+
+## Add decorative elements to the "Five Regions" stat tile
+**2026-09-10**
+
+Card read as sparse — big empty red field around the headline. Added three loose spice cutouts (cinnamon, star anise, chilli — the same PNGs already scattered around the hero platter above, reused rather than new art) tucked into the empty corners, and a small "Mumbai ⸺ Perth" route line under the tagline, echoing the dotted ticker used elsewhere on the page.
+
+- `src/components/regional/RegionStoryCards.tsx` — three `<Image>` spice cutouts (`z-0`, low opacity, rotated) placed bottom-left, bottom-right, and mid-right; a route-line `div` added under the tagline paragraph.
+- Verified via DOM: no element overlaps the poster-stack headline's actual glyph bounds (measured via `Range.getBoundingClientRect` on each line's text, not just the block box) — nearest spice (chilli) sits 81px clear of "One Dabba"'s right edge.
+- `tsc --noEmit` and `eslint` clean.
+
+## Revert the stat tile's decorative elements
+**2026-09-10**
+
+- `src/components/regional/RegionStoryCards.tsx` — removed the 3 spice cutouts, the tiffin prop, and the "Mumbai ⸺ Perth" route line added last turn; also dropped the now-unused `next/image` import. Card is back to just the poster-stack headline and tagline on the plain grain-red ground.
+- Verified via DOM: 0 `<img>` tags in the card, no "Mumbai" text. `tsc --noEmit` and `eslint` clean.
+
+## Set a textured background image on the stat tile
+**2026-09-10**
+
+- Copied `/Users/apple/Downloads/card-bg.jpeg` (736×1104, swirling red-on-red texture) to `public/images/cards/region-stat-bg.d10018e6.jpeg` (content-hashed).
+- `src/components/regional/RegionStoryCards.tsx` — card now renders the image full-bleed (`next/image fill` + `object-cover`) in place of the flat `bg-brand-red` + `grain` texture; headline/tagline stay `relative z-10` above it.
+- Verified via DOM: image resolves through `/_next/image` with the hashed URL, `object-fit: cover`, fills the card exactly. `tsc --noEmit` and `eslint` clean.

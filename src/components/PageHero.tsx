@@ -1,5 +1,5 @@
 import Button from "@/components/Button";
-import HeroPlatter, { type Piece } from "@/components/regional/HeroPlatter";
+import HeroPlatter, { type Dabba, type Piece } from "@/components/regional/HeroPlatter";
 import Starburst from "@/components/poster/Starburst";
 import RouteTicker from "@/components/poster/RouteTicker";
 
@@ -23,6 +23,7 @@ export default function PageHero({
   secondary,
   seal,
   tins,
+  dabba,
 }: {
   kicker: string;
   titleTop: string;
@@ -35,6 +36,7 @@ export default function PageHero({
   secondary: { href: string; label: string };
   seal: Seal;
   tins?: Piece[];
+  dabba?: Dabba;
 }) {
   return (
     <section className="grain graph-paper relative flex min-h-[100svh] flex-col justify-start lg:justify-center overflow-hidden bg-brand-cream pb-12 pt-16 sm:pb-24 sm:pt-24">
@@ -52,9 +54,10 @@ export default function PageHero({
           <HeroPlatter
             className="slide-in-left relative mx-auto w-[52%] max-w-[240px] sm:w-[72%] sm:max-w-[460px] lg:w-[min(100%,80svh)] lg:max-w-[780px]"
             tins={tins}
+            dabba={dabba}
           />
 
-          <Starburst className="slide-in-left absolute left-[10%] top-[4%] z-30 h-[78px] w-[78px] rotate-[-10deg] sm:left-[2%] sm:top-[15%] sm:h-[118px] sm:w-[118px] xl:h-[138px] xl:w-[138px]">
+          <Starburst className="slide-in-left absolute left-[10%] top-[4%] z-30 h-[78px] w-[78px] rotate-[-10deg] sm:-left-[2%] sm:top-[2%] sm:h-[118px] sm:w-[118px] xl:h-[138px] xl:w-[138px]">
             <div className="px-2 sm:px-5">
               <span className="block text-[7px] font-bold uppercase tracking-[0.2em] text-brand-cream/85 sm:text-[9px]">
                 {seal.eyebrow}

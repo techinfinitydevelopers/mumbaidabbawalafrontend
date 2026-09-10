@@ -65,7 +65,7 @@ export default function RegionalFoodStoriesPage() {
       </section>
 
       {/* ───── Closing CTA, styled after the "SOME TRADITIONS TRAVEL WELL" poster ───── */}
-      <section className="grain graph-paper-light relative overflow-hidden bg-brand-red pb-phi-5 pt-phi-7 sm:pt-phi-8 sm:pb-phi-5">
+      <section className="grain graph-paper relative overflow-hidden bg-brand-cream pb-phi-5 pt-24 sm:pb-phi-5">
         {/* untextured: the section above is plain `bg-paper` with no print, so carrying
             the grid through the curve put an isolated patch of it inside the 150px band
             and drew a hard horizontal edge along the band's top. `WaveDivider`'s own doc
@@ -119,35 +119,35 @@ export default function RegionalFoodStoriesPage() {
 
             <h2 className="poster-stack relative z-10 [--po:4px] sm:[--po:6px]">
               <span
-                className="poster text-[46px] text-brand-yellow sm:text-[68px]"
-                style={{ ["--po-color" as string]: "rgba(42,24,16,0.85)" }}
+                className="poster text-[46px] text-brand-red sm:text-[68px]"
+                style={{ ["--po-color" as string]: "var(--color-brand-yellow)" }}
               >
                 Taste All Five
               </span>
               <span
-                className="poster text-[46px] text-brand-green sm:text-[68px]"
-                style={{ ["--po-color" as string]: "rgba(42,24,16,0.6)" }}
+                className="poster text-[46px] text-brand-green-dark sm:text-[68px]"
+                style={{ ["--po-color" as string]: "var(--color-brand-yellow)" }}
               >
                 Regions
               </span>
             </h2>
           </div>
 
-          <p className="mx-auto mt-5 max-w-measure text-phi-2 leading-relaxed text-brand-cream/85">
+          <p className="mx-auto mt-5 max-w-measure text-phi-2 leading-relaxed text-ink/70">
             Rotating dishes across the 15-day menu — real variety, never the same thing twice
             in a row.
           </p>
 
           <div className="mt-8 flex flex-wrap justify-center gap-3">
-            <Button href="/menu" variant="yellow" size="lg">
+            <Button href="/menu" variant="orange" size="lg">
               Explore Regional Menus
             </Button>
-            <Button href="/plans" variant="outlineCream" size="lg">
+            <Button href="/plans" variant="paper" size="lg">
               Order Your Dabba
             </Button>
           </div>
 
-          <RouteTicker className="mx-auto mt-10 max-w-sm text-brand-cream" />
+          <RouteTicker className="mx-auto mt-10 max-w-sm text-ink/70" />
         </Reveal>
       </section>
     </div>
