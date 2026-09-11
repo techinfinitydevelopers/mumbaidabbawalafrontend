@@ -28,8 +28,8 @@ export const MILESTONES: Milestone[] = [
     description: "100 dabbawalas began carrying one banker's lunch — a legacy was born.",
     plate: {
       kind: "photo",
-      src: "/images/journey/dish-marathi.gif",
-      alt: "Steaming Maharashtrian Tiffin Meal",
+      src: "/images/journey/journey-first-delivery.3528d9bc.png",
+      alt: "Archival photo of dabbawalas loading tiffins onto a Mumbai train platform",
     },
     top: 260,
   },
@@ -42,8 +42,8 @@ export const MILESTONES: Milestone[] = [
     description: "Six Sigma accuracy — one error in 16 million, zero computers.",
     plate: {
       kind: "photo",
-      src: "/images/journey/dish-punjabi.gif",
-      alt: "Rich Indian Community Dabba",
+      src: "/images/journey/journey-global-benchmark.678c7812.png",
+      alt: "Dabbawalas loading rows of tiffin carriers onto handcarts in Mumbai",
     },
     top: 580,
   },
@@ -56,8 +56,8 @@ export const MILESTONES: Milestone[] = [
     description: "Invited to the Royal Wedding. Studied at Harvard. The world took notice.",
     plate: {
       kind: "photo",
-      src: "/images/journey/dish-gujarati.gif",
-      alt: "Steaming Gujarati Thali",
+      src: "/images/journey/journey-global-acclaim.1dca8cc5.png",
+      alt: "A dabbawala presenting a tiffin to Prince Charles during a visit to Mumbai",
     },
     top: 900,
   },
@@ -70,8 +70,8 @@ export const MILESTONES: Milestone[] = [
     description: "135 years of heritage lands in Perth — fresh thalis, delivered daily.",
     plate: {
       kind: "photo",
-      src: "/images/journey/dish-gujarati.gif",
-      alt: "Steaming Gujarati Thali",
+      src: "/images/journey/journey-perth-expansion.87a45ac5.png",
+      alt: "A giant tiffin sculpture beside Perth's Bell Tower",
     },
     top: 1220,
   },

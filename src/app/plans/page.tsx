@@ -5,6 +5,7 @@ import Reveal from "@/components/Reveal";
 import PlanCard from "@/components/plans/PlanCard";
 import WaveDivider from "@/components/poster/WaveDivider";
 import { PLANS, PLAN_TERMS_NOTE } from "@/data/plans";
+import { PLANS_TINS } from "@/components/regional/HeroPlatter";
 
 export const metadata: Metadata = {
   title: "Plans — A Dabba for Every Routine | Mumbai Dabbawala",
@@ -28,6 +29,7 @@ export default function PlansPage() {
         primary={{ href: "#plans", label: "See the Plans" }}
         secondary={{ href: "/menu", label: "See the Menu" }}
         seal={{ eyebrow: "Most", lines: ["Loved", "Plan"], script: "monthly dabba" }}
+        tins={PLANS_TINS}
       />
 
       {/* ───── The four plans ───── */}

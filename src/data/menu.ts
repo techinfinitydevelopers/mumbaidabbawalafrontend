@@ -37,7 +37,7 @@ export type MenuDay = {
 /** Mon-Thu rotation, in sheet order */
 export const MENU_DAYS: MenuDay[] = [
   {
-    image: "/images/days/day-01.png",
+    image: "/images/days/dish-fansi-bateta-nu-shaak.1fa8fdc5.png",
     cuisine: "Gujarati",
     cuisineKey: "gujarati",
     grid: {
@@ -54,7 +54,7 @@ export const MENU_DAYS: MenuDay[] = [
     pickle: "Marcha-Gajar Nu Athanu",
   },
   {
-    image: "/images/days/dish-bateta-ni-suki-bhaji.b5caa435.png",
+    image: "/images/days/dish-bateta-ni-suki-bhaji.f5d8e56c.png",
     cuisine: "Gujarati",
     cuisineKey: "gujarati",
     grid: {
@@ -71,7 +71,7 @@ export const MENU_DAYS: MenuDay[] = [
     pickle: "Chhundo",
   },
   {
-    image: "/images/days/dish-kathiyawadi-ringan-no-olo.74e39d4a.png",
+    image: "/images/days/dish-kathiyawadi-ringan-no-olo.4850ee5e.png",
     cuisine: "Gujarati",
     cuisineKey: "gujarati",
     grid: {
@@ -88,7 +88,7 @@ export const MENU_DAYS: MenuDay[] = [
     pickle: "Gor Keri Nu Athanu",
   },
   {
-    image: "/images/days/dish-paneer-butter-masala.png",
+    image: "/images/days/dish-paneer-butter-masala.2c845bf4.png",
     cuisine: "Punjabi",
     cuisineKey: "punjabi",
     grid: {
@@ -105,7 +105,7 @@ export const MENU_DAYS: MenuDay[] = [
     pickle: "Gajar Achaar",
   },
   {
-    image: "/images/days/day-05.png",
+    image: "/images/days/dish-paneer-tikka-masala.d25a0151.png",
     cuisine: "Punjabi",
     cuisineKey: "punjabi",
     grid: {
@@ -122,7 +122,7 @@ export const MENU_DAYS: MenuDay[] = [
     pickle: "Punjabi Mango Pickle",
   },
   {
-    image: "/images/days/day-06.png",
+    image: "/images/days/dish-palak-paneer.96694efb.png",
     cuisine: "Punjabi",
     cuisineKey: "punjabi",
     grid: {
@@ -139,7 +139,7 @@ export const MENU_DAYS: MenuDay[] = [
     pickle: "Lemon Pickle",
   },
   {
-    image: "/images/days/day-07.png",
+    image: "/images/days/dish-methi-pithla.56557aa3.png",
     cuisine: "Maharashtrian",
     cuisineKey: "maharashtrian",
     grid: {
@@ -156,7 +156,7 @@ export const MENU_DAYS: MenuDay[] = [
     pickle: "Kairi Lonche",
   },
   {
-    image: "/images/days/day-08.png",
+    image: "/images/days/dish-kandyachi-paat.a693d118.png",
     cuisine: "Maharashtrian",
     cuisineKey: "maharashtrian",
     grid: {
@@ -173,7 +173,7 @@ export const MENU_DAYS: MenuDay[] = [
     pickle: "Lasun Lonche",
   },
   {
-    image: "/images/days/day-09.png",
+    image: "/images/days/dish-bharli-vangi.6e21daea.png",
     cuisine: "Maharashtrian (Malvani)",
     cuisineKey: "malvani",
     grid: {
@@ -190,7 +190,7 @@ export const MENU_DAYS: MenuDay[] = [
     pickle: "Limbache Lonche",
   },
   {
-    image: "/images/days/day-10.png",
+    image: "/images/days/dish-gutti-vankaya-kura.71b64f18.png",
     cuisine: "Andhra",
     cuisineKey: "andhra",
     grid: {
@@ -207,7 +207,7 @@ export const MENU_DAYS: MenuDay[] = [
     pickle: "Mamidi Kaya Pachadi",
   },
   {
-    image: "/images/days/day-11.png",
+    image: "/images/days/dish-mushroom-pepper-fry.a8e297f7.png",
     cuisine: "Andhra",
     cuisineKey: "andhra",
     grid: {
@@ -224,7 +224,7 @@ export const MENU_DAYS: MenuDay[] = [
     pickle: "Lemon Pickle",
   },
   {
-    image: "/images/days/day-12.png",
+    image: "/images/days/dish-avial.b7844181.png",
     cuisine: "Kerala",
     cuisineKey: "kerala",
     grid: {
@@ -241,7 +241,7 @@ export const MENU_DAYS: MenuDay[] = [
     pickle: "Garlic Pickle",
   },
   {
-    image: "/images/days/day-13.png",
+    image: "/images/days/dish-gatte-ki-sabzi.2422d55c.png",
     cuisine: "Rajasthani",
     cuisineKey: "rajasthani",
     grid: {
@@ -258,7 +258,7 @@ export const MENU_DAYS: MenuDay[] = [
     pickle: "Mango Pickle",
   },
   {
-    image: "/images/days/day-14.png",
+    image: "/images/days/dish-rajasthani-lal-paneer.ff81adc6.png",
     cuisine: "Rajasthani",
     cuisineKey: "rajasthani",
     grid: {
@@ -275,7 +275,7 @@ export const MENU_DAYS: MenuDay[] = [
     pickle: "Chunda",
   },
   {
-    image: "/images/days/day-15.png",
+    image: "/images/days/dish-paneer-makhani.26269a01.png",
     cuisine: "Awdhi",
     cuisineKey: "awadhi",
     grid: {
@@ -292,7 +292,7 @@ export const MENU_DAYS: MenuDay[] = [
     pickle: "Carrot Pickle",
   },
   {
-    image: "/images/days/day-16.png",
+    image: "/images/days/dish-paneer-mutter.7a4a005f.png",
     cuisine: "Awdhi",
     cuisineKey: "awadhi",
     grid: {
@@ -313,7 +313,7 @@ export const MENU_DAYS: MenuDay[] = [
 /** the Friday specials, on their own four-week cycle */
 export const FRIDAY_SPECIALS: MenuDay[] = [
   {
-    image: "/images/days/friday-1.png",
+    image: "/images/days/dish-bhaji.b8305c43.png",
     cuisine: "Maharashtrian",
     cuisineKey: "maharashtrian",
     grid: {
@@ -330,7 +330,7 @@ export const FRIDAY_SPECIALS: MenuDay[] = [
     pickle: "Mango Pickle",
   },
   {
-    image: "/images/days/friday-2.png",
+    image: "/images/days/dish-chole.599d9f4b.png",
     cuisine: "Punjabi",
     cuisineKey: "punjabi",
     grid: {
@@ -347,7 +347,7 @@ export const FRIDAY_SPECIALS: MenuDay[] = [
     pickle: "Carrot Pickle",
   },
   {
-    image: "/images/days/friday-3.png",
+    image: "/images/days/dish-misal.55d4fb85.png",
     cuisine: "Maharashtrian",
     cuisineKey: "maharashtrian",
     grid: {
@@ -364,7 +364,7 @@ export const FRIDAY_SPECIALS: MenuDay[] = [
     pickle: "Raw Mango Pickle",
   },
   {
-    image: "/images/days/friday-4.png",
+    image: "/images/days/dish-kanchipuram-idli.84c39639.png",
     cuisine: "Tamilian",
     cuisineKey: "tamilian",
     grid: {

@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 import PageHero from "@/components/PageHero";
 import Reveal from "@/components/Reveal";
 import RegionStoryCards from "@/components/regional/RegionStoryCards";
+import { MENU_TINS } from "@/components/regional/HeroPlatter";
 import MenuRotation from "@/components/menu/MenuRotation";
 import FoodFirst from "@/components/menu/FoodFirst";
 import DabbaOfferings from "@/components/DabbaOfferings";
@@ -29,6 +30,7 @@ export default function MenuPage() {
         primary={{ href: "#rotation", label: "See the Rotation" }}
         secondary={{ href: "/plans", label: "Choose a Plan" }}
         seal={{ eyebrow: "Every card", lines: ["Allergens", "+ Nutrition"], script: "always tagged" }}
+        tins={MENU_TINS}
       />
 
       {/* ───── Why the food comes first ───── */}

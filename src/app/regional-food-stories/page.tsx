@@ -6,6 +6,7 @@ import Starburst from "@/components/poster/Starburst";
 import RouteTicker from "@/components/poster/RouteTicker";
 import RegionRail from "@/components/regional/RegionRail";
 import WaveDivider from "@/components/poster/WaveDivider";
+import { REGIONAL_TINS } from "@/components/regional/HeroPlatter";
 
 export const metadata: Metadata = {
   title: "Regional Food Stories — Mumbai Dabbawala",
@@ -32,6 +33,7 @@ export default function RegionalFoodStoriesPage() {
         primary={{ href: "/plans", label: "Order Now" }}
         secondary={{ href: "/menu", label: "Explore More" }}
         seal={{ eyebrow: "Always", lines: ["Free", "Delivery"], script: "every dabba" }}
+        tins={REGIONAL_TINS}
       />
 
       {/* ───── Auto-scrolling region rail ───── */}

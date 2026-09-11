@@ -111,6 +111,33 @@ export const REGION_TINS: Piece[] = [
   },
 ];
 
+/** the /menu hero's ring — a full thali's worth of courses */
+export const MENU_TINS: Piece[] = [
+  { src: "/images/items/tin-paratha.c8a92c83.png", alt: "A dabba container of fresh parathas", ...TIN_SLOTS[0] },
+  { src: "/images/items/tin-rice-menu.7e0dfd40.png", alt: "A dabba container of steamed rice", ...TIN_SLOTS[1] },
+  { src: "/images/items/tin-rajma.f3435da4.png", alt: "A dabba container of rajma", ...TIN_SLOTS[2] },
+  { src: "/images/items/tin-chana.56b2be13.png", alt: "A dabba container of spiced chana", ...TIN_SLOTS[3] },
+  { src: "/images/items/tin-gajar-halwa.1d953bcf.png", alt: "A dabba container of gajar halwa", ...TIN_SLOTS[4] },
+];
+
+/** the /plans hero's ring */
+export const PLANS_TINS: Piece[] = [
+  { src: "/images/items/tin-roti-plans.997aac92.png", alt: "A dabba container of fresh rotis", ...TIN_SLOTS[0] },
+  { src: "/images/items/tin-rice-plans.d2bca08f.png", alt: "A dabba container of steamed rice", ...TIN_SLOTS[1] },
+  { src: "/images/items/tin-bhindi.f660f676.png", alt: "A dabba container of bhindi masala", ...TIN_SLOTS[2] },
+  { src: "/images/items/tin-paneer-curry.41c6395b.png", alt: "A dabba container of paneer curry", ...TIN_SLOTS[3] },
+  { src: "/images/items/tin-rasgulla.1360d5bf.png", alt: "A dabba container of rasgulla", ...TIN_SLOTS[4] },
+];
+
+/** the /regional-food-stories hero's ring */
+export const REGIONAL_TINS: Piece[] = [
+  { src: "/images/items/tin-paratha-regional.568d9726.png", alt: "A dabba container of fresh parathas", ...TIN_SLOTS[0] },
+  { src: "/images/items/tin-missi-roti.87a9fd9e.png", alt: "A dabba container of missi roti", ...TIN_SLOTS[1] },
+  { src: "/images/items/tin-kadhi.d324e188.png", alt: "A dabba container of kadhi", ...TIN_SLOTS[2] },
+  { src: "/images/items/tin-potato-regional.f63338e8.png", alt: "A dabba container of spiced potato bhaji", ...TIN_SLOTS[3] },
+  { src: "/images/items/tin-corn-upma.ad36afb7.png", alt: "A dabba container of corn upma", ...TIN_SLOTS[4] },
+];
+
 export default function HeroPlatter({
   className = "",
   sizes = "(min-width: 1024px) 46vw, 88vw",

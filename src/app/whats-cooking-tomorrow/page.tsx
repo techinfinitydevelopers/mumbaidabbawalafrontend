@@ -49,7 +49,7 @@ export default function WhatsCookingTomorrowPage() {
                 <TomorrowDate /> · {DEFAULT_DAY.cuisine}
               </p>
               <h2 className="poster mt-2 text-[34px] text-brand-red [--po:4px] sm:text-[54px] sm:[--po:5px]">
-                Tomorrow&rsquo;s Thali
+                Tomorrow&rsquo;s Dabba
               </h2>
             </div>
             <Button href="/menu" variant="orange" size="md">

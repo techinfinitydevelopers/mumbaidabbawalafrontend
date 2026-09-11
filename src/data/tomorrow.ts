@@ -44,10 +44,10 @@ export function allergensFor(day: MenuDay) {
 /** the hero's container ring, filled with a day's five headline dishes */
 export function tinsFor(day: MenuDay): Piece[] {
   const sources = [
-    "/images/items/tin-dal.png",
-    "/images/items/tin-butterchicken.png",
-    "/images/items/tin-sambar.png",
-    "/images/items/tin-dhokla.png",
+    "/images/items/tin-dal-tadka.ef55563d.png",
+    "/images/items/tin-chole.359a3cf0.png",
+    "/images/items/tin-jeera-rice.5eb76e1f.png",
+    "/images/items/tin-paratha-tomorrow.cf114616.png",
     day.image,
   ];
   const names = [
