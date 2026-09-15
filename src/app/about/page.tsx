@@ -55,8 +55,6 @@ export default function AboutPage() {
         seal={{ eyebrow: "Cooked", lines: ["Fresh", "Daily"], script: "never reheated" }}
       />
 
-      <JourneyTimeline />
-
       {/* ───── 135+ years — the About lead from the content doc ───── */}
       <section className="relative bg-paper pb-phi-6 pt-phi-5">
         <div className="mx-auto max-w-[1720px] px-5 sm:px-8 lg:px-12">
@@ -88,10 +86,10 @@ export default function AboutPage() {
               </Button>
             </Reveal>
 
-            {/* This column used to restate 1890 -> 2026, which the journey timeline
-                directly above already tells in full — so it had nothing of its own to
-                say and read as an empty slab. A photograph of the actual network does
-                the job the heading needs: studied and respected, by people. */}
+            {/* A photograph of the actual network — studied and respected, by people —
+                standing in for a photo-less "trust us" heading. The journey timeline
+                right below tells the 1890 -> 2026 story in full, so this column doesn't
+                need to restate it. */}
             <Reveal delay={120} className="lg:self-start">
               <figure className="relative mx-auto max-w-[460px] lg:mx-0">
                 <div className="relative aspect-[4/3] overflow-hidden rounded-[28px] shadow-[0_18px_44px_-24px_rgba(42,24,16,0.5)]">
@@ -126,6 +124,8 @@ export default function AboutPage() {
           </div>
         </div>
       </section>
+
+      <JourneyTimeline />
 
       <StandFor />
 

@@ -4121,3 +4121,10 @@ Footer used different wording than the header for several of the same destinatio
 - Left the Order column's `/plans` entry as "Corporate Dabba" rather than "Plans" — the Explore column already links `/plans` as "Plans", and renaming would make the footer show the identical label twice for the same URL; "Corporate Dabba" reads as a deliberate second framing of that page for the Order-column context, not a naming inconsistency.
 - Verified via DOM on `/`: every footer link's href/label pair matches its header counterpart.
 - `tsc --noEmit` and `eslint` clean.
+
+## Move "135+ Years" section above the journey timeline
+**2026-09-15**
+
+- `src/app/about/page.tsx` — reordered: Hero → "135+ Years. Studied, Respected, Still Delivering." → Journey Timeline → What We Stand For → gallery → Perth CTA. The `#journey` anchor (used by both this section's and the hero's CTA buttons) still resolves correctly regardless of DOM order. Updated a comment that referenced the timeline being "directly above" — now it's directly below.
+- Verified via DOM on `/about`: "Studied" heading's top offset (1175px) is above `#journey`'s (1969px).
+- `tsc --noEmit` and `eslint` clean.
