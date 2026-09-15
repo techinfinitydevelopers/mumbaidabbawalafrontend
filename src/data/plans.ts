@@ -1,11 +1,5 @@
 /**
  * The four plans, copied from section 3 of "V2 Mumbai Dabbawala - Website Content".
- *
- * `price` is verbatim from that document, placeholders included: it ships `$XX.XX`,
- * `$XX.XX` and `$XXX.XX` for the three paid plans. Those are NOT filled in here —
- * inventing a price for a food subscription is the one thing on this page that would
- * actually mislead a customer. They render as-is, flagged on the page, until the
- * client supplies real figures.
  */
 
 export type Plan = {
@@ -13,11 +7,12 @@ export type Plan = {
   name: string;
   /** The qualifier after the em dash, e.g. "3-Day Taster" */
   variant: string;
-  /** Verbatim from the content doc — a placeholder where the doc has one. */
+  /** Small lead-in shown before the price at a smaller size, e.g. "From" */
+  pricePrefix?: string;
   price: string;
-  /** Whether `price` is still a placeholder, so the page can say so. */
-  priceIsPlaceholder: boolean;
   unit: string;
+  /** Small print under the price, e.g. "GST inclusive" — omit if there's nothing to add. */
+  priceNote?: string;
   blurb: string;
   features: string[];
   cta: string;
@@ -30,9 +25,10 @@ export const PLANS: Plan[] = [
     slug: "trial",
     name: "Trial Dabba",
     variant: "3-Day Taster",
-    price: "$XX.XX",
-    priceIsPlaceholder: true,
-    unit: "/ 3 meals",
+    pricePrefix: "From",
+    price: "$9.99",
+    unit: "/ 1 order",
+    priceNote: "GST inclusive",
     blurb: "Not ready to commit? Try one cuisine, no strings attached.",
     features: ["Choice of 1 cuisine", "Veg or non-veg", "1 address"],
     cta: "Start Trial",
@@ -41,9 +37,10 @@ export const PLANS: Plan[] = [
     slug: "weekly",
     name: "Weekly Dabba",
     variant: "5-Day Work Week",
-    price: "$XX.XX",
-    priceIsPlaceholder: true,
-    unit: "/ week",
+    pricePrefix: "From",
+    price: "$25.00",
+    unit: "/ 1 order",
+    priceNote: "GST inclusive",
     blurb: "Monday to Friday, sorted — straight to your desk or door.",
     features: [
       "Up to 2 cuisines",
@@ -55,10 +52,11 @@ export const PLANS: Plan[] = [
   {
     slug: "monthly",
     name: "Monthly Dabba",
-    variant: "Most Popular",
-    price: "$XXX.XX",
-    priceIsPlaceholder: true,
-    unit: "/ month",
+    variant: "",
+    pricePrefix: "From",
+    price: "$120.00",
+    unit: "/ 1 order",
+    priceNote: "GST inclusive",
     blurb: "Our most-loved plan, and the best value per meal.",
     features: [
       "Full 15-Day rotating menu",
@@ -74,8 +72,8 @@ export const PLANS: Plan[] = [
     name: "Corporate Dabba",
     variant: "Bulk Workplace Delivery",
     price: "Custom pricing",
-    priceIsPlaceholder: false,
     unit: "— request a quote",
+    priceNote: "Quoted per office",
     blurb: "For offices and teams who'd rather eat well than order chaos.",
     features: ["Volume pricing", "Single office delivery", "Dedicated coordinator"],
     cta: "Request Corporate Quote",

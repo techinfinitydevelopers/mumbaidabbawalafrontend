@@ -31,15 +31,26 @@ export default function PlanCard({ plan }: { plan: Plan }) {
       >
         {plan.name}
       </h3>
-      <p
-        className={`mt-1 text-phi-0 font-bold uppercase tracking-[0.18em] ${
-          featured ? "text-brand-yellow" : "text-brand-orange"
-        }`}
-      >
-        {plan.variant}
-      </p>
+      {plan.variant && (
+        <p
+          className={`mt-1 text-phi-0 font-bold uppercase tracking-[0.18em] ${
+            featured ? "text-brand-yellow" : "text-brand-orange"
+          }`}
+        >
+          {plan.variant}
+        </p>
+      )}
 
       <div className="mt-6 flex flex-wrap items-baseline gap-x-2 gap-y-1">
+        {plan.pricePrefix && (
+          <span
+            className={`text-phi-1 font-semibold ${
+              featured ? "text-brand-cream/80" : "text-ink/60"
+            }`}
+          >
+            {plan.pricePrefix}
+          </span>
+        )}
         <span
           className={`font-poster text-[34px] leading-none sm:text-[40px] ${
             featured ? "text-brand-yellow" : "text-brand-red"
@@ -55,22 +66,13 @@ export default function PlanCard({ plan }: { plan: Plan }) {
           {plan.unit}
         </span>
       </div>
-      {plan.priceIsPlaceholder ? (
-        // the content doc still has $XX.XX here; saying so beats inventing a number
+      {plan.priceNote && (
         <p
           className={`mt-2 text-phi-0 font-bold uppercase tracking-[0.14em] ${
             featured ? "text-brand-cream/60" : "text-ink/40"
           }`}
         >
-          Price to be confirmed · GST inclusive
-        </p>
-      ) : (
-        <p
-          className={`mt-2 text-phi-0 font-bold uppercase tracking-[0.14em] ${
-            featured ? "text-brand-cream/60" : "text-ink/40"
-          }`}
-        >
-          Quoted per office
+          {plan.priceNote}
         </p>
       )}
 

@@ -4069,3 +4069,31 @@ Switching the frame to `aspect-square` last turn left `object-cover` centering t
 - `src/components/home/ReviewDeck.tsx` — footer now shows just `{review.name}`, not `{review.name} · {review.suburb}`. `suburb` stays in the data model and in internal keys/aria-labels, just not displayed.
 - Verified via DOM on `/`: all 7 cards (3 real + 4 placeholder) show name only.
 - `tsc --noEmit` and `eslint` clean.
+
+## Drop the duplicate "Most Popular" label on Monthly Dabba
+**2026-09-15**
+
+The card showed both a "Most loved" corner badge and a "Most Popular" subtitle — redundant. Kept the badge (the more crafted treatment), dropped the subtitle.
+
+- `src/data/plans.ts` — Monthly's `variant` emptied (was `"Most Popular"`).
+- `src/components/plans/PlanCard.tsx` — the variant `<p>` now only renders when `plan.variant` is truthy, so the other three cards (which use `variant` for a real descriptor — "3-Day Taster", "5-Day Work Week", "Bulk Workplace Delivery") are unaffected.
+- Verified via DOM on `/plans`: "Most loved" badge present, "Most Popular" text gone, price row sits directly under the title.
+- `tsc --noEmit` and `eslint` clean.
+
+## Add real pricing to Trial, Weekly, and Monthly plans
+**2026-09-15**
+
+Replaced the content doc's `$XX.XX` placeholders with client-supplied prices. Corporate stays "Custom pricing" (unchanged).
+
+- `src/data/plans.ts` — Trial "From AUD $9.99 / 1 order", Weekly "From AUD $25.00 / 1 order", Monthly "From AUD $120.00 / 1 order", all "GST inclusive". Replaced the `priceIsPlaceholder: boolean` field with a generic `priceNote?: string` (was hardcoded to two branches — "Price to be confirmed..." / "Quoted per office" — now data-driven so it fits both real prices and Corporate's "Quoted per office" without a special case). Removed the now-stale header comment about not inventing prices.
+- `src/components/plans/PlanCard.tsx` — renders `plan.priceNote` when present, replacing the old placeholder/quoted-per-office branching.
+- Verified via DOM + screenshot on `/plans`: all four cards render correctly, no overflow at the longer "From AUD $120.00" price.
+- `tsc --noEmit` and `eslint` clean.
+
+## Drop "AUD" and shrink "From" in plan pricing
+**2026-09-15**
+
+- `src/data/plans.ts` — split `price` into a separate `pricePrefix?: string` ("From") and the price itself (now just `$9.99` / `$25.00` / `$120.00`, no "AUD").
+- `src/components/plans/PlanCard.tsx` — `pricePrefix` renders in the small unit-sized span (13px) ahead of the big poster price (40px); Corporate (no prefix) unaffected.
+- Verified via DOM (computed font sizes: prefix 13px vs price 40px) and screenshot on `/plans`.
+- `tsc --noEmit` and `eslint` clean.
