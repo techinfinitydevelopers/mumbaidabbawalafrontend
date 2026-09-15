@@ -37,15 +37,13 @@ export default function NeverJustLunch() {
 
         <div className="mt-phi-5 grid gap-phi-4 lg:grid-cols-[1fr_1.618fr] lg:items-start lg:gap-phi-5">
           <Reveal className="relative">
-            {/* net-08 is the only portrait frame in the set (600×900); the aspect matches
-                it so `object-cover` has nothing to crop away. */}
-            <div className="relative aspect-[2/3] overflow-hidden rounded-[32px] shadow-[0_18px_44px_-26px_rgba(42,24,16,0.5)]">
+            <div className="relative aspect-square overflow-hidden rounded-[32px] shadow-[0_18px_44px_-26px_rgba(42,24,16,0.5)]">
               <Image
                 src="/images/about/net-08.jpg"
                 alt="A Mumbai dabbawala at work"
                 fill
                 sizes="(min-width: 1024px) 34vw, 92vw"
-                className="object-cover"
+                className="object-cover object-top"
               />
             </div>
 

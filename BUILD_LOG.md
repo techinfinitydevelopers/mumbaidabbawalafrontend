@@ -4046,3 +4046,19 @@ A large batch of Figma-exported SVGs (each an `<image>` wrapper around a base64 
 - **Tomorrow page**: heading "Tomorrow's Thali" → "Tomorrow's Dabba" in the "in full" section.
 - All new/replacement assets are content-hashed filenames (the `/_next/image` cache-key-on-source-URL lesson from earlier this session).
 - Verified via `/_next/image` URL inspection and `read_network_requests` (200 OK) across `/menu`, `/plans`, `/regional-food-stories`, `/whats-cooking-tomorrow`, `/about`, on the correct dev server this time. `tsc --noEmit` and `eslint` clean across every touched file.
+
+## Square up the "It's Never Just Lunch" photo
+**2026-09-15**
+
+- `src/components/home/NeverJustLunch.tsx` — `aspect-[2/3]` → `aspect-square`; removed the stale comment about the portrait source's crop math.
+- Verified via DOM: frame renders 885×885 on `/`.
+- `tsc --noEmit` and `eslint` clean.
+
+## Fix top crop on the "Never Just Lunch" photo
+**2026-09-15**
+
+Switching the frame to `aspect-square` last turn left `object-cover` centering the crop, cutting the dabbawala's cap off the top.
+
+- `src/components/home/NeverJustLunch.tsx` — added `object-top` alongside `object-cover`.
+- Verified via DOM (`object-position: 50% 0%`) and screenshot on `/`: cap fully in frame.
+- `tsc --noEmit` and `eslint` clean.
