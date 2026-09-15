@@ -39,26 +39,26 @@ export default function Header() {
           />
         </Link>
 
-        <nav className="hidden items-center gap-1 xl:flex">
+        <nav className="hidden items-center gap-3 xl:flex">
           {NAV_LINKS.map((link) => (
             <Link
               key={link.href}
               href={link.href}
-              className="rounded-[15px] px-3.5 py-2 text-sm font-semibold text-ink/75 transition-colors hover:bg-brand-cream hover:text-brand-red"
+              className="whitespace-nowrap rounded-[15px] px-2.5 py-2 text-sm font-semibold text-ink/75 transition-colors hover:bg-brand-cream hover:text-brand-red"
             >
               {link.label}
             </Link>
           ))}
         </nav>
 
-        <div className="hidden items-center gap-2 xl:flex">
+        <div className="hidden items-center gap-1.5 xl:flex">
           <Link
             href="/contact"
-            className="rounded-[15px] px-4 py-2 text-sm font-semibold text-ink/75 transition-colors hover:text-brand-red"
+            className="whitespace-nowrap rounded-[15px] px-3 py-2 text-sm font-semibold text-ink/75 transition-colors hover:text-brand-red"
           >
             Contact
           </Link>
-          <Button href="/plans" variant="red" size="sm">
+          <Button href="/plans" variant="red" size="sm" className="shrink-0 whitespace-nowrap">
             Order Your Dabba
           </Button>
         </div>

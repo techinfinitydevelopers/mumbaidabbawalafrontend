@@ -4144,3 +4144,35 @@ Left as-is on purpose:
 - Footer's Order-column "Corporate Dabba" `/plans` link — unrelated to this task, noted from an earlier turn.
 
 Verified all 4 via DOM + screenshot on `/menu`, `/plans`, `/whats-cooking-tomorrow`, `/blog`. `tsc --noEmit` and `eslint` clean.
+
+## Fix header nav wrapping in the tablet/small-laptop range
+**2026-09-15**
+
+Full desktop nav (8 links + Contact + Order button) showed from `xl` (1280px), but didn't actually fit that width — multi-word labels ("About Us", "15-Day Menu", "Regional Stories", "Chef's Corner") wrapped onto two lines, breaking the pill's layout.
+
+- `src/components/Header.tsx` — moved the full-nav/hamburger breakpoint from `xl` (1280px) to `2xl` (1536px) on the nav, the Contact+Order group, the hamburger button, and the dropdown panel (all four have to move together). Added `whitespace-nowrap` to the nav links as a safety net.
+- Verified via screenshots at 768px (hamburger), 1366px (hamburger — the range that used to wrap), and 1536px (full nav, single line, no wrapping).
+- `tsc --noEmit` and `eslint` clean.
+
+## Rename the 4th kitchen rule card's label
+**2026-09-15**
+
+- `src/data/kitchenRules.ts` — "🌿 SPOTLIGHT" → "RULE 04" for the Curry Leaves card, matching the other three.
+- Verified via DOM on `/chefs-corner`: all 4 cards now read "RULE 01".."RULE 04".
+- `tsc --noEmit` and `eslint` clean.
+
+## Compact the header nav to fit at 1280px again
+**2026-09-15**
+
+User wanted the full nav back at normal desktop widths instead of hamburger from 1536px — tightened the nav's footprint instead of just raising the breakpoint.
+
+- `src/components/Header.tsx` — nav link padding `px-3.5`→`px-2.5`, gap `gap-1`→`gap-0.5`; Contact link `px-4`→`px-3`; right-group gap `gap-2`→`gap-1.5`. Breakpoint moved back to `xl` (1280px) on all four gated elements (nav, contact+button group, hamburger button, dropdown panel).
+- Verified via screenshot + DOM at 1280px: all 8 nav links sit on a single row (one unique `top` offset), no wrap.
+- `tsc --noEmit` and `eslint` clean.
+
+## Widen the nav item gap, fix the button-wrap regression it caused
+**2026-09-15**
+
+- `src/components/Header.tsx` — nav gap `gap-0.5` → `gap-3`. That ate into the "Order Your Dabba" button's room at 1280px and its label wrapped to two lines (the button had no `shrink-0`/`whitespace-nowrap`, so the flex row shrank it instead of the nav). Added `shrink-0 whitespace-nowrap` to that Button instance.
+- Verified via DOM at 1280px: nav still single row, button height back to single-line (39px, was ~doubled when wrapped), header row height normal (61px).
+- `tsc --noEmit` and `eslint` clean.

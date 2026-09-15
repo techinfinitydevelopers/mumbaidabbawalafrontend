@@ -98,7 +98,7 @@ export const KITCHEN_RULES: KitchenRule[] = [
     swingDelay: -2.8,
   },
   {
-    rule: "🌿 SPOTLIGHT",
+    rule: "RULE 04",
     step: "4/4",
     stepIcon: "★",
     title: "Curry Leaves",
