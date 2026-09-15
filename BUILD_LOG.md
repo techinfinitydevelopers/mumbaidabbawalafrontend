@@ -4203,3 +4203,19 @@ The card's red panel is `flex-1` inside a fixed-height card, so short quotes lef
 - `src/components/home/ReviewDeck.tsx` — card height `clamp(230px,36svh,340px)` → `clamp(215px,32svh,300px)`, tightening the gap between the quote and the name for every card.
 - Verified via DOM (no quote overflows its red panel, including Arjun's still-longer real quote) and screenshot on `/`.
 - `tsc --noEmit` and `eslint` clean.
+
+## Fix "Monthly Dabba" title overlapping the "Most loved" badge on tablet
+**2026-09-15**
+
+The badge is absolutely positioned top-right; the title had no reserved space for it, so on the tablet 2-column grid (narrower card, same font size) the title ran under the badge.
+
+- `src/components/plans/PlanCard.tsx` — added `pr-24` to the title, featured-card only, reserving room for the badge at any card width.
+- Verified via screenshot at 768px (tablet, no overlap) and desktop (unaffected, "Monthly Dabba" is short enough not to wrap).
+- `tsc --noEmit` and `eslint` clean.
+
+## Reduce the header nav gap back down
+**2026-09-15**
+
+- `src/components/Header.tsx` — nav `gap-3` → `gap-1.5`. The wider gap from the previous turn read as too loose on tablet-landscape widths (~1280–1366px, where the full nav row shows, not the hamburger).
+- Verified via screenshot at 1366px: single row, no wrap, comfortable spacing.
+- `tsc --noEmit` and `eslint` clean.

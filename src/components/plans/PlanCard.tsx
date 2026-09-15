@@ -26,7 +26,7 @@ export default function PlanCard({ plan }: { plan: Plan }) {
 
       <h3
         className={`font-display text-xl font-bold leading-tight ${
-          featured ? "text-brand-cream" : "text-ink"
+          featured ? "pr-24 text-brand-cream" : "text-ink"
         }`}
       >
         {plan.name}
