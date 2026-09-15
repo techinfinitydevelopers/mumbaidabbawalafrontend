@@ -9,8 +9,8 @@ const COLUMNS = [
     title: "Explore",
     links: [
       { href: "/", label: "Home" },
-      { href: "/about", label: "Our Story" },
-      { href: "/menu", label: "Our Menu" },
+      { href: "/about", label: "About Us" },
+      { href: "/menu", label: "15-Day Menu" },
       { href: "/plans", label: "Plans" },
     ],
   },
@@ -18,16 +18,16 @@ const COLUMNS = [
     title: "Order",
     links: [
       { href: "/menu", label: "15-Day Menu" },
-      { href: "/whats-cooking-tomorrow", label: "What's Cooking Tomorrow" },
-      { href: "/regional-food-stories", label: "Regional Cuisines" },
+      { href: "/whats-cooking-tomorrow", label: "Tomorrow" },
+      { href: "/regional-food-stories", label: "Regional Stories" },
       { href: "/plans", label: "Corporate Dabba" },
     ],
   },
   {
     title: "Connect",
     links: [
-      { href: "/contact", label: "Contact Us" },
-      { href: "/blog", label: "From Our Kitchen" },
+      { href: "/contact", label: "Contact" },
+      { href: "/blog", label: "Blog" },
       { href: "/chefs-corner", label: "Chef's Corner" },
     ],
   },

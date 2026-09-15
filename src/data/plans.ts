@@ -80,9 +80,5 @@ export const PLANS: Plan[] = [
   },
 ];
 
-/**
- * The doc's closing line, verbatim. "As previously specified" refers to terms held
- * outside this document — the actual zones and cut-off times still need supplying.
- */
 export const PLAN_TERMS_NOTE =
-  "Plan terms, delivery zones, and cut-off times as previously specified — GST-inclusive AUD throughout.";
+  "Plan terms, delivery zones, and cut-off times — GST-inclusive AUD throughout.";

@@ -4097,3 +4097,27 @@ Replaced the content doc's `$XX.XX` placeholders with client-supplied prices. Co
 - `src/components/plans/PlanCard.tsx` — `pricePrefix` renders in the small unit-sized span (13px) ahead of the big poster price (40px); Corporate (no prefix) unaffected.
 - Verified via DOM (computed font sizes: prefix 13px vs price 40px) and screenshot on `/plans`.
 - `tsc --noEmit` and `eslint` clean.
+
+## Drop "as previously specified" from the plans footer note
+**2026-09-15**
+
+- `src/data/plans.ts` — `PLAN_TERMS_NOTE` now reads "Plan terms, delivery zones, and cut-off times — GST-inclusive AUD throughout." Removed the stale comment explaining the old phrase's meaning.
+- Verified via DOM on `/plans`.
+- `tsc --noEmit` and `eslint` clean.
+
+## Drop the "N/4" step counter from the kitchen rules cards
+**2026-09-15**
+
+- `src/components/chefs/RuleFan.tsx` — label now shows just "RULE 01" / "SPOTLIGHT", not "RULE 01 · 1/4". `rule.step` left in the data model (unused now, but not asked to be removed) in case it's wanted again.
+- Verified via DOM on `/chefs-corner`: all 4 cards show the label without the step count.
+- `tsc --noEmit` and `eslint` clean.
+
+## Match footer nav labels to the header's
+**2026-09-15**
+
+Footer used different wording than the header for several of the same destinations — "Our Story" vs "About Us", "Our Menu" vs "15-Day Menu", "What's Cooking Tomorrow" vs "Tomorrow", "Regional Cuisines" vs "Regional Stories", "Contact Us" vs "Contact", "From Our Kitchen" vs "Blog".
+
+- `src/components/Footer.tsx` — relabeled all of the above to match `Header.tsx`'s `NAV_LINKS` wording for the same `href`.
+- Left the Order column's `/plans` entry as "Corporate Dabba" rather than "Plans" — the Explore column already links `/plans` as "Plans", and renaming would make the footer show the identical label twice for the same URL; "Corporate Dabba" reads as a deliberate second framing of that page for the Order-column context, not a naming inconsistency.
+- Verified via DOM on `/`: every footer link's href/label pair matches its header counterpart.
+- `tsc --noEmit` and `eslint` clean.

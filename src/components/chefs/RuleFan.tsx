@@ -166,7 +166,7 @@ export default function RuleFan() {
               </div>
 
               <p className="text-phi-0 font-bold uppercase tracking-[0.16em] opacity-70">
-                {rule.rule.replace("🌿 ", "")} · {rule.step}
+                {rule.rule.replace("🌿 ", "")}
               </p>
               <h3 className="mt-1 font-display text-phi-4 font-bold leading-tight">
                 {rule.title}
