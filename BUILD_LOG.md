@@ -4176,3 +4176,30 @@ User wanted the full nav back at normal desktop widths instead of hamburger from
 - `src/components/Header.tsx` — nav gap `gap-0.5` → `gap-3`. That ate into the "Order Your Dabba" button's room at 1280px and its label wrapped to two lines (the button had no `shrink-0`/`whitespace-nowrap`, so the flex row shrank it instead of the nav). Added `shrink-0 whitespace-nowrap` to that Button instance.
 - Verified via DOM at 1280px: nav still single row, button height back to single-line (39px, was ~doubled when wrapped), header row height normal (61px).
 - `tsc --noEmit` and `eslint` clean.
+
+## Drop location from the Regional Food Stories hero quote
+**2026-09-15**
+
+- `src/app/regional-food-stories/page.tsx` — quote name "Priya — Parramatta" → "Priya", matching the earlier removal of locations from the home page testimonial cards.
+- Verified via DOM on `/regional-food-stories`.
+- `tsc --noEmit` and `eslint` clean.
+
+## Fix a missed heading-alignment case: "It's Never Just Lunch."
+**2026-09-15**
+
+The earlier sitewide alignment fix trusted the initial audit table for this section without re-reading its actual JSX — its heading is in its own block ABOVE the image+text grid, not a grid sibling beside the image (unlike, say, PerthLanding, where the heading genuinely shares a grid row with its photo). Standalone-above-content means it should follow the "center" rule, not "left."
+
+- `src/components/home/NeverJustLunch.tsx` — "Every dabba, every day / It's Never Just Lunch." now `mx-auto max-w-3xl text-center`, matching the rest of the standalone-heading sections.
+- Re-checked the other 11 originally-left-aligned sections against their actual JSX (not just the audit table) — this was the only one where the table's classification didn't match the real layout.
+- Verified via screenshot on `/`.
+- `tsc --noEmit` and `eslint` clean.
+
+## Tighten testimonial cards, normalize the placeholder reviews' length
+**2026-09-15**
+
+The card's red panel is `flex-1` inside a fixed-height card, so short quotes left a large empty tail before the name. Two changes:
+
+- `src/data/home.ts` — rephrased the 4 **placeholder** reviews (Rohan/Sanjana/Kavita/Daniel — explicitly invented preview copy, not real customers) to 16–17 words each, close to the real reviews' 14–18-word range. **Left the 3 real testimonials (Priya/Arjun/Meera) untouched** — the file's own header comment says their quotes are "exactly as the doc gives them," i.e. verbatim real-customer attribution; rephrasing those would misrepresent what an actual customer said. Flagged this rather than silently editing them.
+- `src/components/home/ReviewDeck.tsx` — card height `clamp(230px,36svh,340px)` → `clamp(215px,32svh,300px)`, tightening the gap between the quote and the name for every card.
+- Verified via DOM (no quote overflows its red panel, including Arjun's still-longer real quote) and screenshot on `/`.
+- `tsc --noEmit` and `eslint` clean.

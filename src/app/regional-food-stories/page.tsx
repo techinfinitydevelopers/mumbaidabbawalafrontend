@@ -27,7 +27,7 @@ export default function RegionalFoodStoriesPage() {
           { value: "15", label: "Day menu\nrotation" },
         ]}
         quote={{
-          name: "Priya — Parramatta",
+          name: "Priya",
           text: "“Feels exactly like the tiffin my mum used to pack. Never late, never wrong order.”",
         }}
         primary={{ href: "/plans", label: "Order Now" }}

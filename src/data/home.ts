@@ -109,28 +109,28 @@ export const SHOW_PLACEHOLDER_REVIEWS = true;
 const PLACEHOLDER_TESTIMONIALS: Testimonial[] = [
   {
     stars: 5,
-    text: "The Monthly Dabba means I’ve stopped thinking about lunch entirely. Best decision of my semester.",
+    text: "The Monthly Dabba means I’ve stopped thinking about lunch entirely — the best decision of my semester.",
     name: "Rohan",
     suburb: "Northbridge",
     placeholder: true,
   },
   {
     stars: 4,
-    text: "Dal and roti still warm at 1pm out in Joondalup. I don’t know how they manage it.",
+    text: "Dal and roti are still warm at 1pm out in Joondalup — I honestly don’t know how.",
     name: "Sanjana",
     suburb: "Joondalup",
     placeholder: true,
   },
   {
     stars: 5,
-    text: "My kids ask for the Gujarati Thursday instead of takeaway now. That’s the whole review.",
+    text: "My kids now ask for the Gujarati Thursday instead of takeaway — that’s really the whole review.",
     name: "Kavita",
     suburb: "Canning Vale",
     placeholder: true,
   },
   {
     stars: 5,
-    text: "Signed up for the three-day trial, forgot to cancel, and I’m very glad I forgot.",
+    text: "Signed up for the three-day trial, forgot to cancel it, and I’m very glad I did.",
     name: "Daniel",
     suburb: "Subiaco",
     placeholder: true,

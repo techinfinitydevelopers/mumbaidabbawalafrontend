@@ -145,7 +145,7 @@ export default function ReviewDeck() {
             <figure
               key={`${review.name}-${review.suburb}`}
               // every card is in the same grid cell: same height, centred, stacked
-              className="relative col-start-1 row-start-1 flex h-[clamp(230px,36svh,340px)] w-[264px] flex-col justify-self-center rounded-[30px] bg-paper p-3.5 shadow-[0_18px_44px_-26px_rgba(42,24,16,0.5)] transition-[transform,opacity] duration-[900ms] ease-[cubic-bezier(0.16,1,0.3,1)] will-change-transform motion-reduce:transition-none sm:w-[300px] lg:w-[344px]"
+              className="relative col-start-1 row-start-1 flex h-[clamp(215px,32svh,300px)] w-[264px] flex-col justify-self-center rounded-[30px] bg-paper p-3.5 shadow-[0_18px_44px_-26px_rgba(42,24,16,0.5)] transition-[transform,opacity] duration-[900ms] ease-[cubic-bezier(0.16,1,0.3,1)] will-change-transform motion-reduce:transition-none sm:w-[300px] lg:w-[344px]"
               style={slotStyle(d)}
             >
               {/* Clicking a shoulder card brings it to the centre.
