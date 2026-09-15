@@ -183,7 +183,7 @@ export default function ReviewDeck() {
                   className="h-3.5 w-3.5 shrink-0 rounded-full bg-brand-orange"
                 />
                 <span className="text-phi-0 font-bold uppercase tracking-[0.16em] text-ink/55">
-                  {review.name} · {review.suburb}
+                  {review.name}
                 </span>
               </figcaption>
             </figure>

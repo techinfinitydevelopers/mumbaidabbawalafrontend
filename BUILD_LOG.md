@@ -4062,3 +4062,10 @@ Switching the frame to `aspect-square` last turn left `object-cover` centering t
 - `src/components/home/NeverJustLunch.tsx` — added `object-top` alongside `object-cover`.
 - Verified via DOM (`object-position: 50% 0%`) and screenshot on `/`: cap fully in frame.
 - `tsc --noEmit` and `eslint` clean.
+
+## Drop locations from testimonial cards
+**2026-09-15**
+
+- `src/components/home/ReviewDeck.tsx` — footer now shows just `{review.name}`, not `{review.name} · {review.suburb}`. `suburb` stays in the data model and in internal keys/aria-labels, just not displayed.
+- Verified via DOM on `/`: all 7 cards (3 real + 4 placeholder) show name only.
+- `tsc --noEmit` and `eslint` clean.
