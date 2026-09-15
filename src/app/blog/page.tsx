@@ -127,13 +127,11 @@ export default function BlogPage() {
       {/* ───── Everything else, filterable ───── */}
       <section className="relative bg-paper pb-phi-6 pt-phi-5 sm:pb-phi-6 sm:pt-phi-5">
         <div className="mx-auto max-w-[1720px] px-5 sm:px-8 lg:px-12">
-          <Reveal className="mb-8 flex flex-wrap items-end justify-between gap-4">
-            <div>
-              <p className="font-script text-3xl text-brand-orange">Every dispatch</p>
-              <h2 className="poster mt-1 text-[30px] text-brand-red [--po:4px] sm:text-[48px] sm:[--po:5px]">
-                The Archive
-              </h2>
-            </div>
+          <Reveal className="mx-auto mb-8 max-w-3xl text-center">
+            <p className="font-script text-3xl text-brand-orange">Every dispatch</p>
+            <h2 className="poster mt-1 text-[30px] text-brand-red [--po:4px] sm:text-[48px] sm:[--po:5px]">
+              The Archive
+            </h2>
           </Reveal>
 
           <BlogIndex />

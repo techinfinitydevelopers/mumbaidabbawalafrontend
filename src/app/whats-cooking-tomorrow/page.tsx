@@ -166,7 +166,7 @@ export default function WhatsCookingTomorrowPage() {
           the print from the wave too would only matter if this section had it. */}
       <section className="grain relative overflow-hidden bg-brand-red pb-phi-6 pt-phi-6 sm:pb-phi-6">
         <div className="mx-auto max-w-[1720px] px-5 sm:px-8 lg:px-12">
-          <Reveal>
+          <Reveal className="mx-auto max-w-3xl text-center">
             <p className="text-[11px] font-bold uppercase tracking-[0.22em] text-brand-yellow">
               Make it yours
             </p>
@@ -179,7 +179,7 @@ export default function WhatsCookingTomorrowPage() {
             >
               Add-ons
             </h2>
-            <p className="mt-3 max-w-xl text-sm leading-relaxed text-brand-cream/85">
+            <p className="mx-auto mt-3 max-w-xl text-sm leading-relaxed text-brand-cream/85">
               Top up any day&rsquo;s thali with a real extra — priced individually, on top of
               your plan.
             </p>

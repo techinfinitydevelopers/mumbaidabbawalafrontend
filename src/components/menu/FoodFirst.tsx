@@ -35,9 +35,9 @@ export default function FoodFirst() {
   return (
     <section className="relative bg-paper pb-phi-5 pt-phi-5 sm:pb-phi-6 sm:pt-phi-5">
       <div className="mx-auto max-w-[1720px] px-5 sm:px-8 lg:px-12">
-        <Reveal className="max-w-3xl">
+        <Reveal className="mx-auto max-w-3xl text-center">
           <p className="font-script text-3xl text-brand-orange">Why the food comes first</p>
-          <h2 className="poster-stack mt-2 [--po:4px] [--po-gap:12px] sm:[--po:5px] sm:[--po-gap:18px]">
+          <h2 className="poster-stack mx-auto mt-2 [--po:4px] [--po-gap:12px] sm:[--po:5px] sm:[--po-gap:18px]">
             <span
               className="poster text-[30px] text-brand-red sm:text-[46px]"
               style={{ ["--po-color" as string]: "var(--color-brand-yellow)" }}

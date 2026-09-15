@@ -35,9 +35,9 @@ export default function PlansPage() {
       {/* ───── The four plans ───── */}
       <section id="plans" className="relative bg-paper pb-phi-6 pt-phi-5 sm:pb-phi-6 sm:pt-phi-5">
         <div className="mx-auto max-w-[1720px] px-5 sm:px-8 lg:px-12">
-          <Reveal className="max-w-3xl">
+          <Reveal className="mx-auto max-w-3xl text-center">
             <p className="font-script text-3xl text-brand-orange">Pick your rhythm</p>
-            <h2 className="poster-stack mt-2 [--po:4px] [--po-gap:12px] sm:[--po:5px] sm:[--po-gap:18px]">
+            <h2 className="poster-stack mx-auto mt-2 [--po:4px] [--po-gap:12px] sm:[--po:5px] sm:[--po-gap:18px]">
               <span
                 className="poster text-[26px] text-brand-red sm:text-[42px]"
                 style={{ ["--po-color" as string]: "var(--color-brand-yellow)" }}
@@ -51,7 +51,7 @@ export default function PlansPage() {
                 Looks Like.
               </span>
             </h2>
-            <p className="mt-5 max-w-measure text-phi-2 leading-relaxed text-ink/70">
+            <p className="mx-auto mt-5 max-w-measure text-phi-2 leading-relaxed text-ink/70">
               Start with three meals, settle into a work week, or set the whole month and
               forget about lunch. Every plan runs on the same 15-day rotation and the same
               free delivery.

@@ -4128,3 +4128,19 @@ Footer used different wording than the header for several of the same destinatio
 - `src/app/about/page.tsx` — reordered: Hero → "135+ Years. Studied, Respected, Still Delivering." → Journey Timeline → What We Stand For → gallery → Perth CTA. The `#journey` anchor (used by both this section's and the hero's CTA buttons) still resolves correctly regardless of DOM order. Updated a comment that referenced the timeline being "directly above" — now it's directly below.
 - Verified via DOM on `/about`: "Studied" heading's top offset (1175px) is above `#journey`'s (1969px).
 - `tsc --noEmit` and `eslint` clean.
+
+## Enforce a consistent heading-alignment rule sitewide
+**2026-09-15**
+
+Following the earlier audit (mixed 50/50, no pattern): established the rule **center a section heading when it's a standalone block with its content (grid/cards/carousel) below it; keep it left when the heading sits in a two-column layout beside an image, or in a flex row beside an inline CTA button**. Audited all 26 non-hero sections against this rule — 22 already matched it. Fixed the 4 that didn't:
+
+- `src/components/menu/FoodFirst.tsx` — "Food First. Everything Else Follows." (pillars grid below, was left) → centered.
+- `src/app/plans/page.tsx` — "Whatever Your Week Looks Like." (plan cards below, was left) → centered.
+- `src/app/whats-cooking-tomorrow/page.tsx` — "Add-ons" (slider below, was left, had no `max-w`/centering wrapper at all) → centered.
+- `src/app/blog/page.tsx` — "The Archive" (BlogIndex below, was left in an unused `flex justify-between` with a single child) → centered, dropped the now-pointless flex wrapper.
+
+Left as-is on purpose:
+- Blog's own `<h1>` ("Notes from the Relay") — functions as this page's hero (first content, page-defining title), so treated the same as the excluded `PageHero`/`HomeHero` headings rather than forced into the rule.
+- Footer's Order-column "Corporate Dabba" `/plans` link — unrelated to this task, noted from an earlier turn.
+
+Verified all 4 via DOM + screenshot on `/menu`, `/plans`, `/whats-cooking-tomorrow`, `/blog`. `tsc --noEmit` and `eslint` clean.
