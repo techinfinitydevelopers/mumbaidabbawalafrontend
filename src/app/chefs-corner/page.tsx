@@ -23,7 +23,7 @@ export default function ChefsCornerPage() {
         ]}
         quote={{
           name: "From the kitchen",
-          text: "“Cooking for a dabba is different from cooking for a restaurant — it has to taste just as good three hours later as it does fresh off the stove.”",
+          text: "“We keep it simple — fresh vegetables, cooked fresh, no fad claims, no gimmicks. Just real care in every dabba.”",
         }}
         primary={{ href: "/contact", label: "Meet the Kitchen Team" }}
         secondary={{ href: "/menu", label: "See the Menu" }}

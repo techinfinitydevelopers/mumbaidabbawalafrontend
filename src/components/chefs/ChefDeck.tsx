@@ -360,17 +360,18 @@ export default function ChefDeck() {
               className="poster block text-[32px] text-brand-red sm:text-[48px] lg:text-[54px]"
               style={{ ["--po-color" as string]: "var(--color-brand-yellow)" }}
             >
-              Meet The Hands
+              The People Behind
             </span>
             <span
               className="poster block text-[32px] text-brand-green-dark sm:text-[48px] lg:text-[54px]"
               style={{ ["--po-color" as string]: "var(--color-brand-yellow)" }}
             >
-              Behind It
+              the Flavour.
             </span>
           </h2>
           <p className="mx-auto mt-3 max-w-lg text-sm text-ink/75 sm:text-base">
-            Hover any dish to bring it forward and read what the kitchen does with it.
+            Every dish starts with someone who&rsquo;s cooked it a thousand times
+            before — and still cares whether the spice is layered exactly right.
           </p>
         </div>
 

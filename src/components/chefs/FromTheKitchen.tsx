@@ -1,3 +1,4 @@
+import Button from "@/components/Button";
 import Reveal from "@/components/Reveal";
 import RuleFan from "@/components/chefs/RuleFan";
 
@@ -49,6 +50,11 @@ export default function FromTheKitchen() {
           <RuleFan />
         </Reveal>
 
+        <Reveal className="mt-phi-5 text-center sm:mt-phi-6">
+          <Button href="/contact" variant="red" size="lg">
+            Meet the Kitchen Team
+          </Button>
+        </Reveal>
       </div>
     </section>
   );

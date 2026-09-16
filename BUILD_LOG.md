@@ -4219,3 +4219,36 @@ The badge is absolutely positioned top-right; the title had no reserved space fo
 - `src/components/Header.tsx` — nav `gap-3` → `gap-1.5`. The wider gap from the previous turn read as too loose on tablet-landscape widths (~1280–1366px, where the full nav row shows, not the hamburger).
 - Verified via screenshot at 1366px: single row, no wrap, comfortable spacing.
 - `tsc --noEmit` and `eslint` clean.
+
+## Add missing Chef's Corner content from the doc, additively
+**2026-09-16**
+
+User supplied the content doc's text for this page and asked what was missing versus what's live. Findings: hero had no `lead` paragraph (the "we keep it simple" / "no fad claims" copy was nowhere, only compressed into a stat chip); "Meet the Kitchen" had no named-chef bio+quote card (the deck is dishes, not chef profiles — `CHEFS` in `chefs.ts` has no name/years/cuisine fields) and no "From the Kitchen" habit list; the Wisdom section had no "Ingredient Spotlight: Curry Leaves" line and no closing CTA. Per instruction, added all of it without removing or rewriting anything already on the page:
+
+- `src/app/chefs-corner/page.tsx` — added a `lead` prop to `PageHero` (renders independently of the existing `quote`, so both now show).
+- `src/components/chefs/ChefDeck.tsx` — added a second paragraph under the existing "Hover any dish..." line; added a new two-card row below the carousel: a chef bio (`Chef [Name]` / `[X] Years of Home-Style Cooking · Specialises in [Cuisine]`, flagged "Chef details to be confirmed" — literal bracket placeholders from the doc, not invented, matching the site's existing convention for unconfirmed client data) with the "cooking for a dabba" quote, and a "From the kitchen" list with the three habits.
+- `src/components/chefs/FromTheKitchen.tsx` — added an "Ingredient spotlight: curry leaves..." line under the existing intro paragraph, and a "Meet the Kitchen Team" closing CTA after the rule deck (linking to `/contact`, same as the hero's).
+- Left the hero's quote card as-is; the "cooking for a dabba" quote now appears twice on the page (hero + new chef-bio card) since the doc places it under the chef's bio specifically — flagging this, not resolving it unilaterally.
+- Verified via DOM + screenshots on `/chefs-corner`: all 5 additions present, nothing existing removed, 2 "Meet the Kitchen Team" CTAs now on the page (expected).
+- `tsc --noEmit` and `eslint` clean.
+
+## Chef's Corner: apply the 4 requested content changes
+**2026-09-16**
+
+- `src/components/chefs/ChefDeck.tsx` — heading "Meet The Hands / Behind It" → "The People Behind / the Flavour."; subtext "Hover any dish to bring it forward..." → "Every dish starts with someone who's cooked it a thousand times before — and still cares whether the spice is layered exactly right." (also removed the near-duplicate second paragraph added last turn, now folded into this one change).
+- `src/app/chefs-corner/page.tsx` — hero quote text ("From the kitchen") changed from "Cooking for a dabba is different..." to a rephrased "We keep it simple — fresh vegetables, cooked fresh, no fad claims, no gimmicks. Just real care in every dabba." (kept short for the quote card; the full verbatim version already lives in the hero's `lead` paragraph from last turn). This also resolves the duplication flagged last turn — the "cooking for a dabba" line now appears only once, on the chef-bio card.
+- "Meet the Kitchen Team" CTA in the Wisdom section — already added last turn, confirmed still present (2 CTAs on the page total: hero + Wisdom section, as intended).
+- Verified via DOM + screenshot on `/chefs-corner`: old heading/subtext/quote text gone, new versions present, chef-bio card's quote intact.
+- `tsc --noEmit` and `eslint` clean.
+
+## Remove the chef-bio card, ingredient-spotlight line, and duplicate hero paragraph
+**2026-09-16**
+
+User pointed at three blocks added over the last two turns and asked to remove them.
+
+- `src/components/chefs/ChefDeck.tsx` — removed the "Chef [Name]" bio card + "From the kitchen" bullet-list card added below the carousel.
+- `src/components/chefs/FromTheKitchen.tsx` — removed the "Ingredient spotlight: curry leaves..." line.
+- `src/app/chefs-corner/page.tsx` — removed the hero's `lead` paragraph ("We keep it simple: fresh vegetables..."), which had become redundant next to the (shorter, rephrased) quote card saying nearly the same thing.
+- Kept everything from the last two turns that wasn't circled: the "The People Behind the Flavour." heading, its new subtext, the rephrased hero quote, and both "Meet the Kitchen Team" CTAs (hero + Wisdom section).
+- Verified via DOM on `/chefs-corner`: all three removed, everything else still present.
+- `tsc --noEmit` and `eslint` clean.
