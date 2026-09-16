@@ -4252,3 +4252,171 @@ User pointed at three blocks added over the last two turns and asked to remove t
 - Kept everything from the last two turns that wasn't circled: the "The People Behind the Flavour." heading, its new subtext, the rephrased hero quote, and both "Meet the Kitchen Team" CTAs (hero + Wisdom section).
 - Verified via DOM on `/chefs-corner`: all three removed, everything else still present.
 - `tsc --noEmit` and `eslint` clean.
+
+## Home page DabbaLine: additional scroll animations (no progress bar)
+
+User asked what more could be added to the scroll-line animation on the home page, then asked to add all of the suggested items except a progress bar, for her to check locally.
+
+- `src/components/home/DabbaLine.tsx` / `.module.css` — added, all driven by the existing `useTrackScroll` frame loop:
+  - Parallax dot-field layer behind the track, moving at 0.35x track speed for depth.
+  - Kicker ("What a dabba carries") eases opacity/scale down slightly as the sentence finishes landing.
+  - One-time gold glow + scale pulse on the "home" word pill when it lands.
+  - Motion blur on stickers/house scaled to scroll velocity (on top of existing bob/tilt).
+  - One-time 6-dot confetti burst around the Perth arrow when the line fully lands.
+- Verified via DOM/computed-style checks while stepping scroll position: parallax transform tracks scroll, kicker opacity/scale change, home pill glow fires and decays, burst dots animate outward and fade — all confirmed working; console clean.
+- `tsc --noEmit` and `eslint` clean. Not committed — user is checking locally first.
+
+## Home page DabbaLine: scope the zoom-in to two words, fix a settle bug, add slow zoom-in on two words
+
+Follow-up: user asked to drop the parallax layer, home-word pulse, and end burst (kept the kicker ease and sticker motion blur), then asked for words to "zoom in" from the screen. Applied that zoom broadly at first, then user narrowed it to only "tradition," and "flavours," and asked for it to be slower.
+
+- `src/components/home/DabbaLine.tsx` — removed `parallaxRef`, `burstDots`, `homePulseAt`, `endBurstAt`, `HOME_INDEX`, `BURST_DOTS` and their JSX/onFrame code; removed matching CSS (`.parallax`, `.endBurst`, `.endBurstDot`) from `DabbaLine.module.css`.
+- Added `ZOOM_INDICES` (just "tradition," and "flavours,") — those two pills start scaled to ~2.29x, as if punched in close, and ease down to 1x as they land; every other pill is unaffected.
+- First pass divided an already-clamped 0-1 progress value by 2.2 to slow it down, which meant it could never reach past ~0.45 of its range — the two words got stuck at 1.48x forever instead of settling to 1x. Fixed by cubing the existing progress value before easing instead (`1 + (1 - t³)² * 1.6`): guarantees `zoom === 1` exactly when the word is fully landed, while the cubic keeps it visually zoomed-in for most of the approach and pulls back only near the end — reads as slower without the settle bug.
+- Verified via DOM (`getComputedStyle` transform matrix decomposition) stepped across the whole scroll range: "care," pill stays a flat 0.88→1.00 (no zoom), "tradition," and "flavours," both go 2.29→1.00 with no stuck plateau. Console clean.
+- `tsc --noEmit` and `eslint` clean. Not committed.
+
+## Home page DabbaLine: add gradient shape stickers (brand-colour take on a client reference image)
+
+User shared a reference image (dark background, neon-gradient ring/clover/diamond/hourglass/dome shapes) and asked to add elements like it — explicitly not the dark background, just the shapes, in the site's own palette.
+
+- `src/components/home/DabbaLine.tsx` — added a `shape` sticker kind (`ShapeName`: ring/clover/diamond/hourglass/dome) rendered by a new `ShapeArt` component: simple SVG primitives (circles, a rotated rect, two path shapes) filled with a two-stop brand-colour gradient per shape (orange→yellow, red→orange, yellow→orange, green→green-dark, green-dark→green) instead of the reference's neon-on-black. Each gets a unique gradient id from the token index to avoid SVG id collisions.
+- Attached one shape each to 5 previously bare words: "every" (ring), "carries" (clover), "familiar" (diamond), "prepared," (hourglass), "delivered" (dome) — reusing the existing sticker/extras animation plumbing (bob idle, entrance fade), no new mechanism needed.
+- `DabbaLine.module.css` — added `.stickerShape` (sized like the other sticker kinds, same drop-shadow treatment for grounding on the paper background).
+- Verified via DOM (gradient presence + correct word anchor for all 5) and two screenshots on `/`: ring (orange→yellow) above "every", clover (red→orange) above "carries" — both render correctly against the paper background.
+- `tsc --noEmit` and `eslint` clean. Not committed.
+
+## Home page DabbaLine: revert the gradient shapes, add sticky-note "tag" chips on 2 words
+
+User asked to remove all 5 gradient shape stickers from the previous change. Separately shared another reference image (a green "Nice and" pill with small tilted "Easy"/"Easing" label chips overlapping its corner) and, after confirming they wanted it, asked for it on 1-2 words.
+
+- Reverted the gradient-shape work in full: removed the `shape` sticker kind, `ShapeName`, `SHAPE_GRADIENT`, `ShapeArt`, the 5 token attachments, and `.stickerShape` CSS — back to the pre-shape state.
+- Added a new `tag` field on `Token` (`{ text, rot?, from?, to? }`) rendered as a small tilted pill overlapping the main pill's bottom-right corner (`.tag` in `DabbaLine.module.css`: gradient background via `--tag-from`/`--tag-to`, drop shadow, own rotation via the existing `--rot` mechanism) — reuses the existing extras animation loop as-is, no new onFrame code needed.
+- Applied to 2 words: "freshly" → "Today" tag (red→orange), "delivered" → "On Time" tag (yellow→cream).
+- Verified via 2 screenshots on `/`: both tags render tilted, overlapping their pill's corner, matching the reference's look in brand colours.
+- `tsc --noEmit` and `eslint` clean. Not committed.
+
+## Home page DabbaLine: swap the tag chips' floating idle for the tradition/flavours zoom
+
+User asked for the "Today" and "On Time" tag chips to use the same zoom-in-and-settle animation as the "tradition,"/"flavours," pills, instead of their current floating (bob) idle.
+
+- `src/components/home/DabbaLine.tsx` — added a `'zoom'` option to the extras `Slot['idle']` union. In the `extras.current.forEach` loop, a slot with `idle: 'zoom'` now takes an early branch: scale runs `1 + (1 - t³)² * 1.6` (identical formula to the pill zoom) instead of the generic grow-from-0 + bob/spin/twinkle path, and skips the floating/motion-blur code entirely.
+- Changed both tag chips' `setExtra(tagSlot, i, 'bob', false)` to `setExtra(tagSlot, i, 'zoom', false)`.
+- Verified via DOM (`getComputedStyle` transform matrix decomposition) stepped finely across the "Today" tag's landing point: scale goes 2.60 → 1.00 as opacity goes 0.15 → 1.00, then holds flat at 1.00 with no further motion — matches the pill zoom, floating gone. Console clean.
+- `tsc --noEmit` and `eslint` clean. Not committed.
+
+## Home page DabbaLine: tag zoom wasn't visible during normal scrolling — widened its window
+
+User checked locally and reported the tag zoom "nahi dikh raha" (not visible). Measured the real physical scroll distance the zoom played out over: only ~100-150px, because it borrowed the word's own reveal timing (`progressAt`), which is pinned to a narrow ~0.58-viewport-width crossing — a single normal scroll flick skips right past that, so the zoom compressed into what looks like an instant pop.
+
+- `src/components/home/DabbaLine.tsx` — the `'zoom'` branch in `extras.current.forEach` no longer uses `progressAt`/`t` at all. It now computes its own progress directly from the track offset (`x`) against the word's landed position (`wordEl.offsetLeft - vw * 0.42`, the same point `panel()` calls "arrived"), ramping over a fixed 220px of track travel (≈500px of real scroll, verified). Opacity is fixed at `1` once revealed instead of fading separately — visibility is still gated correctly by the outer word's own opacity, since CSS composites nested opacities.
+- Scoped to the tag chips only ("Today" / "On Time") — did not touch how "tradition,"/"flavours," pills zoom, since those weren't reported as invisible.
+- Verified via DOM stepped in small (20px) real-scroll-sized increments: the "Today" tag's zoom now spans roughly 400-500px of scroll (2.6 → ~1.0 across that range) instead of ~100px. Screenshot confirms it renders correctly.
+- `tsc --noEmit` and `eslint` clean. Not committed.
+
+## Home page DabbaLine: tag chips pop in and stick, instead of smoothly zooming down
+
+User asked for the tag chips to "popup from screen and get stick on the position" rather than a smooth continuous shrink.
+
+- `src/components/home/DabbaLine.tsx` — the `'zoom'` branch now runs an easeOutBack-style curve (`c1`/`c3` constants) instead of the cubic ease: the chip shrinks from 2.6x, overshoots past its resting size (dips to ~0.84x, confirmed via DOM), then springs back and lands exactly on 1.0x — reads as a pop-and-stick rather than a glide. Same 220px/~500px window as before (that part wasn't the complaint).
+- Verified via DOM (20px-step scale sampling): undershoot to ~0.84 confirmed mid-transition, then settles to exactly 1.0000 and stays there arbitrarily far past that point (tested +1500px and +3000px further scroll). Screenshot shows the undershoot moment.
+- `tsc --noEmit` and `eslint` clean. Not committed.
+
+## Home page DabbaLine: tag chips — back to a clean zoom-out, no bounce
+
+User clarified: they wanted a straight zoom-out that sticks, not the pop-and-overshoot bounce from the previous step.
+
+- `src/components/home/DabbaLine.tsx` — reverted the `'zoom'` branch's easing from the easeOutBack overshoot formula back to the monotonic cubic ease (`1 + (1 - zt³)² * 1.6`), keeping the wider 220px/~500px window from the earlier visibility fix.
+- Verified via DOM (20px-step sampling across the transition): scale goes 2.6 → 1.0 with no dip below 1.0 anywhere in the range (checked the full sampled sequence), confirming a clean zoom-out with no overshoot.
+- `tsc --noEmit` and `eslint` clean. Not committed.
+
+## Home page DabbaLine: fix tag chips overlapping the next word mid-zoom
+
+User sent screenshots: while still mid-zoom (scale ~2.5x), the oversized "Today"/"On Time" chips visibly covered "prepared," and "Perth." — readability bug during the transition, not at rest.
+
+- Root cause: the chip's `transform-origin` (bottom-left-ish) means the box balloons toward the top-right while oversized, and at 2.5x+ scale that overflow reaches into the next word 18px away.
+- `src/components/home/DabbaLine.tsx` — the `'zoom'` branch now derives a `reveal` value (`clamp((zt - 0.55) / 0.3, 0, 1)`) and uses it for opacity instead of a flat `1`: the chip stays fully transparent through the oversized half of the shrink (scale 2.6 → ~2.1) and only fades in from zt 0.55→0.85, by which point it's already down to ~1.2x — small enough that it no longer reaches the neighbouring word.
+- Verified via DOM (settle-then-measure at each scroll fraction, avoiding lerp-catchup artifacts from rapid sampling): opacity is 0 while scale is 2.59, and by the first frame it's visible (opacity 1) scale is already 1.23. Screenshot confirms "Today" appears small and doesn't cover "prepared,".
+- `tsc --noEmit` and `eslint` clean. Not committed.
+
+## Home page DabbaLine: slow the tag zoom down further
+
+User asked for the tag zoom to be slower/smoother.
+
+- `src/components/home/DabbaLine.tsx` — widened the zoom's own window from 220px to 420px of track travel (~950px of scroll, up from ~500px). The reveal-fade thresholds (55%-85% of the window) are expressed as a fraction of it, so they stretched proportionally along with it — no separate tuning needed there.
+- Verified via DOM (settle-then-measure across scroll fractions): the transition now spans roughly frac 0.55 to 0.68 of the section (vs. a much narrower band before), confirming a noticeably longer, slower zoom.
+- `tsc --noEmit` and `eslint` clean. Not committed.
+
+## Home page DabbaLine: placeholder delivery-scooter GIF below the line
+
+User supplied a stock "Motorcycle Animation free.gif" (a food-delivery scooter rider, white background, After Effects preview watermark) and asked what could go below the scrolling line. Flagged the watermark, white background, and pizza-delivery mismatch before doing anything with it — user then sent a second, cropped copy of the same stock GIF (watermark cropped out) and asked to wire it up as a placeholder while a proper licensed dabba-carrier asset is sourced (real IconScout links given separately, not yet chosen).
+
+- Copied the file to `public/images/placeholder/motorcycle-placeholder.gif` (kept in its own `placeholder/` folder so it's obvious it's not a final asset).
+- `src/components/home/DabbaLine.tsx` — added a plain `<img>` (not `next/image`, which won't animate a GIF) below the track, inside `.stage`. Rides at 0.55x the track's own speed via a new `bikeRef` in `onFrame`, so it reads as an independent vehicle rather than a sticker glued to one word.
+- `DabbaLine.module.css` — `.bikePlaceholder`: centered, `clamp(140px, 16vw, 220px)` wide, `mix-blend-mode: multiply` to drop the GIF's white background against the paper gradient (multiply against white is a no-op, so only the artwork shows).
+- Commented in both files that this is a placeholder (unlicensed stock, watermark risk on the original) and should be swapped for a proper transparent-background dabba-carrier asset — flagged again in this log so it isn't forgotten before launch.
+- Verified via DOM (image loaded, `complete: true`, correct blend mode) and a screenshot: renders centered under the line, white background not visible against the cream ground.
+- `tsc --noEmit` clean; `eslint` has one expected warning (`no-img-element`, intentional — GIFs don't animate through `next/image`). Not committed.
+
+## Home page DabbaLine: scroll-scrub the placeholder clip instead of looping it
+
+User asked if the space below the line was big enough for a video that scrubs forward/backward with scroll (like an Apple-style scroll-driven clip) instead of a plain looping GIF.
+
+- Converted the placeholder GIF to MP4 via `ffmpeg` (even dimensions forced for yuv420p): `public/images/placeholder/motorcycle-placeholder.mp4`, 140KB vs. the GIF's 2.97MB — deleted the GIF, nothing else referenced it.
+- `src/components/home/DabbaLine.tsx` — swapped the `<img>` for a `<video muted playsInline preload="auto">` (no `autoPlay`, so it stays paused and only advances via `currentTime`), `bikeRef` retyped to `HTMLVideoElement`. In `onFrame`, `travel` is computed inline from `trackRef`/`clipRef` (scrollWidth minus clientWidth — the same formula the scroll hook itself uses, just not previously exposed to this component), giving a 0-1 scroll progress that sets `video.currentTime = progress * duration` each frame (skipped if the readyState isn't there yet, or the change is under 20ms, to avoid redundant seeks). Kept the existing horizontal ride (`translateX` at 0.55x track speed) alongside it.
+- Verified via DOM: scrolling down advances `currentTime` (0.79 → 1.47 → 2.24s), scrolling back up reverses it (2.24 → 1.55 → 0.83s) — confirmed forward and backward scrubbing both work. `paused: true` throughout, confirming it never free-runs. Screenshot shows it rendering correctly.
+- `tsc --noEmit` and `eslint` clean (no `no-img-element` warning anymore, since it's a `<video>` now). Not committed.
+
+## Home page DabbaLine: stop the placeholder clip from drifting sideways with the text
+
+User pointed out the clip was sliding left along with the line (the 0.55x-speed `translateX` ride from the earlier step) and asked why — they wanted it fixed in place, only its frame scrubbing.
+
+- `src/components/home/DabbaLine.tsx` — removed the `translateX` ride entirely from the `'zoom'`... no, from the bike branch in `onFrame`; it now only sets `video.currentTime`, nothing else.
+- `DabbaLine.module.css` — since JS no longer writes a transform, `.bikePlaceholder` centers itself with a static `transform: translateX(-50%)` instead (dropped the now-unneeded `will-change: transform`).
+- Verified via DOM: `getBoundingClientRect().x` is identical (70) at three different scroll positions while `currentTime` still advances (0.02 → 0.89 → 1.82s) — confirmed fixed in place, clip still scrubbing.
+- `tsc --noEmit` and `eslint` clean. Not committed.
+
+## Home page DabbaLine: hide the placeholder clip
+
+User asked to hide it (not remove the code/asset).
+
+- `DabbaLine.module.css` — added `display: none` to `.bikePlaceholder`, commented as reversible. The `<video>`, its scrub logic, and the MP4 asset are all still in place — bringing it back is a one-line revert.
+- Verified via DOM: computed `display` is `none`.
+- `tsc --noEmit` and `eslint` clean. Not committed.
+
+## Home page hero: swap the video for a supplied photo, drop the badge, sink the copy
+
+User supplied `/Users/apple/Downloads/hero.jpg` (a Perth skyline at sunset) to replace the hero's background video outright — not just its poster frame. Then asked to remove the "Mumbai since 1890" pill and shift the copy block down toward the bottom.
+
+- Copied the photo to `public/images/hero-background.jpg`. Added `HERO_BACKGROUND` to `src/data/home.ts`, replacing `HERO_VIDEO` (removed — no other page referenced it).
+- Replaced `src/components/home/HeroVideo.tsx` with a new `HeroBackground.tsx`: dropped the `useSyncExternalStore`/`matchMedia` playable-check and the `<video>` element entirely (nothing to gate anymore — it's just a still `<Image fill>` now), and updated `HomeHero.tsx`'s import/usage and its doc comment (was written around "the film runs behind the copy").
+- Deleted the now-unused `public/videos/hero.mp4` and `public/images/hero-video-poster.jpg`.
+- `HomeHero.tsx` — removed the "Mumbai since 1890" badge `<span>` entirely; changed the section from `justify-center` to `justify-end` so the copy column sits low against the image instead of vertically centered.
+- Hit a stale-Turbopack-cache issue mid-way (old compiled chunks kept importing the just-deleted `HeroVideo`/`HERO_VIDEO` even after the source was correct) — cleared `.next` and restarted the dev server to pick up the new module graph.
+- Verified via DOM + screenshot on a fresh browser tab: badge gone (`textContent` check), headline now sits roughly mid-lower in the viewport, Perth skyline photo renders correctly behind the scrim.
+- `tsc --noEmit` and `eslint` clean. Not committed.
+
+## Home page hero: extend the graph-paper grid onto the wave
+
+User circled the cream wave band at the bottom of the hero and asked why it had no grid, unlike the flat cream section (`StandFor`) right below it. Explained: the wave is a flat SVG fill still inside `HomeHero` (deliberately left grid-free per the component's own doc comment — the grid was meant to read as paper, not "sitting on the lens" over the moving hero background), and the real `.graph-paper` texture only starts once you're inside `StandFor`'s box. User asked to add it anyway.
+
+- `HomeHero.tsx` — gave the wave `<svg>` a `<defs><pattern id="waveGraphPaper">` (28x28 tile, cream fill + 1px lines at `rgba(175,20,17,0.07)`, matching `.graph-paper`'s CSS values) and swapped the wave `<path>`'s `fill` from the flat `var(--color-brand-cream)` to `url(#waveGraphPaper)`.
+- Verified via DOM (`pattern`/`path[fill="url(#waveGraphPaper)"]` both found) and a screenshot: the grid now visibly continues across the wave into the section below.
+- `tsc --noEmit` and `eslint` clean. Not committed.
+
+## Home page hero: fixed the wave grid's misalignment with the section below
+
+User caught it: the SVG-pattern grid on the wave didn't line up with `.graph-paper`'s grid in `StandFor` right below it — visible seam at the boundary. Root cause was structural, not a tuning issue: the wave `<svg>` uses `preserveAspectRatio="none"` to stretch its 1440-unit viewBox non-uniformly to the real (wider) rendered width, so any pattern drawn inside that viewBox stretches right along with it — it can never match a fixed-size 28px grid. Worse, `.graph-paper` is `background-attachment: fixed` (anchored to the viewport, static through scroll), while an SVG pattern scrolls with the page — the two can only coincidentally agree at one scroll position, structurally, not by adjusting numbers.
+
+- `HomeHero.tsx` — replaced the SVG `<path fill="url(#waveGraphPaper)">` entirely with a plain `<div className="graph-paper ... bg-brand-cream">` (the exact same classes `StandFor` uses), clipped to the wave's outline via `clip-path: url(#heroWaveClip)` referencing a hidden `<clipPath clipPathUnits="objectBoundingBox">` (the wave's path coordinates divided by 1440/150 into 0-1 fractions, so the shape still stretches correctly to any width — only the shape is recomputed per viewport, never the grid). Because the div's background is the literal same fixed, unscaled `.graph-paper` pattern as the section below, they're guaranteed pixel-perfect continuous at every viewport width and scroll position — not approximated, structurally identical.
+- Verified via DOM (`clip-path` computed style resolves to the clipPath, `.graph-paper`'s background-image present) and a screenshot: grid lines now run straight through the wave boundary with no visible seam.
+- `tsc --noEmit` and `eslint` clean. Not committed.
+
+## Home page hero: headline was touching the header
+
+User reported the headline sticking to the header after the previous change. Reproduced at a short-wide viewport (1440x760, a common laptop size): `section.grain`'s intrinsic content height (846px, driven by all the copy plus the large bottom padding reserved for the wave/starburst) already exceeds `min-h-[100svh]`, so `justify-end` had zero slack to work with — the copy block landed exactly at the `pt-phi-6` (89px) boundary, only 8px below the 81px-tall header. Confirmed via `getBoundingClientRect()` on `header` and `h1` at scrollY 0.
+
+- `HomeHero.tsx` — bumped the section's `pt-phi-6` to `pt-phi-7` (89px → 144px), giving a real ~63px gap below the header instead of 8px, and pushing the whole copy block further down the frame (also addresses "shift down more").
+- Verified via DOM at the same 1440x760 viewport: header bottom 81, headline top 144, gap 63px.
+- The verification screenshot at this viewport rendered the background solid dark with no skyline visible — checked via `getBoundingClientRect`/computed style (image loaded, opacity 1, correctly sized) and by drawing the live `<img>` to an offscreen canvas and sampling pixels (sky-blue and sunset-orange values came back, matching the real photo) — confirmed the photo renders correctly and the screenshot capture itself was stale, not a real bug.
+- `tsc --noEmit` and `eslint` clean. Not committed.

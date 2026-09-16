@@ -77,6 +77,8 @@ type Token = {
   /** the rotating checker diamond */
   checkers?: Spark[];
   dash?: boolean;
+  /** a tilted sticky-note label overlapping the pill's corner, reference-style */
+  tag?: { text: string; rot?: number; from?: string; to?: string };
 };
 
 /**
@@ -143,7 +145,12 @@ const TOKENS: Token[] = [
   { text: 'home', pill: 'green', house: true, sparkles: ['tl'], inner: true },
   { text: '}', brace: true },
   { text: '—', dash: true },
-  { text: 'freshly', pill: 'cream', rot: -1.5 },
+  {
+    text: 'freshly',
+    pill: 'cream',
+    rot: -1.5,
+    tag: { text: 'Today', rot: -10, from: 'var(--color-brand-red)', to: 'var(--color-brand-orange)' },
+  },
   { text: 'prepared,' },
   {
     text: 'carefully',
@@ -158,7 +165,11 @@ const TOKENS: Token[] = [
     sparkles: ['tr'],
   },
   { text: 'and', checkers: ['tr'] },
-  { text: 'delivered', pill: 'green' },
+  {
+    text: 'delivered',
+    pill: 'green',
+    tag: { text: 'On Time', rot: 8, from: 'var(--color-brand-yellow)', to: 'var(--color-brand-cream)' },
+  },
   { text: 'to' },
   { text: 'Perth.', pill: 'red', rot: -1 },
   {
@@ -171,6 +182,12 @@ const TOKENS: Token[] = [
 /** the opening brace anchors the two-phase reveal of everything it wraps */
 const BRACE_INDEX = TOKENS.findIndex((t) => t.brace);
 const CLOSE_BRACE_INDEX = TOKENS.length - 1 - [...TOKENS].reverse().findIndex((t) => t.brace);
+/** the last token (the Perth arrow) — its full reveal is what the kicker eases against */
+const END_INDEX = TOKENS.length - 1;
+/** the only two pills that get the slow zoom-in-from-close entrance */
+const ZOOM_INDICES = new Set(
+  TOKENS.map((t, i) => (t.text === 'tradition,' || t.text === 'flavours,' ? i : -1)).filter((i) => i >= 0),
+);
 /** gap the empty brace pair holds before the words push them apart */
 const TIGHT_GAP = 46;
 
@@ -344,6 +361,8 @@ export default function DabbaLine() {
   const sectionRef = useRef<HTMLElement>(null);
   const clipRef = useRef<HTMLDivElement>(null);
   const trackRef = useRef<HTMLDivElement>(null);
+  const kickerRef = useRef<HTMLParagraphElement>(null);
+  const bikeRef = useRef<HTMLVideoElement>(null);
 
   const words = useRef<(HTMLSpanElement | null)[]>([]);
   const pills = useRef<(HTMLSpanElement | null)[]>([]);
@@ -354,7 +373,7 @@ export default function DabbaLine() {
   type Slot = {
     el: HTMLElement | SVGElement | null;
     word: number;
-    idle?: 'bob' | 'spin' | 'twinkle';
+    idle?: 'bob' | 'spin' | 'twinkle' | 'zoom';
     seed?: number;
     /** parallax strength; alternates sign so layers split fore/aft */
     depth?: number;
@@ -456,12 +475,37 @@ export default function DabbaLine() {
       const t = Math.min(1, progressAt(i) / 0.82);
       // overshoot once, then hold
       const pop = 1 + 0.06 * Math.sin(Math.PI * Math.min(t, 1));
-      el.style.transform = `scale(${(0.88 + t * 0.12) * pop}) rotate(var(--rot, 0deg))`;
+      /* "tradition," and "flavours," only: they start punched in close, as if the camera
+         is zooming toward them. Cubing t before easing keeps them hanging at close-to-full
+         zoom for most of the approach and only pulls back to their held size right at the
+         end, which reads as a slower zoom than a plain linear ease-out would. */
+      const zoom = ZOOM_INDICES.has(i) ? 1 + Math.pow(1 - Math.pow(t, 3), 2) * 1.6 : 1;
+      el.style.transform = `scale(${((0.88 + t * 0.12) * pop * zoom).toFixed(4)}) rotate(var(--rot, 0deg))`;
     });
 
     extras.current.forEach((slot) => {
       if (!slot?.el) return;
       const t = Math.min(1, progressAt(slot.word) / 0.78);
+
+      if (slot.idle === 'zoom') {
+        /* starts oversized, as if right off the screen toward the viewer, and zooms
+           straight out to its resting size and sticks there — no bounce past it —
+           timed off its own wide window (420px of track travel, ~950px of scroll) rather
+           than the word's narrow ~0.58-viewport reveal, which a normal scroll flick would
+           skip straight past. */
+        const wordEl = words.current[slot.word];
+        const landed = wordEl ? wordEl.offsetLeft - vw * 0.42 : 0;
+        const zt = Math.min(1, Math.max(0, (x - landed) / 420));
+        const zoom = 1 + Math.pow(1 - Math.pow(zt, 3), 2) * 1.6;
+        /* while it's still big, the scaled-up box reaches past its own word and covers
+           whatever comes next — so it stays invisible through the oversized half of the
+           shrink and only fades in once it's down to a size that no longer collides */
+        const reveal = Math.min(1, Math.max(0, (zt - 0.55) / 0.3));
+        slot.el.style.opacity = String(reveal);
+        slot.el.style.transform = `scale(${zoom.toFixed(4)}) rotate(var(--rot, 0deg))`;
+        return;
+      }
+
       const seed = slot.seed ?? 0;
       const pop = 1 + 0.16 * Math.sin(Math.PI * Math.min(t, 1));
       const p = screen(words.current[slot.word]);
@@ -487,12 +531,40 @@ export default function DabbaLine() {
         }
       }
 
+      /* motion blur on the loose pieces: they smear slightly while the track is moving
+         fast and go crisp the moment it settles, which sells weight on top of the tilt */
+      const motionBlur = slot.idle === 'bob' ? Math.min(2.2, Math.abs(v) * 0.05) : 0;
+      slot.el.style.filter = motionBlur > 0.05 ? `blur(${motionBlur.toFixed(2)}px)` : 'none';
+
       slot.el.style.opacity = String(Math.min(1, t * 1.5));
       slot.el.style.transform =
         `translate(calc(var(--tx, 0px) + ${driftX.toFixed(2)}px), ${idleY.toFixed(2)}px) ` +
         `scale(${(t * pop * idleScale).toFixed(4)}) ` +
         `rotate(calc(var(--rot, 0deg) + ${idleRot.toFixed(2)}deg))`;
     });
+
+    /* the kicker holds still, but eases back and lightens slightly as the sentence
+       finishes landing, so the eye is handed off to the line rather than split between
+       both the whole time */
+    if (kickerRef.current) {
+      const settled = progressAt(END_INDEX);
+      kickerRef.current.style.opacity = String(1 - settled * 0.45);
+      kickerRef.current.style.transform = `scale(${(1 - settled * 0.08).toFixed(3)})`;
+    }
+
+    /* stays put — only its own clip is scrubbed (not looped, not moved) off the same
+       scroll position, so it plays forward on the way down and backward the moment
+       the user scrolls back up */
+    if (bikeRef.current) {
+      const video = bikeRef.current;
+
+      const travel = Math.max(1, (trackRef.current?.scrollWidth ?? 0) - (clipRef.current?.clientWidth ?? 0));
+      const progress = Math.min(1, Math.max(0, x / travel));
+      if (video.readyState >= 1 && isFinite(video.duration) && video.duration > 0) {
+        const target = progress * video.duration;
+        if (Math.abs(video.currentTime - target) > 0.02) video.currentTime = target;
+      }
+    }
   }, []);
 
   useTrackScroll(sectionRef, clipRef, trackRef, onFrame);
@@ -519,7 +591,7 @@ export default function DabbaLine() {
         {/* The section's own title, in the brand script — it holds still while the line
             travels under it, so the reader keeps the frame for the sentence even a dozen
             screens into the pin. */}
-        <p className={s.kicker}>What a dabba carries</p>
+        <p ref={kickerRef} className={s.kicker}>What a dabba carries</p>
 
         <div ref={clipRef} className={s.clip}>
           <div ref={trackRef} className={s.track}>
@@ -535,6 +607,7 @@ export default function DabbaLine() {
               const burstTextSlot = token.badge ? claim() : -1;
               const sparkSlots = (token.sparkles ?? []).map(() => claim());
               const checkerSlots = (token.checkers ?? []).map(() => claim());
+              const tagSlot = token.tag ? claim() : -1;
 
               const cls = [
                 s.word,
@@ -566,6 +639,21 @@ export default function DabbaLine() {
                       className={token.dash ? s.dash : token.brace ? s.brace : s.plain}
                     >
                       {token.text}
+                    </span>
+                  )}
+
+                  {token.tag && (
+                    <span
+                      ref={setExtra(tagSlot, i, 'zoom', false)}
+                      className={s.tag}
+                      style={{
+                        ['--rot' as string]: `${token.tag.rot ?? -8}deg`,
+                        ['--tag-from' as string]: token.tag.from ?? 'var(--color-brand-yellow)',
+                        ['--tag-to' as string]: token.tag.to ?? 'var(--color-brand-cream)',
+                      }}
+                      aria-hidden="true"
+                    >
+                      {token.tag.text}
                     </span>
                   )}
 
@@ -659,6 +747,21 @@ export default function DabbaLine() {
             <div className={s.spacer} style={{ width: '30vw' }} />
           </div>
         </div>
+
+        {/* PLACEHOLDER — client-supplied stock clip (converted from GIF to MP4 so its
+            currentTime can be scrubbed), white background, no license confirmed yet.
+            Stands in for a proper dabba-carrier asset until one is sourced (see
+            BUILD_LOG); mix-blend-mode hides the white box on the paper ground well
+            enough for review, not for production. */}
+        <video
+          ref={bikeRef}
+          src="/images/placeholder/motorcycle-placeholder.mp4"
+          muted
+          playsInline
+          preload="auto"
+          aria-hidden="true"
+          className={s.bikePlaceholder}
+        />
       </div>
     </section>
   );

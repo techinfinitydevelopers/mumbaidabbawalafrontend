@@ -4,13 +4,9 @@
  * icons in the brand palette instead, which render the same on every OS.
  */
 
-/** The hero video. One constant so swapping the film is a one-line change. */
-export const HERO_VIDEO = {
-  src: "/videos/hero.mp4",
-  /** First frame, written out of the file itself. Replace it whenever `src` changes. */
-  poster: "/images/hero-video-poster.jpg",
-  width: 1920,
-  height: 1080,
+/** The hero's still ground. One constant so swapping the photo is a one-line change. */
+export const HERO_BACKGROUND = {
+  src: "/images/hero-background.jpg",
 };
 
 /** "EVERY DABBA, EVERY DAY. It's Never Just Lunch." — four beats, in the doc's order. */

@@ -54,6 +54,22 @@
   color: var(--color-brand-orange);
 }
 
+/* PLACEHOLDER artwork — see the comment beside the <video> in DabbaLine.tsx.
+   mix-blend-mode hides the clip's white background against the paper ground; drop
+   this rule (and the multiply) once a transparent-background asset replaces it.
+   Hidden for now per request — remove `display: none` to bring it back. */
+.bikePlaceholder {
+  display: none;
+  position: absolute;
+  left: 50%;
+  bottom: 4%;
+  width: clamp(140px, 16vw, 220px);
+  transform: translateX(-50%);
+  mix-blend-mode: multiply;
+  opacity: 0.92;
+  pointer-events: none;
+}
+
 .clip {
   position: relative;
   width: 100%;
@@ -123,6 +139,28 @@
   /* colour comes from the token — the reds and the forest green need cream on them */
   font-weight: 600;
   will-change: transform;
+}
+
+/* a tilted sticky-note label overlapping the pill's bottom-right corner, reference-style */
+.tag {
+  position: absolute;
+  right: -0.4em;
+  bottom: -0.35em;
+  padding: 0.16em 0.55em 0.2em;
+  border-radius: 0.3em;
+  font-family: var(--font-manrope), system-ui, sans-serif;
+  font-size: 0.34em;
+  font-weight: 800;
+  letter-spacing: 0.01em;
+  line-height: 1;
+  white-space: nowrap;
+  color: var(--color-ink);
+  background: linear-gradient(135deg, var(--tag-from, var(--color-brand-yellow)), var(--tag-to, var(--color-brand-cream)));
+  box-shadow: 0 0.08em 0.18em rgb(42 24 16 / 0.3);
+  opacity: 0;
+  pointer-events: none;
+  transform-origin: 15% 85%;
+  will-change: transform, opacity;
 }
 
 .dash {
@@ -331,6 +369,7 @@
   .arrow,
   .sparkle,
   .checker,
+  .tag,
   .burst,
   .burstText {
     opacity: 1 !important;

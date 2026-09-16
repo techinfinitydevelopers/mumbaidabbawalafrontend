@@ -1,30 +1,30 @@
 import Button from "@/components/Button";
-import HeroVideo from "@/components/home/HeroVideo";
+import HeroBackground from "@/components/home/HeroBackground";
 import RouteTicker from "@/components/poster/RouteTicker";
 import Starburst from "@/components/poster/Starburst";
 
 /**
- * The home hero: the film runs full-bleed behind the poster copy.
+ * The home hero: a full-bleed photo runs behind the poster copy.
  *
  * Every other page opens on cream with a dabba group beside the headline (`PageHero`).
- * Home can't reuse that — a hero video only reads as one when it is the ground — so the
+ * Home can't reuse that — a hero photo only reads as one when it is the ground — so the
  * poster language is carried over instead of the layout: the same three-deep stacked
  * Anton headline, the same starburst seal, the same route ticker, and the same wave
  * handing the section down to paper.
  *
- * Over film, the type has to be the bright thing rather than the dark thing, so the
+ * Over the photo, the type has to be the bright thing rather than the dark thing, so the
  * headline runs cream/yellow on an ink scrim instead of red/green on cream. The scrim is
- * weighted to the copy side and thins out over the right, so the footage stays visible
+ * weighted to the copy side and thins out over the right, so the photo stays visible
  * where nothing sits on top of it.
  *
  * No graph print here, deliberately: the print belongs on flat brand grounds, and ruled
- * over moving footage it reads as a grid sitting on the lens rather than as paper. The
+ * over the photo it reads as a grid sitting on the lens rather than as paper. The
  * texture returns on the cream section the wave hands down to.
  */
 export default function HomeHero() {
   return (
-    <section className="grain relative flex min-h-[100svh] flex-col justify-center overflow-hidden bg-ink pb-phi-7 pt-phi-6 sm:pb-phi-8">
-      <HeroVideo />
+    <section className="grain relative flex min-h-[100svh] flex-col justify-end overflow-hidden bg-ink pb-phi-7 pt-phi-7 sm:pb-phi-8">
+      <HeroBackground />
 
       {/* Copy-side scrim, in two mutually exclusive halves. Below lg the copy runs the
           full width, so the veil has to cover the whole frame and only lightens toward the
@@ -49,11 +49,7 @@ export default function HomeHero() {
       />
       <div className="relative z-20 mx-auto w-full max-w-[1720px] px-5 sm:px-8 lg:px-12 2xl:px-16">
         <div className="max-w-[54rem]">
-          <span className="rise inline-block rounded-full bg-brand-green-dark px-3 py-1 text-[9px] font-bold uppercase tracking-[0.2em] text-brand-cream sm:px-4 sm:py-1.5 sm:text-[10px] sm:tracking-[0.22em]">
-            Mumbai since 1890
-          </span>
-
-          <h1 className="poster-stack rise mt-2.5 [--po:3px] [--po-gap:4px] sm:mt-4 sm:[--po:7px] sm:[--po-gap:8px]">
+          <h1 className="poster-stack rise [--po:3px] [--po-gap:4px] sm:[--po:7px] sm:[--po-gap:8px]">
             <span
               className="poster block text-[30px] leading-[0.95] text-brand-cream sm:text-[62px] lg:text-[74px] xl:text-[86px]"
               style={{ ["--po-color" as string]: "rgba(42,24,16,0.9)" }}
@@ -127,17 +123,24 @@ export default function HomeHero() {
         </div>
       </Starburst>
 
-      <svg
-        viewBox="0 0 1440 150"
-        preserveAspectRatio="none"
-        aria-hidden="true"
-        className="absolute bottom-0 left-0 z-20 h-[110px] w-full sm:h-[150px]"
-      >
-        <path
-          d="M0,104 C300,52 620,44 900,80 C1180,116 1330,118 1440,106 L1440,150 L0,150 Z"
-          fill="var(--color-brand-cream)"
-        />
+      {/* Wave shape as a clip on a real `.graph-paper` div, not a redrawn pattern inside
+          the SVG: `.graph-paper` is `background-attachment: fixed` (viewport-anchored),
+          so a copy of the pattern re-scaled to the SVG's own stretched viewBox could
+          never land on the same 28px phase as the grid in the section below — this
+          div paints the identical fixed background, just masked to the wave's outline,
+          so the two are pixel-perfect continuous regardless of viewport width. */}
+      <svg width="0" height="0" aria-hidden="true" style={{ position: "absolute" }}>
+        <defs>
+          <clipPath id="heroWaveClip" clipPathUnits="objectBoundingBox">
+            <path d="M0,0.693333 C0.208333,0.346667 0.430556,0.293333 0.625,0.533333 C0.819444,0.773333 0.923611,0.786667 1,0.706667 L1,1 L0,1 Z" />
+          </clipPath>
+        </defs>
       </svg>
+      <div
+        aria-hidden="true"
+        className="graph-paper absolute bottom-0 left-0 z-20 h-[110px] w-full bg-brand-cream sm:h-[150px]"
+        style={{ clipPath: "url(#heroWaveClip)" }}
+      />
     </section>
   );
 }
